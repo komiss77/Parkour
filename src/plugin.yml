@@ -1,0 +1,13 @@
+api-version: 1.13 
+name: Parkour
+load: PostWorld
+main: me.A5H73Y.Parkour.Parkour
+version: 3.7
+depend: [Ostrov]
+description: >
+             First and most powerful Parkour plugin!
+commands:
+  parkour:
+    description: Parkour
+  pa:
+    description: This can be changed to pkr
