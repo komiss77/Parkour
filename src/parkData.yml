@@ -1,0 +1,1035 @@
+trasses:
+  '-1971731464':
+    displayName: Биг-Бен
+    worldName: world
+    mat: CLOCK
+    descr: ''
+    level: Легко
+    pay: 90
+    disabled: false
+    points:
+    - 60,46,-250,NORTH,1,1,1
+    - 70,56,-275,NORTH,1,1,1
+    - 52,78,-292,NORTH,1,1,1
+    - 65,88,-268,NORTH,1,1,1
+    - 61,130,-282,NORTH,1,1,1
+  '1044487':
+    displayName: Лес
+    worldName: world
+    mat: OAK_SAPLING
+    descr: ''
+    level: Легко
+    pay: 60
+    disabled: false
+    points:
+    - -448,46,-250,NORTH,1,1,1
+    - -432,45,-319,NORTH,1,1,1
+    - -394,51,-324,NORTH,1,1,1
+    - -390,62,-308,NORTH,1,1,1
+    - -411,54,-342,NORTH,1,1,1
+  '671283592':
+    displayName: Воздушный-Шар
+    worldName: world
+    mat: RED_CONCRETE
+    descr: ''
+    level: Легко
+    pay: 150
+    disabled: false
+    points:
+    - 297,46,-230,SOUTH,1,1,1
+    - 290,53,-195,SOUTH,1,1,1
+    - 310,64,-167,SOUTH,1,1,1
+    - 296,55,-140,SOUTH,1,1,1
+  '-528044408':
+    displayName: СкайБлок
+    worldName: world
+    mat: DARK_OAK_SAPLING
+    descr: ''
+    level: Легко
+    pay: 66
+    disabled: false
+    points:
+    - 297,46,-250,NORTH,1,1,1
+    - 303,48,-284,NORTH,1,1,1
+    - 291,53,-312,NORTH,1,1,1
+    - 297,57,-344,NORTH,1,1,1
+  '32466814':
+    displayName: Овца
+    worldName: world
+    mat: PINK_WOOL
+    descr: ''
+    level: Легко
+    pay: 70
+    disabled: false
+    points:
+    - -176,46,-250,NORTH,1,1,1
+    - -179,63,-284,NORTH,1,1,1
+    - -167,66,-286,NORTH,1,1,1
+    - -183,62,-300,NORTH,1,1,1
+    - -176,74,-285,NORTH,1,1,1
+  '-2021564272':
+    displayName: Снеговик
+    worldName: world
+    mat: SNOWBALL
+    descr: ''
+    level: Легко
+    pay: 80
+    disabled: false
+    points:
+    - -346,46,-230,SOUTH,1,1,1
+    - -335,59,-210,SOUTH,1,1,1
+    - -352,54,-185,SOUTH,1,1,1
+    - -346,65,-185,SOUTH,1,1,1
+    - -347,81,-184,SOUTH,1,1,1
+    - -344,87,-191,SOUTH,1,1,1
+  '212041650':
+    displayName: Строительный-Кран
+    worldName: world
+    mat: TRIPWIRE_HOOK
+    descr: ''
+    level: Легко
+    pay: 80
+    disabled: false
+    points:
+    - 1847,46,-250,NORTH,1,1,1
+    - 1835,78,-270,NORTH,1,1,1
+    - 1857,78,-270,NORTH,1,1,1
+    - 1848,83,-288,NORTH,1,1,1
+    - 1846,96,-324,NORTH,1,1,1
+    - 1846,97,-272,NORTH,1,1,1
+    - 1845,124,-270,NORTH,1,1,1
+  '-522170893':
+    displayName: Радужная-башня
+    worldName: world
+    mat: RED_SHULKER_BOX
+    descr: ''
+    level: Легко
+    pay: 250
+    disabled: false
+    points:
+    - 1477,46,-250,NORTH,1,1,1
+    - 1481,61,-255,NORTH,1,1,1
+    - 1478,75,-254,NORTH,1,1,1
+    - 1481,89,-254,NORTH,1,1,1
+    - 1481,104,-253,NORTH,1,1,1
+    - 1477,119,-253,NORTH,1,1,1
+    - 1478,136,-253,NORTH,1,1,1
+    - 1474,157,-259,NORTH,1,1,1
+  '1153846482':
+    displayName: Оцелот
+    worldName: world
+    mat: OCELOT_SPAWN_EGG
+    descr: ''
+    level: Легко
+    pay: 70
+    disabled: false
+    points:
+    - -822,46,-230,SOUTH,1,1,1
+    - -826,53,-205,SOUTH,1,1,1
+    - -816,62,-170,SOUTH,1,1,1
+    - -822,70,-195,SOUTH,1,1,1
+  '1004547702':
+    displayName: Магия
+    worldName: world
+    mat: ENCHANTING_TABLE
+    descr: ''
+    level: Легко
+    pay: 60
+    disabled: false
+    points:
+    - 27,46,-230,SOUTH,1,1,1
+    - 46,58,-217,SOUTH,1,1,1
+    - 30,51,-182,SOUTH,1,1,1
+    - 10,55,-187,SOUTH,1,1,1
+    - 24,56,-222,SOUTH,1,1,1
+    - 28,62,-199,SOUTH,1,1,1
+  '32182268':
+    displayName: Друг
+    worldName: world
+    mat: VILLAGER_SPAWN_EGG
+    descr: ''
+    level: Легко
+    pay: 120
+    disabled: false
+    points:
+    - 1243,46,-250,NORTH,1,1,1
+    - 1242,56,-279,NORTH,1,1,1
+    - 1243,68,-257,NORTH,1,1,1
+    - 1242,81,-279,NORTH,1,1,1
+    - 1243,86,-260,NORTH,1,1,1
+    - 1243,96,-268,NORTH,1,1,1
+    - 1243,101,-258,NORTH,1,1,1
+    - 1242,106,-271,NORTH,1,1,1
+    - 1243,128,-271,NORTH,1,1,1
+    - 1242,132,-258,NORTH,1,1,1
+    - 1243,135,-261,NORTH,1,1,1
+    - 1242,147,-279,NORTH,1,1,1
+    - 1243,160,-278,NORTH,1,1,1
+    - 1242,175,-258,NORTH,1,1,1
+    - 1242,190,-273,NORTH,1,1,1
+  '32329461':
+    displayName: Йоши
+    worldName: world
+    mat: GLOW_SQUID_SPAWN_EGG
+    descr: ''
+    level: Легко
+    pay: 95
+    disabled: false
+    points:
+    - 773,46,-230,SOUTH,1,1,1
+    - 762,58,-212,SOUTH,1,1,1
+    - 784,72,-220,SOUTH,1,1,1
+    - 761,84,-198,SOUTH,1,1,1
+    - 775,75,-172,SOUTH,1,1,1
+    - 766,59,-133,SOUTH,1,1,1
+  '1002757598':
+    displayName: Кварц
+    worldName: park2
+    mat: CHISELED_QUARTZ_BLOCK
+    descr: ''
+    level: Трудно
+    pay: 640
+    disabled: false
+    points:
+    - 0,6,0,SOUTH,1,1,1
+    - 1,6,63,SOUTH,1,1,1
+    - 1,6,110,SOUTH,1,1,1
+    - 26,15,124,SOUTH,1,1,1
+    - 26,15,148,SOUTH,1,1,1
+    - 26,21,174,SOUTH,1,1,1
+    - 26,29,191,SOUTH,1,1,1
+    - -1,31,210,SOUTH,1,1,1
+    - 0,31,239,SOUTH,1,1,1
+    - 1,31,271,SOUTH,1,1,1
+    - 1,31,283,SOUTH,1,1,1
+    - 17,31,309,SOUTH,1,1,1
+    - 17,31,408,SOUTH,1,1,1
+    - -2,31,444,SOUTH,1,1,1
+    - -2,26,516,SOUTH,1,1,1
+    - -2,37,583,SOUTH,1,1,1
+    - 1,37,608,SOUTH,1,1,1
+    - 2,37,623,SOUTH,1,1,1
+    - -13,34,691,SOUTH,1,1,1
+    - -13,37,767,SOUTH,1,1,1
+    - -13,45,829,SOUTH,1,1,1
+    - -13,34,899,SOUTH,1,1,1
+    - -13,34,935,SOUTH,1,1,1
+    - -13,34,952,SOUTH,1,1,1
+    - -15,34,969,SOUTH,1,1,1
+    - -15,34,1052,SOUTH,1,1,1
+    - -15,40,1078,SOUTH,1,1,1
+    - -17,67,1091,SOUTH,1,1,1
+    - -16,67,1106,SOUTH,1,1,1
+    - -16,67,1152,SOUTH,1,1,1
+    - -16,67,1197,SOUTH,1,1,1
+    - 0,67,1223,SOUTH,1,1,1
+    - 2,68,1273,SOUTH,1,1,1
+    - 2,65,1373,SOUTH,1,1,1
+    - 0,70,1442,SOUTH,1,1,1
+    - 0,70,1500,SOUTH,1,1,1
+    - 10,66,1542,SOUTH,1,1,1
+    - 5,67,1586,SOUTH,1,1,1
+    - 1,63,1586,SOUTH,1,1,1
+    - 3,70,1605,SOUTH,1,1,1
+    - 3,70,1663,SOUTH,1,1,1
+    - 3,69,1717,SOUTH,1,1,1
+    - 3,68,1759,SOUTH,1,1,1
+    - 3,68,1779,SOUTH,1,1,1
+    - 1,69,1831,SOUTH,1,1,1
+    - 1,69,1854,SOUTH,1,1,1
+    - 1,69,1887,SOUTH,1,1,1
+    - 0,69,1942,SOUTH,1,1,1
+    - 0,69,1982,SOUTH,1,1,1
+    - 0,69,2066,SOUTH,1,1,1
+    - 0,69,2118,SOUTH,1,1,1
+    - 4,69,2163,SOUTH,1,1,1
+    - 4,68,2201,SOUTH,1,1,1
+    - 8,70,2223,SOUTH,1,1,1
+    - 8,71,2256,SOUTH,1,1,1
+    - 8,44,2295,SOUTH,1,1,1
+    - 8,50,2312,SOUTH,1,1,1
+    - 8,85,2327,SOUTH,1,1,1
+    - 8,91,2353,SOUTH,1,1,1
+    - 8,91,2402,SOUTH,1,1,1
+    - 8,91,2455,SOUTH,1,1,1
+    - 8,91,2527,SOUTH,1,1,1
+    - 8,91,2556,SOUTH,1,1,1
+    - 13,91,2611,SOUTH,1,1,1
+    - 13,91,2717,SOUTH,1,1,1
+    - 13,102,2758,SOUTH,1,1,1
+    - 17,108,2794,SOUTH,1,1,1
+    - 17,117,2839,SOUTH,1,1,1
+    - 24,127,2862,SOUTH,1,1,1
+    - 24,127,2899,SOUTH,1,1,1
+    - 13,127,3001,SOUTH,1,1,1
+  '1005623914':
+    displayName: Незер
+    worldName: world
+    mat: NETHERRACK
+    descr: ''
+    level: Легко
+    pay: 80
+    disabled: false
+    points:
+    - 1746,46,-230,SOUTH,1,1,1
+    - 1781,50,-205,SOUTH,1,1,1
+    - 1782,54,-195,SOUTH,1,1,1
+    - 1781,59,-163,SOUTH,1,1,1
+  '756093197':
+    displayName: Нян-Кэт
+    worldName: world
+    mat: RED_WOOL
+    descr: ''
+    level: Легко
+    pay: 150
+    disabled: false
+    points:
+    - -516,46,-250,NORTH,1,1,1
+    - -570,46,-286,NORTH,1,1,1
+    - -546,51,-299,NORTH,1,1,1
+    - -522,50,-296,NORTH,1,1,1
+    - -514,49,-298,NORTH,1,1,1
+    - -533,61,-305,NORTH,1,1,1
+    - -555,68,-306,NORTH,1,1,1
+    - -573,74,-310,NORTH,1,1,1
+    - -555,76,-301,NORTH,1,1,1
+    - -540,64,-276,NORTH,1,1,1
+    - -517,69,-317,NORTH,1,1,1
+  '997405395':
+    displayName: Дилда
+    worldName: world
+    mat: END_ROD
+    descr: ''
+    level: Легко
+    pay: 10
+    disabled: false
+    points:
+    - 1310,46,-230,SOUTH,1,1,1
+    - 1313,58,-222,SOUTH,1,1,1
+    - 1310,73,-221,SOUTH,1,1,1
+    - 1308,93,-220,SOUTH,1,1,1
+    - 1311,103,-219,SOUTH,1,1,1
+  '1973031482':
+    displayName: Остров-Марио
+    worldName: world
+    mat: GOLD_NUGGET
+    descr: ''
+    level: Легко
+    pay: 250
+    disabled: false
+    points:
+    - 907,46,-230,SOUTH,1,1,1
+    - 909,38,-209,SOUTH,1,1,1
+    - 907,37,-205,SOUTH,1,1,1
+    - 907,50,-204,SOUTH,1,1,1
+    - 907,36,-185,SOUTH,1,1,1
+    - 907,48,-184,SOUTH,1,1,1
+    - 905,50,-154,SOUTH,1,1,1
+    - 915,56,-132,SOUTH,1,1,1
+    - 911,60,-139,SOUTH,1,1,1
+    - 912,60,-160,SOUTH,1,1,1
+  '-2145921102':
+    displayName: Хэллоуин
+    worldName: world
+    mat: JACK_O_LANTERN
+    descr: ''
+    level: Легко
+    pay: 250
+    disabled: false
+    points:
+    - 1915,46,-230,SOUTH,1,1,1
+    - 1905,45,-212,SOUTH,1,1,1
+    - 1880,49,-208,SOUTH,1,1,1
+    - 1883,60,-201,SOUTH,1,1,1
+    - 1901,73,-197,SOUTH,1,1,1
+    - 1902,81,-179,SOUTH,1,1,1
+    - 1904,99,-181,SOUTH,1,1,1
+  '1032271904':
+    displayName: Корова
+    worldName: world
+    mat: BEEF
+    descr: ''
+    level: Легко
+    pay: 66
+    disabled: false
+    points:
+    - 975,46,-230,SOUTH,1,1,1
+    - 978,51,-193,SOUTH,1,1,1
+    - 975,63,-173,SOUTH,1,1,1
+    - 975,74,-198,SOUTH,1,1,1
+  '1674345574':
+    displayName: Пандора
+    worldName: park1
+    mat: ENDER_CHEST
+    descr: ''
+    level: Трудно
+    pay: 240
+    disabled: false
+    points:
+    - 820,196,-432,NORTH,1,1,1
+    - 821,195,-485,NORTH,1,1,1
+    - 824,196,-539,NORTH,1,1,1
+    - 846,198,-547,NORTH,1,1,1
+    - 847,197,-483,NORTH,1,1,1
+    - 848,198,-433,NORTH,1,1,1
+    - 815,205,-433,NORTH,1,1,1
+    - 819,207,-494,NORTH,1,1,1
+    - 833,207,-545,NORTH,1,1,1
+    - 855,208,-535,NORTH,1,1,1
+    - 850,208,-472,NORTH,1,1,1
+    - 864,220,-463,NORTH,1,1,1
+    - 822,218,-432,NORTH,1,1,1
+    - 787,221,-475,NORTH,1,1,1
+    - 784,223,-523,NORTH,1,1,1
+    - 833,225,-532,NORTH,1,1,1
+    - 842,226,-497,NORTH,1,1,1
+    - 843,225,-449,NORTH,1,1,1
+    - 863,225,-492,NORTH,1,1,1
+    - 847,215,-560,NORTH,1,1,1
+    - 777,219,-534,NORTH,1,1,1
+    - 781,228,-493,NORTH,1,1,1
+    - 796,230,-475,NORTH,1,1,1
+    - 814,230,-442,NORTH,1,1,1
+    - 817,232,-458,NORTH,1,1,1
+    - 827,233,-499,NORTH,1,1,1
+    - 816,246,-505,NORTH,1,1,1
+    - 835,246,-515,NORTH,1,1,1
+    - 899,236,-511,NORTH,1,1,1
+    - 874,231,-460,NORTH,1,1,1
+    - 841,243,-447,NORTH,1,1,1
+    - 784,243,-462,NORTH,1,1,1
+    - 771,253,-472,NORTH,1,1,1
+    - 808,232,-548,NORTH,1,1,1
+    - 860,233,-546,NORTH,1,1,1
+    - 912,234,-523,NORTH,1,1,1
+    - 900,240,-475,NORTH,1,1,1
+    - 865,241,-438,NORTH,1,1,1
+    - 843,241,-438,NORTH,1,1,1
+    - 794,17,-438,NORTH,1,1,1
+  '1253055130':
+    displayName: Тетрис
+    worldName: world
+    mat: LIGHT_BLUE_CONCRETE
+    descr: ''
+    level: Легко
+    pay: 250
+    disabled: false
+    points:
+    - 1410,46,-250,NORTH,1,1,1
+    - 1392,61,-257,NORTH,1,1,1
+    - 1400,82,-257,NORTH,1,1,1
+    - 1429,66,-257,NORTH,1,1,1
+    - 1430,101,-255,NORTH,1,1,1
+    - 1387,101,-256,NORTH,1,1,1
+  '-324757240':
+    displayName: Студент
+    worldName: world
+    mat: EXPERIENCE_BOTTLE
+    descr: ''
+    level: Трудно
+    pay: 80
+    disabled: false
+    points:
+    - -43,150,-31,WEST,1,1,1
+    - -84,153,-31,WEST,1,1,1
+    - -83,160,-26,WEST,1,1,1
+    - -83,162,-3,WEST,1,1,1
+    - -83,170,4,WEST,1,1,1
+    - -92,177,7,WEST,1,1,1
+    - -124,177,-14,WEST,1,1,1
+    - -107,180,-17,WEST,1,1,1
+    - -99,190,-17,WEST,1,1,1
+    - -90,194,-7,WEST,1,1,1
+    - -97,192,4,WEST,1,1,1
+    - -123,192,-2,WEST,1,1,1
+  '2077179489':
+    displayName: Попкорн
+    worldName: world
+    mat: BAKED_POTATO
+    descr: ''
+    level: Легко
+    pay: 40
+    disabled: false
+    points:
+    - 94,46,-230,SOUTH,1,1,1
+    - 94,48,-189,SOUTH,1,1,1
+    - 101,62,-184,SOUTH,1,1,1
+    - 94,77,-165,SOUTH,1,1,1
+  '-1701663299':
+    displayName: Подводный_мир
+    worldName: world
+    mat: COD
+    descr: ''
+    level: Легко
+    pay: 60
+    disabled: false
+    points:
+    - 162,46,-250,NORTH,1,1,1
+    - 170,59,-277,NORTH,1,1,1
+    - 147,53,-322,NORTH,1,1,1
+    - 143,62,-362,NORTH,1,1,1
+    - 181,69,-338,NORTH,1,1,1
+  '794583279':
+    displayName: Ведьма
+    worldName: world
+    mat: POTION
+    descr: ''
+    level: Легко
+    pay: 100
+    disabled: false
+    points:
+    - 1343,46,-250,NORTH,1,1,1
+    - 1339,45,-273,NORTH,1,1,1
+    - 1340,55,-263,NORTH,1,1,1
+    - 1339,65,-284,NORTH,1,1,1
+    - 1338,73,-298,NORTH,1,1,1
+    - 1337,80,-300,NORTH,1,1,1
+    - 1344,90,-293,NORTH,1,1,1
+  '32137054':
+    displayName: Гаст
+    worldName: world
+    mat: FIRE_CHARGE
+    descr: ''
+    level: Легко
+    pay: 80
+    disabled: false
+    points:
+    - -278,46,-230,SOUTH,1,1,1
+    - -274,58,-191,SOUTH,1,1,1
+    - -287,59,-183,SOUTH,1,1,1
+    - -279,80,-188,SOUTH,1,1,1
+    - -278,77,-212,SOUTH,1,1,1
+  '-964675913':
+    displayName: Грибная-Корова
+    worldName: world
+    mat: RED_MUSHROOM
+    descr: ''
+    level: Легко
+    pay: 100
+    disabled: false
+    points:
+    - -788,46,-230,SOUTH,1,1,1
+    - -784,64,-182,SOUTH,1,1,1
+    - -793,79,-185,SOUTH,1,1,1
+    - -787,88,-196,SOUTH,1,1,1
+  '585630549':
+    displayName: Фаст-Фуд
+    worldName: world
+    mat: PUMPKIN_PIE
+    descr: ''
+    level: Легко
+    pay: 80
+    disabled: false
+    points:
+    - -176,46,-230,SOUTH,1,1,1
+    - -160,43,-136,SOUTH,1,1,1
+    - -166,64,-116,SOUTH,1,1,1
+    - -180,64,-102,SOUTH,1,1,1
+    - -195,48,-86,SOUTH,1,1,1
+    - -187,51,-115,SOUTH,1,1,1
+    - -193,55,-134,SOUTH,1,1,1
+    - -180,76,-128,SOUTH,1,1,1
+    - -177,71,-142,SOUTH,1,1,1
+  '-235728050':
+    displayName: Губка-Боб
+    worldName: world
+    mat: SPONGE
+    descr: ''
+    level: Легко
+    pay: 150
+    disabled: false
+    points:
+    - 773,46,-250,NORTH,1,1,1
+    - 793,51,-281,NORTH,1,1,1
+    - 772,55,-296,NORTH,1,1,1
+    - 765,57,-283,NORTH,1,1,1
+    - 766,72,-285,NORTH,1,1,1
+    - 790,76,-280,NORTH,1,1,1
+  '-372941574':
+    displayName: Кувшинка
+    worldName: world
+    mat: BIG_DRIPLEAF
+    descr: ''
+    level: Легко
+    pay: 80
+    disabled: false
+    points:
+    - 229,46,-230,SOUTH,1,1,1
+    - 235,56,-207,SOUTH,1,1,1
+    - 222,66,-185,SOUTH,1,1,1
+    - 221,46,-161,SOUTH,1,1,1
+    - 224,51,-138,SOUTH,1,1,1
+  '1826755746':
+    displayName: Печенье
+    worldName: world
+    mat: COOKIE
+    descr: ''
+    level: Легко
+    pay: 66
+    disabled: false
+    points:
+    - 1477,46,-230,SOUTH,1,1,1
+    - 1477,47,-204,SOUTH,1,1,1
+    - 1477,47,-181,SOUTH,1,1,1
+  '1008812771':
+    displayName: Руины
+    worldName: world
+    mat: MOSSY_COBBLESTONE
+    descr: ''
+    level: Легко
+    pay: 80
+    disabled: false
+    points:
+    - -7,46,-251,NORTH,1,1,1
+    - 6,48,-283,NORTH,1,1,1
+    - -9,49,-304,NORTH,1,1,1
+    - -14,53,-289,NORTH,1,1,1
+    - -26,59,-278,NORTH,1,1,1
+    - -21,66,-261,NORTH,1,1,1
+    - -4,75,-286,NORTH,1,1,1
+    - -9,77,-330,NORTH,1,1,1
+  '1190764860':
+    displayName: Радуга
+    worldName: world
+    mat: LIME_CONCRETE
+    descr: ''
+    level: Легко
+    pay: 100
+    disabled: false
+    points:
+    - 1949,46,-230,SOUTH,1,1,1
+    - 1949,47,-162,SOUTH,1,1,1
+    - 1949,59,-163,SOUTH,1,1,1
+    - 1949,59,-195,SOUTH,1,1,1
+    - 1949,60,-229,SOUTH,1,1,1
+  '1320496508':
+    displayName: Фрукты
+    worldName: world
+    mat: APPLE
+    descr: ''
+    level: Легко
+    pay: 100
+    disabled: false
+    points:
+    - 229,46,-250,NORTH,1,1,1
+    - 218,60,-275,NORTH,1,1,1
+    - 201,63,-299,NORTH,1,1,1
+    - 224,78,-300,NORTH,1,1,1
+    - 243,78,-314,NORTH,1,1,1
+  '-1894884409':
+    displayName: Золотое-Яблоко
+    worldName: world
+    mat: ENCHANTED_GOLDEN_APPLE
+    descr: ''
+    level: Легко
+    pay: 300
+    disabled: false
+    points:
+    - -75,46,-250,NORTH,1,1,1
+    - -78,60,-263,NORTH,1,1,1
+    - -78,74,-268,NORTH,1,1,1
+    - -64,86,-271,NORTH,1,1,1
+    - -72,101,-264,NORTH,1,1,1
+    - -74,115,-276,NORTH,1,1,1
+    - -65,133,-266,NORTH,1,1,1
+    - -75,148,-271,NORTH,1,1,1
+  '1015938497':
+    displayName: Школа
+    worldName: world
+    mat: WRITABLE_BOOK
+    descr: ''
+    level: Трудно
+    pay: 140
+    disabled: false
+    points:
+    - 52,141,62,NORTH,1,1,1
+    - 52,146,63,NORTH,1,1,1
+    - 52,151,61,NORTH,1,1,1
+    - 52,156,63,NORTH,1,1,1
+    - 52,161,61,NORTH,1,1,1
+    - 52,166,63,NORTH,1,1,1
+    - 52,171,61,NORTH,1,1,1
+    - 52,176,63,NORTH,1,1,1
+    - 52,181,61,NORTH,1,1,1
+    - 52,186,63,NORTH,1,1,1
+    - 52,191,61,NORTH,1,1,1
+    - 52,196,63,NORTH,1,1,1
+    - 52,203,77,NORTH,1,1,1
+    - 79,205,75,NORTH,1,1,1
+    - 52,203,62,NORTH,1,1,1
+  '-424045964':
+    displayName: Волшебные_Бобы
+    worldName: park5
+    mat: COCOA_BEANS
+    descr: ''
+    level: Трудно
+    pay: 320
+    disabled: false
+    points:
+    - 35,8,43,NORTH,1,1,1
+    - 25,13,35,NORTH,1,1,1
+    - 33,33,30,NORTH,1,1,1
+    - 35,55,28,NORTH,1,1,1
+    - 44,64,43,NORTH,1,1,1
+    - 31,85,32,NORTH,1,1,1
+    - 30,104,27,NORTH,1,1,1
+    - 32,132,29,NORTH,1,1,1
+    - 25,144,31,NORTH,1,1,1
+    - 34,154,27,NORTH,1,1,1
+    - 22,170,56,NORTH,1,1,1
+    - 59,179,25,NORTH,1,1,1
+    - 17,202,0,NORTH,1,1,1
+    - 35,226,29,NORTH,1,1,1
+    - 32,248,28,NORTH,1,1,1
+    - 31,251,31,NORTH,1,1,1
+  '1004560178':
+    displayName: Марио
+    worldName: world
+    mat: BRICKS
+    descr: ''
+    level: Легко
+    pay: 120
+    disabled: false
+    points:
+    - -109,46,-230,SOUTH,1,1,1
+    - -106,50,-215,SOUTH,1,1,1
+    - -118,58,-215,SOUTH,1,1,1
+    - -103,65,-216,SOUTH,1,1,1
+    - -118,74,-215,SOUTH,1,1,1
+    - -101,85,-216,SOUTH,1,1,1
+    - -118,93,-215,SOUTH,1,1,1
+    - -104,100,-216,SOUTH,1,1,1
+  '-1277873780':
+    displayName: ПокемонГо
+    worldName: world
+    mat: CHORUS_FRUIT
+    descr: ''
+    level: Легко
+    pay: 60
+    disabled: false
+    points:
+    - 365,46,-250,NORTH,1,1,1
+    - 364,55,-291,NORTH,1,1,1
+    - 364,72,-328,NORTH,1,1,1
+    - 364,95,-365,NORTH,1,1,1
+    - 364,119,-385,NORTH,1,1,1
+  '1000087360':
+    displayName: Зелья
+    worldName: world
+    mat: POTION
+    descr: ''
+    level: Легко
+    pay: 90
+    disabled: false
+    points:
+    - 1611,46,-230,SOUTH,1,1,1
+    - 1615,98,-178,SOUTH,1,1,1
+    - 1609,111,-177,SOUTH,1,1,1
+    - 1592,109,-191,SOUTH,1,1,1
+  '1038034':
+    displayName: Дом
+    worldName: world
+    mat: OAK_DOOR
+    descr: ''
+    level: Легко
+    pay: 100
+    disabled: false
+    points:
+    - 162,46,-230,SOUTH,1,1,1
+    - 162,68,-201,SOUTH,1,1,1
+    - 164,82,-204,SOUTH,1,1,1
+    - 157,85,-215,SOUTH,1,1,1
+    - 178,90,-209,SOUTH,1,1,1
+  '890484430':
+    displayName: Ерабор
+    worldName: world
+    mat: STONE
+    descr: ''
+    level: Легко
+    pay: 200
+    disabled: false
+    points:
+    - 1008,46,-250,NORTH,1,1,1
+    - 1027,53,-286,NORTH,1,1,1
+    - 1015,59,-299,NORTH,1,1,1
+    - 1007,93,-291,NORTH,1,1,1
+    - 1017,104,-305,NORTH,1,1,1
+    - 1019,119,-295,NORTH,1,1,1
+  '32106935':
+    displayName: Ваза
+    worldName: world
+    mat: FLOWER_POT
+    descr: ''
+    level: Легко
+    pay: 50
+    disabled: false
+    points:
+    - -143,46,-250,NORTH,1,1,1
+    - -143,47,-270,NORTH,1,1,1
+    - -147,58,-271,NORTH,1,1,1
+    - -143,79,-268,NORTH,1,1,1
+  '1221354668':
+    displayName: Свинка
+    worldName: world
+    mat: PORKCHOP
+    descr: ''
+    level: Легко
+    pay: 70
+    disabled: false
+    points:
+    - -278,46,-250,NORTH,1,1,1
+    - -277,58,-299,NORTH,1,1,1
+    - -272,63,-309,NORTH,1,1,1
+    - -277,66,-289,NORTH,1,1,1
+    - -278,67,-307,NORTH,1,1,1
+  '1246021668':
+    displayName: Компьютер
+    worldName: world
+    mat: GLOW_ITEM_FRAME
+    descr: ''
+    level: Легко
+    pay: 350
+    disabled: false
+    points:
+    - 1678,46,-250,NORTH,1,1,1
+    - 1691,62,-276,NORTH,1,1,1
+    - 1691,67,-284,NORTH,1,1,1
+    - 1656,70,-286,NORTH,1,1,1
+    - 1694,78,-292,NORTH,1,1,1
+  '1038956':
+    displayName: Енд
+    worldName: world
+    mat: END_PORTAL_FRAME
+    descr: ''
+    level: Легко
+    pay: 90
+    disabled: false
+    points:
+    - -346,46,-250,NORTH,1,1,1
+    - -353,51,-276,NORTH,1,1,1
+    - -337,53,-274,NORTH,1,1,1
+    - -338,55,-259,NORTH,1,1,1
+    - -343,60,-275,NORTH,1,1,1
+    - -352,77,-307,NORTH,1,1,1
+    - -348,99,-304,NORTH,1,1,1
+    - -345,135,-306,NORTH,1,1,1
+  '1007737203':
+    displayName: Поезд
+    worldName: world
+    mat: COBWEB
+    descr: ''
+    level: Легко
+    pay: 150
+    disabled: false
+    points:
+    - 1611,46,-250,NORTH,1,1,1
+    - 1611,40,-278,NORTH,1,1,1
+    - 1611,52,-306,NORTH,1,1,1
+    - 1611,47,-262,NORTH,1,1,1
+  '32554003':
+    displayName: Санс
+    worldName: world
+    mat: SKELETON_SPAWN_EGG
+    descr: ''
+    level: Легко
+    pay: 30
+    disabled: false
+    points:
+    - 1678,46,-230,SOUTH,1,1,1
+    - 1674,48,-210,SOUTH,1,1,1
+    - 1675,51,-196,SOUTH,1,1,1
+    - 1672,46,-177,SOUTH,1,1,1
+    - 1688,57,-173,SOUTH,1,1,1
+    - 1686,70,-175,SOUTH,1,1,1
+    - 1670,71,-175,SOUTH,1,1,1
+    - 1684,78,-175,SOUTH,1,1,1
+    - 1685,98,-176,SOUTH,1,1,1
+  '1171517115':
+    displayName: НезерГрад
+    worldName: park3
+    mat: RED_NETHER_BRICKS
+    descr: ''
+    level: Трудно
+    pay: 640
+    disabled: false
+    points:
+    - 102,156,-466,WEST,1,1,1
+    - 58,155,-466,WEST,1,1,1
+    - 23,156,-464,WEST,1,1,1
+    - -12,155,-466,WEST,1,1,1
+    - -31,171,-472,WEST,1,1,1
+    - -68,155,-469,WEST,1,1,1
+    - -105,155,-465,WEST,1,1,1
+    - -139,165,-464,WEST,1,1,1
+    - -156,168,-446,WEST,1,1,1
+    - -133,173,-418,WEST,1,1,1
+    - -132,176,-399,WEST,1,1,1
+    - -136,178,-367,WEST,1,1,1
+    - -136,176,-314,WEST,1,1,1
+    - -152,183,-283,WEST,1,1,1
+    - -173,194,-296,WEST,1,1,1
+    - -187,201,-321,WEST,1,1,1
+    - -240,193,-329,WEST,1,1,1
+    - -280,197,-329,WEST,1,1,1
+    - -318,200,-340,WEST,1,1,1
+    - -324,223,-338,WEST,1,1,1
+    - -334,254,-334,WEST,1,1,1
+    - -366,235,-346,WEST,1,1,1
+    - -412,181,-346,WEST,1,1,1
+    - -445,173,-331,WEST,1,1,1
+    - -500,160,-296,WEST,1,1,1
+    - -515,118,-293,WEST,1,1,1
+    - -539,147,-293,WEST,1,1,1
+    - -523,129,-279,WEST,1,1,1
+    - -499,86,-314,WEST,1,1,1
+    - -559,97,-367,WEST,1,1,1
+    - -559,97,-400,WEST,1,1,1
+    - -559,97,-434,WEST,1,1,1
+    - -559,97,-467,WEST,1,1,1
+    - -557,97,-492,WEST,1,1,1
+    - -562,97,-525,WEST,1,1,1
+    - -553,109,-541,WEST,1,1,1
+    - -555,109,-574,WEST,1,1,1
+    - -555,115,-590,WEST,1,1,1
+    - -554,125,-612,WEST,1,1,1
+    - -563,145,-641,WEST,1,1,1
+    - -563,147,-670,WEST,1,1,1
+    - -551,147,-698,WEST,1,1,1
+    - -552,153,-687,WEST,1,1,1
+    - -562,159,-721,WEST,1,1,1
+    - -581,166,-759,WEST,1,1,1
+    - -566,167,-782,WEST,1,1,1
+    - -573,159,-801,WEST,1,1,1
+    - -588,173,-811,WEST,1,1,1
+    - -595,174,-835,WEST,1,1,1
+    - -587,179,-852,WEST,1,1,1
+    - -574,191,-854,WEST,1,1,1
+    - -577,199,-847,WEST,1,1,1
+    - -576,208,-855,WEST,1,1,1
+  '993820757':
+    displayName: Амбар
+    worldName: world
+    mat: HAY_BLOCK
+    descr: ''
+    level: Легко
+    pay: 100
+    disabled: false
+    points:
+    - 1779,46,-250,NORTH,1,1,1
+    - 1784,50,-291,NORTH,1,1,1
+    - 1774,50,-302,NORTH,1,1,1
+    - 1778,61,-294,NORTH,1,1,1
+    - 1779,65,-275,NORTH,1,1,1
+  '1869506053':
+    displayName: Проигрыватель
+    worldName: world
+    mat: JUKEBOX
+    descr: ''
+    level: Легко
+    pay: 50
+    disabled: false
+    points:
+    - 637,46,-250,NORTH,1,1,1
+    - 624,47,-258,NORTH,1,1,1
+    - 636,50,-267,NORTH,1,1,1
+    - 651,55,-269,NORTH,1,1,1
+    - 637,77,-265,NORTH,1,1,1
+    - 634,88,-261,NORTH,1,1,1
+  '994637990':
+    displayName: Биомы
+    worldName: world
+    mat: GRASS_BLOCK
+    descr: ''
+    level: Легко
+    pay: 100
+    disabled: false
+    points:
+    - -210,46,-250,NORTH,1,1,1
+    - -216,55,-282,NORTH,1,1,1
+    - -224,65,-295,NORTH,1,1,1
+    - -247,78,-278,NORTH,1,1,1
+    - -250,89,-298,NORTH,1,1,1
+    - -232,95,-313,NORTH,1,1,1
+    - -224,104,-305,NORTH,1,1,1
+    - -225,119,-288,NORTH,1,1,1
+    - -247,110,-286,NORTH,1,1,1
+    - -250,123,-287,NORTH,1,1,1
+  '1567946629':
+    displayName: Алфавит
+    worldName: world
+    mat: WRITABLE_BOOK
+    descr: ''
+    level: Трудно
+    pay: 500
+    disabled: false
+    points:
+    - -550,46,-230,SOUTH,1,1,1
+    - -550,64,-226,SOUTH,1,1,1
+    - -550,66,-210,SOUTH,1,1,1
+    - -550,78,-210,SOUTH,1,1,1
+    - -547,85,-203,SOUTH,1,1,1
+    - -555,77,-195,SOUTH,1,1,1
+    - -553,84,-195,SOUTH,1,1,1
+    - -551,91,-195,SOUTH,1,1,1
+    - -552,95,-189,SOUTH,1,1,1
+    - -551,102,-189,SOUTH,1,1,1
+    - -551,104,-183,SOUTH,1,1,1
+    - -553,94,-172,SOUTH,1,1,1
+    - -554,109,-171,SOUTH,1,1,1
+    - -553,96,-162,SOUTH,1,1,1
+    - -552,111,-161,SOUTH,1,1,1
+    - -556,101,-145,SOUTH,1,1,1
+    - -554,113,-144,SOUTH,1,1,1
+    - -554,107,-130,SOUTH,1,1,1
+    - -544,111,-130,SOUTH,1,1,1
+    - -547,118,-130,SOUTH,1,1,1
+    - -553,109,-115,SOUTH,1,1,1
+    - -549,122,-115,SOUTH,1,1,1
+    - -556,110,-99,SOUTH,1,1,1
+    - -554,127,-99,SOUTH,1,1,1
+    - -554,117,-88,SOUTH,1,1,1
+    - -544,134,-87,SOUTH,1,1,1
+    - -547,126,-74,SOUTH,1,1,1
+    - -548,143,-73,SOUTH,1,1,1
+    - -547,132,-65,SOUTH,1,1,1
+    - -550,148,-64,SOUTH,1,1,1
+  '-2133037920':
+    displayName: Библиотека
+    worldName: world
+    mat: BOOKSHELF
+    descr: ''
+    level: Легко
+    pay: 300
+    disabled: false
+    points:
+    - 1915,46,-250,NORTH,1,1,1
+    - 1917,53,-273,NORTH,1,1,1
+    - 1908,56,-276,NORTH,1,1,1
+    - 1915,67,-275,NORTH,1,1,1
+    - 1923,72,-269,NORTH,1,1,1
+  '1026213335':
+    displayName: голем
+    worldName: world
+    mat: IRON_BLOCK
+    descr: ''
+    level: Легко
+    pay: 100
+    disabled: false
+    points:
+    - -414,46,-230,SOUTH,1,1,1
+    - -420,67,-183,SOUTH,1,1,1
+    - -407,68,-176,SOUTH,1,1,1
+    - -413,94,-184,SOUTH,1,1,1
+  '766289362':
+    displayName: Береза
+    worldName: world
+    mat: BIRCH_WOOD
+    descr: ''
+    level: Легко
+    pay: 80
+    disabled: false
+    points:
+    - -244,46,-230,SOUTH,1,1,1
+    - -242,53,-198,SOUTH,1,1,1
+    - -234,56,-220,SOUTH,1,1,1
+    - -223,67,-205,SOUTH,1,1,1

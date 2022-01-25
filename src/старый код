@@ -1,0 +1,186 @@
+
+
+
+
+
+
+
+
+
+
+        //конверсия
+       /* if (parkData.getConfigurationSection("maps")!=null) {
+            
+            String mapPath;
+            String worldName;
+            for (final String mapName : parkData.getConfigurationSection("maps").getKeys(false)) {
+                mapPath = "maps."+mapName+".";
+                
+                worldName = parkData.getString(mapPath+"world");
+                World w = Bukkit.getWorld(worldName);
+                if (w==null) {
+                    w = ApiOstrov.getWorldManager().load(Bukkit.getConsoleSender(), worldName, World.Environment.NORMAL, WorldManager.Generator.Empty);
+                    w.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
+                    w.setTime(6000);
+                }
+                if (w==null) {
+                    Ostrov.log_err("Мир "+worldName+" для паркура "+mapName+" не создан!");
+                    continue;
+                }
+                
+                //на переделку в будущем - оч.неудобно
+                final String[] xs = parkData.getString(mapPath+"saves.x").split(":");
+		final String[] ys = parkData.getString(mapPath+"saves.y").split(":");
+		final String[] zs = parkData.getString(mapPath+"saves.z").split(":");
+                final BlockFace bf = BlockFace.valueOf(parkData.getString(mapPath+"bf"));
+                
+                final LinkedList<CheckPoint> points = new LinkedList<>(); //XYZ[] svs = new XYZ[xs.length];
+                for (int i = 0; i < xs.length; i++) {
+                    final CheckPoint cp = new CheckPoint(Integer.parseInt(xs[i]), Integer.parseInt(ys[i]), Integer.parseInt(zs[i]), bf, 1, 1, 1);
+                    //final XYZ xyz = new XYZ(w.getName(), Integer.parseInt(xs[i]), Integer.parseInt(ys[i]), Integer.parseInt(zs[i]));
+                    //xyz.bf = bf;
+                    //loc.setDirection(bf.getDirection());
+                    //svs[i] = xyz;
+                    points.add(cp);
+		}
+                final Trasse tr = new Trasse(mapName.hashCode(), mapName, worldName, points);
+                
+                tr.mat = Material.matchMaterial(parkData.getString(mapPath+"mat"));
+                if (tr.mat==null) tr.mat=Material.BEDROCK;
+                if (parkData.getBoolean(mapPath+"big")) tr.level = Level.Трудно;
+                tr.pay = parkData.getInt(mapPath+"finpay");
+                trasses.put(tr.id, tr);
+            }
+            
+            for (Trasse tr : trasses.values()) {
+                tr.save();
+            }
+            
+        }*/
+
+
+
+
+	/*private static String lmRslt(final float f, final int i) {
+		return String.valueOf(f).length() < i ? String.valueOf(f) : String.valueOf(f).substring(0, i);
+	}
+
+	public static String getNumComp(final String name) {
+		try {
+			final ResultSet rs = data.exctStrStmt("SELECT COMP FROM stats WHERE NAME=?", name).executeQuery();
+			short i = 0;
+			while (rs.next()) {
+				i += rs.getShort("COMP");
+			}
+			return String.valueOf(i);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return "";
+		}
+	}
+
+	public static String prf() {
+		return "§7[§bPH§7] ";
+	}*/
+
+    
+
+
+
+/*public static Parkour createArena(final ConfigurationSection cs) {
+		//final World w = Bukkit.getWorld(cs.getString("world"));
+		final String[] xs = cs.getString("saves.x").split(":");
+		final String[] ys = cs.getString("saves.y").split(":");
+		final String[] zs = cs.getString("saves.z").split(":");
+		final Location[] svs = new Location[xs.length];
+		final short rtt = getYaw(BlockFace.valueOf(cs.getString("bf")));
+		for (short i = 0; i < xs.length; i++) {
+			svs[i] = new Location(w, Integer.parseInt(xs[i]), Integer.parseInt(ys[i]), Integer.parseInt(zs[i]), rtt, 0);
+		}
+		return new Parkour(cs.getName(), svs);
+	}*/
+        
+
+
+//op.score.getSideBar().updateLine(1, "§e    vk.com/ostrov77");
+            
+		/*try {
+			final Scoreboard sb = smg.getNewScoreboard();
+			final ResultSet rs = data.exctStrStmt("SELECT * FROM pls WHERE NAME=?", name).executeQuery();
+			final boolean exst = rs.next();
+			final Objective ob = sb.registerNewObjective("Паркуры", "", GRAY + "[" + DARK_AQUA + "Паркуры" + GRAY + "]");
+			ob.setDisplaySlot(DisplaySlot.SIDEBAR);
+			ob.getScore("      ").setScore(13);
+			ob.getScore(GRAY + "Карта: " + AQUA + "Лобби")
+			.setScore(12);
+			ob.getScore("     ").setScore(11);
+			ob.getScore(GRAY + "Ваша статистика: ")
+			.setScore(10);
+			ob.getScore("    ").setScore(9);
+			ob.getScore(GRAY + "Чекп. пройдено: " + AQUA + (exst ? rs.getInt("TCPTS") : 0))
+			.setScore(8);
+			ob.getScore("   ").setScore(7);
+			ob.getScore(GRAY + "Средние падения за")
+			.setScore(6);
+			ob.getScore(GRAY + "чекп.: " + DARK_AQUA + (exst ? String.valueOf(rs.getInt("TFLS")) + GRAY + " / " + DARK_AQUA + rs.getInt("TCPTS") + GRAY + " = " + DARK_AQUA + lmRslt(rs.getFloat("TFLS") / rs.getFloat("TCPTS"), 4) : 0))
+			.setScore(5);
+			ob.getScore("  ").setScore(4);
+			ob.getScore(GRAY + "Ранг: " + AQUA + getRank(exst ? rs.getInt("TCPTS") : 0))
+			.setScore(3);
+			ob.getScore(GRAY + "До след. ранга: " + DARK_AQUA + String.valueOf(getToNxtRnk(exst ? rs.getInt("TCPTS") : 0)))
+			.setScore(2);
+			ob.getScore(" ").setScore(1);
+			
+			ob.getScore("§e     ostrov77.su")
+			.setScore(0);
+			Bukkit.getPlayer(name).setScoreboard(sb);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}*/
+
+
+
+/*private static short getYaw(final BlockFace bf) {
+		switch (bf) {
+		case EAST:
+			return -90;
+		case NORTH:
+			return 180;
+		case WEST:
+			return 90;
+		case SOUTH:
+		default:
+			return 0;
+		}
+	}
+
+	public static void crtSbdTm(final Scoreboard sb, final String nm, final String prf, final String val, final String sfx) {
+		final Team tm = sb.registerNewTeam(nm);
+		tm.addEntry(val);
+		tm.setPrefix(prf);
+		tm.setSuffix(sfx);
+	}
+	
+	public static void chgSbdTm(final Scoreboard sb, final String nm, final String prf, final String sfx) {
+		final Team tm = sb.getTeam(nm);
+		tm.setPrefix(prf);
+		tm.setSuffix(sfx);
+	}
+	
+	public static ItemStack mkItm(final Material m, final String dn) {
+		final ItemStack it = new ItemStack(m);
+		final ItemMeta mt = it.getItemMeta();
+		mt.setDisplayName(dn);
+		it.setItemMeta(mt);
+		return it;
+	}
+
+	public static ItemStack mkItm(final Material m, final String dn, final String... lr) {
+		final ItemStack it = new ItemStack(m);
+		final ItemMeta mt = it.getItemMeta();
+		mt.setLore(Arrays.asList(lr));
+		mt.setDisplayName(dn);
+		it.setItemMeta(mt);
+		return it;
+	}*/
+

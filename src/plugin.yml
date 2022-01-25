@@ -1,0 +1,11 @@
+main: me.Romindous.ParkHub.Main
+name: ParkHub
+version: 2.0
+author: Romindous
+api-version: 1.18
+load: POSTWORLD
+depend: [Ostrov]
+
+commands:
+  pk:
+    description: The command for ParkHub
