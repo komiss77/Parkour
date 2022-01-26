@@ -3,13 +3,18 @@ package me.Romindous.ParkHub;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.Sound;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 import ru.komiss77.ApiOstrov;
+import ru.komiss77.Timer;
 import ru.komiss77.modules.player.profile.FriendView;
 import ru.komiss77.utils.inventory.ConfirmationGUI;
 import ru.komiss77.utils.inventory.SmartInventory;
@@ -102,6 +107,7 @@ public class PrkCmd implements CommandExecutor, TabCompleter {
                     }
                     pd.fall();
                     Main.joinParkur(p, pd.current.id);
+                    p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1, 1);
                     return true;
                 
                 case "restart":
@@ -116,16 +122,35 @@ public class PrkCmd implements CommandExecutor, TabCompleter {
                             go.reset();
                             pd.saveProgress(pd.current.id);
                             Main.joinParkur(p, pd.current.id);
+                            p.playSound(p.getLocation(), Sound.BLOCK_CONDUIT_DEACTIVATE, 1, 1.5f);
                         } else {
                             p.closeInventory();
                         }
 
                     });
-                    //final Progress go = pd.getProgress(pd.current.id);
-                    //go.reset();
-                    //pd.saveProgress(pd.current.id);
-                    //pd.progress.remove(pd.current.id);
-                    //Main.joinParkur(p, pd.current.id);
+                    
+                case "way":
+                    if (pd.current==null) {
+                        p.sendMessage("§6Вы не на трассе!");
+                        return true;
+                    }
+                    if (Timer.has(p, "way")) {
+                        p.sendMessage("§6До следующего использования: "+Timer.getLeft(p, "way"));
+                        return true;
+                    }
+                    Timer.add(p, "way", 15);
+                    final CheckPoint cp = pd.current.getNextCp(pd.getProgress(pd.current.id).checkPoint);
+                    Location from = p.getLocation();
+                    final Location to = cp.getLocation(p.getWorld().getName());
+                    final Vector v = to.clone().subtract(from).toVector().normalize();
+                    from.add(v);
+                    int limit = 36;
+                    while (from.getBlockX()!=to.getBlockX() && from.getBlockY()!=to.getBlockY() && from.getBlockZ()!=to.getBlockZ()) {
+                        from.add(v);
+                        from.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, from, 1, 0, 0, 0);
+                        limit--;
+                        if (limit==0) break;
+                    }
                     return true;
                 
                 case "exit":

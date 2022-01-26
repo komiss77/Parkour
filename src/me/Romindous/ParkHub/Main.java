@@ -1,8 +1,13 @@
 package me.Romindous.ParkHub;
 
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -30,6 +35,7 @@ import ru.komiss77.utils.ItemBuilder;
 import ru.komiss77.utils.OstrovConfig;
 import ru.komiss77.utils.OstrovConfigManager;
 import ru.komiss77.Timer;
+import ru.komiss77.utils.inventory.SmartInventory;
 
 
 
@@ -55,7 +61,7 @@ public class Main extends JavaPlugin {
         data = new CaseInsensitiveMap<>();
         //bfs = new BlockFace[] {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
     }
-    
+
     
     
     
@@ -225,7 +231,7 @@ public class Main extends JavaPlugin {
 
         p.getInventory().clear();
         select.giveForce(p);//p.getInventory().setItem(1, mkItm(Material.COMPASS, "§3Выбор Паркура"));
-        stat.giveForce(p);//p.getInventory().setItem(4, mkItm(Material.MAP, "§9Статистика", "§bПКМ §7- Топ статистика", p.hasPermission("ostrov.builder") ? "§3Шифт + ПКМ §7- Создание карты" : ""));
+        //stat.giveForce(p);//p.getInventory().setItem(4, mkItm(Material.MAP, "§9Статистика", "§bПКМ §7- Топ статистика", p.hasPermission("ostrov.builder") ? "§3Шифт + ПКМ §7- Создание карты" : ""));
         exit.giveForce(p);//p.getInventory().setItem(7, mkItm(Material.MAGMA_CREAM, "§4Выход"));
 
         //!! При первом тп в лобби после BungeeDataRecieved PD не будет!!!
@@ -332,9 +338,72 @@ public class Main extends JavaPlugin {
     
     
     
+    public static void openTop(final Player p, final Trasse t) {
+        p.closeInventory();
+        
+        Ostrov.async( ()-> {
+                final List<ItemStack> topList = new ArrayList<>();
+                
+                Statement stmt = null;
+                ResultSet rs = null;
+                
+                try { 
+                    stmt = ApiOstrov.getLocalConnection().createStatement();
+
+                    rs = stmt.executeQuery( "SELECT *  FROM `playerData` WHERE `trasseID`='"+t.id+"' AND `cheat`='0' ORDER BY `trasseTime` ASC LIMIT 24" );
+                    
+                    int place = 1;
+                    while (rs.next()) {
+                        topList.add( getTopIcon(place, rs) );
+                        place++;
+                    }
+                    
+                            
+                    Ostrov.sync( ()-> {
+                        SmartInventory.builder().id("Top паркура "+t.displayName)
+                                .provider(new TopMenu(topList))
+                                .size(6, 9)
+                                .title("Top паркура "+t.displayName)
+                                .build()
+                                .open(p);
+                    }, 5);
+                    
+                    
+                } catch (SQLException e) { 
+
+                    Ostrov.log_err("§сзагрузка топ - "+e.getMessage());
+
+                } finally {
+                    try{
+                        if (rs!=null) rs.close();
+                        if (stmt!=null) stmt.close();
+                    } catch (SQLException e) {
+                        Ostrov.log_err("§сзагрузка топ2 - "+e.getMessage());
+                    }
+                }
+            }, 0);
+    }
     
-    
-    
+    public static ItemStack getTopIcon(final int place, final ResultSet rs ) throws SQLException {
+        
+
+    return new ItemBuilder( place==1 ? Material.DIAMOND : 
+                place<=3 ? Material.EMERALD :
+                place<=6 ? Material.GOLD_INGOT :
+                place<=10 ? Material.IRON_INGOT :
+                place<=15 ? Material.BRICK : Material.FLINT
+        
+        )
+            .name("§f"+rs.getString("name"))
+            .lore("§7")
+            .lore("§7Место : §b"+place)
+            .lore("§7⌚ : §f"+ApiOstrov.secondToTime(rs.getInt("trasseTime")))
+            .lore("§7⇪ : §6"+rs.getInt("trasseJump"))
+            .lore("§7☠: §c"+rs.getInt("trasseFall"))
+            .lore("§7")
+            .build();
+        
+    }    
     
     
     
@@ -361,16 +430,16 @@ public class Main extends JavaPlugin {
 
         op.score.getSideBar().setTitle("§7[§3Паркуры§7]");
         op.score.getSideBar().updateLine(13, "");
-        op.score.getSideBar().updateLine(12, "§7Карта: §bЛобби");
+        op.score.getSideBar().updateLine(12, "§bЛобби");
         op.score.getSideBar().updateLine(11, "");
         op.score.getSideBar().updateLine(10, "§7Ваша статистика: ");
-        op.score.getSideBar().updateLine(9, "");
-        op.score.getSideBar().updateLine(8, "§7Чекп. пройдено: §b"+pd.totalCheckPoints);
-        op.score.getSideBar().updateLine(7, "§7Время: "+ApiOstrov.secondToTime(pd.totalTime));
-        op.score.getSideBar().updateLine(6, "§7Средние падения за");
-        op.score.getSideBar().updateLine(5, "§7чекп.: §3"+pd.stageFall+" §7/ §3"+pd.totalCheckPoints+"§7 = §3"+(pd.totalCheckPoints>0 ? ((int)pd.totalFalls/pd.totalCheckPoints) : 0) );
+        op.score.getSideBar().updateLine(9, "§7⌚: "+ApiOstrov.secondToTime(pd.totalTime));
+        op.score.getSideBar().updateLine(8, "§7☠: "+pd.totalFalls);
+        op.score.getSideBar().updateLine(7, "§7⇪: "+pd.totalJumps);
+        op.score.getSideBar().updateLine(6, "§7Чекп. пройдено: §b"+pd.totalCheckPoints);
+        op.score.getSideBar().updateLine(5, "§7Средние падения за");
+        op.score.getSideBar().updateLine(4, "§7чекп.: §3"+pd.stageFall+" §7/ §3"+pd.totalCheckPoints+"§7 = §3"+(pd.totalCheckPoints>0 ? ((int)pd.totalFalls/pd.totalCheckPoints) : 0) );
         //op.score.getSideBar().updateLine(5, ChatColor.GRAY + "чекп.: " + ChatColor.DARK_AQUA + (exst ? String.valueOf(rs.getInt("TFLS")) + ChatColor.GRAY + " / " + ChatColor.DARK_AQUA + rs.getInt("TCPTS") + ChatColor.GRAY + " = " + ChatColor.DARK_AQUA + lmRslt(rs.getFloat("TFLS") / rs.getFloat("TCPTS"), 4) : 0));
-        op.score.getSideBar().updateLine(4, "§7Прыжки: "+pd.stageJump);
         op.score.getSideBar().updateLine(3, "§7Ранг: §b" + getRank(pd.totalCheckPoints));
         op.score.getSideBar().updateLine(2, "§7До след. ранга: §b" + (getToNxtRnk(pd.totalCheckPoints)));
         op.score.getSideBar().updateLine(1, "");
@@ -384,18 +453,18 @@ public class Main extends JavaPlugin {
         final Progress go = pd.getProgress(pd.current.id);
         
         op.score.getSideBar().setTitle(pd.current.displayName+" §7[§f"+pd.current.inProgress.size()+"§7]");
-        op.score.getSideBar().updateLine(13, "§7Время:");
-        op.score.getSideBar().updateLine(12, "§3"+ApiOstrov.secondToTime(go.trasseTime));
+        op.score.getSideBar().updateLine(13, "");
+        op.score.getSideBar().updateLine(12, "§7⌚: §3"+ApiOstrov.secondToTime(go.trasseTime));
         op.score.getSideBar().updateLine(11, "");
-        op.score.getSideBar().updateLine(10,"§7Чекпоинт:" );
-        op.score.getSideBar().updateLine(9, go.checkPoint==0 ? "§fНачало" : "§b"+(go.checkPoint+1)+" §7из §b"+(pd.current.size()) );
-        op.score.getSideBar().updateLine(8, "");
-        op.score.getSideBar().updateLine(7, pd.current.isLastCp(go.checkPoint+1) ? "§aДо финиша§7:" : "§7До след. точки:");
-        op.score.getSideBar().updateLine(6, distance==0 ? "§3пара шагов" : "§3~"+distance+"m.");
-        op.score.getSideBar().updateLine(5, "");
-        op.score.getSideBar().updateLine(4, "§7Прыжки: §6"+go.trasseJump);
-        op.score.getSideBar().updateLine(3, "");
-        op.score.getSideBar().updateLine(2, "§7Падения: §c"+go.trasseFalls);
+        op.score.getSideBar().updateLine(10, "§7⇪: §6"+go.trasseJump);
+        op.score.getSideBar().updateLine(9, "");
+        op.score.getSideBar().updateLine(8, "§7☠: §c"+go.trasseFalls);
+        op.score.getSideBar().updateLine(7, "");
+        op.score.getSideBar().updateLine(6,"§7Чекпоинт:" );
+        op.score.getSideBar().updateLine(5, go.checkPoint==0 ? "§fНачало" : "§b"+(go.checkPoint+1)+" §7из §b"+(pd.current.size()) );
+        op.score.getSideBar().updateLine(4, "");
+        op.score.getSideBar().updateLine(3, pd.current.isLastCp(go.checkPoint+1) ? "§aДо финиша§7:" : "§7До след. точки:");
+        op.score.getSideBar().updateLine(2, distance==0 ? "§3пара шагов" : "§3~"+distance+"m.");
         op.score.getSideBar().updateLine(1, "");
 
 
@@ -511,7 +580,11 @@ public class Main extends JavaPlugin {
             .create();
         
         final ItemStack navi=new ItemBuilder(Material.COMPASS)
-            .setName("§aНаправление на чекпоинт")
+            .setName("§aНави")
+            .lore("§7Всегда показывает")
+            .lore("§7направление на след.")
+            .lore("§7чекпоинт.")
+            .lore("§7ПКМ - подсветить путь")
             .build();
         navigator = new MenuItemBuilder("navigator", navi)
             .slot(0)
@@ -522,6 +595,7 @@ public class Main extends JavaPlugin {
             .canDrop(false)
             .canPickup(false)
             .canMove(false)
+            .rightClickCmd("pk way")
             .create();        
         
         final ItemStack is4=new ItemBuilder(Material.REDSTONE)

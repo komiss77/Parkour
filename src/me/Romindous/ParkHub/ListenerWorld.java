@@ -23,6 +23,7 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import me.clip.deluxechat.events.DeluxeChatEvent;
+import org.bukkit.Sound;
 import ru.komiss77.ApiOstrov;
 import ru.komiss77.Ostrov;
 
@@ -145,7 +146,13 @@ public class ListenerWorld implements Listener {
                     e.setDamage(0);
                     final Player p = (Player) e.getEntity();
                     p.setFallDistance(0);
-                    p.performCommand("pa suicide");
+                    final PD pd = Main.data.get(p.getName());
+                    if (pd.current==null) {
+                        Main.lobbyPlayer(p);
+                        p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1, 1);
+                    } else {
+                        p.performCommand("pk suicide");
+                    }
                     return;
                     
                 case FALL:

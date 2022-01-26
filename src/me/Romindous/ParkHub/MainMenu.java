@@ -36,7 +36,8 @@ public class MainMenu implements InventoryProvider {
     
     @Override
     public void init(final Player p, final InventoryContent content) {
-        p.playSound(p.getLocation(), Sound.BLOCK_COMPARATOR_CLICK, 5, 5);
+        //p.playSound(p.getLocation(), Sound.BLOCK_COMPARATOR_CLICK, 5, 5);
+        p.playSound(p.getLocation(), Sound.BLOCK_BEEHIVE_ENTER, 1, 1);
         
         final Pagination pagination = content.pagination();
         final ArrayList<ClickableItem> entry = new ArrayList<>();        
@@ -107,9 +108,9 @@ public class MainMenu implements InventoryProvider {
                 .lore(t.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+t.inProgress.size()) )
                 .lore("§7Чекпоинты: "+t.size())
                 .lore("§7Пройден: "+t.totalDone+" раз.")
-                .lore("§7Наиграно: "+ApiOstrov.secondToTime(t.totalTime))
-                .lore("§7Напрыгано: "+t.totalJumps)
-                .lore("§7Нападано: "+t.totalFalls)
+                .lore("§7⌚ "+ApiOstrov.secondToTime(t.totalTime))
+                .lore("§7⇪: "+t.totalFalls)
+                .lore("§7☠: "+t.totalJumps)
                 .lore("§6----------------------")
                 .lore( t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс: §6"+go.checkPoint+" §7из §e"+(t.size()-1) : "§fНе начат") ) 
                 .lore( (t.isCompleted(pd) || !t.hasProgress(pd)) ? "" : ApiOstrov.getPercentBar(t.size()-1, go.checkPoint, true))
@@ -144,7 +145,7 @@ public class MainMenu implements InventoryProvider {
                     
                 } else if (e.isRightClick()) {
                     
-                    p.sendMessage("§8топ не готов");
+                    Main.openTop(p, t);
                 
                 }
                 

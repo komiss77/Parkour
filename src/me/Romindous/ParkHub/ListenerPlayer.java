@@ -205,6 +205,9 @@ public class ListenerPlayer implements Listener {
 
             final String log = ChatColor.stripColor(t.displayName)+"§7, reach point:"+go.checkPoint+" ("+pd.nextCpX+","+pd.nextCpY+","+pd.nextCpZ+") by time:"+pd.stageTime+"/"+cp.controlTime+"  jump:"+pd.stageJump+"/"+cp.controlJump + " fall:"+pd.stageFall+"/"+cp.controlFall;
             if (pd.stageTime<cp.controlTime || pd.stageJump<cp.controlJump || pd.stageFall<cp.controlFall) {
+                if (!go.cheat) { //до этого не было чита - пометить везде
+                    LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `playerData` SET `cheat` = '1' WHERE `name`='"+pd.name+"'");
+                }
                 go.cheat = true;
                 LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `cheatLog` (name,parkName,log,stamp) VALUES ('"+p.getName()+"', '"+ChatColor.stripColor(t.displayName)+"', '"+log+"', '"+Timer.getTime()+"');");
             }
@@ -261,12 +264,12 @@ p.sendMessage("§8log: "+(go.cheat?"§cCHEAT!§8 " :"§aOK§8 ")+log);
                     
                     if (!go.cheat) {//тихонько сохраним для нечитеров
                         t.saveStat();
-                        final String msg = "§f"+pd.name+(ApiOstrov.isFemale(pd.name)?" §7прошла трассу ":" §7прошел трассу ")+t.displayName+" §7за §e"+ApiOstrov.secondToTime(go.trasseTime)+" §7(прыжки: §6"+go.trasseJump+"§7, падения: §4"+go.trasseFalls+"§7)";
+                        final String msg = "§f"+pd.name+(ApiOstrov.isFemale(pd.name)?" §7прошла трассу ":" §7прошел трассу ")+t.displayName+" §7за §e"+ApiOstrov.secondToTime(go.trasseTime)+" §7(⇪: §6"+go.trasseJump+"§7, ☠: §4"+go.trasseFalls+"§7)";
                     } 
                     
                 }
                 
-               
+                p.playSound(e.getClickedBlock().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5f, 1.5f);
                 
                 
                 
