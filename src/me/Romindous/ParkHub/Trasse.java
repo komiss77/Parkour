@@ -86,13 +86,13 @@ public class Trasse {
     }
     
     public CheckPoint getNextCp(final int current) {
-        if (current>=points.size()) {
+        if (current>=points.size()-1) {
             return points.getFirst();
         }
         return points.get(current+1);
     }
 
-    public void save() {
+    public void saveConfig() {
         final String path = "trasses."+id+".";
         Main.parkData.set (path+"displayName", displayName);
         Main.parkData.set (path+"worldName", worldName);
@@ -113,12 +113,13 @@ public class Trasse {
         Ostrov.log_ok("Данные паркура "+displayName+" сохранены.");
     }
     
-    public void saveTrasseStat() {
-        Main.parkData.set ("trasses."+id+".totalDone", totalDone);
-        Main.parkData.set ("trasses."+id+".totalTime", totalTime);
-        Main.parkData.set ("trasses."+id+".totalJumps", totalJumps);
-        Main.parkData.set ("trasses."+id+".totalFalls", totalFalls);
-        Main.parkData.saveConfig();
+    public void saveStat() {
+        Main.parkStat.set ("stat."+id+".parkName", displayName);
+        Main.parkStat.set ("stat."+id+".totalDone", totalDone);
+        Main.parkStat.set ("stat."+id+".totalTime", totalTime);
+        Main.parkStat.set ("stat."+id+".totalJumps", totalJumps);
+        Main.parkStat.set ("stat."+id+".totalFalls", totalFalls);
+        Main.parkStat.saveConfig();
         Ostrov.log_ok("Статистика паркура "+displayName+" обновлена!");    }
 
     
@@ -129,7 +130,11 @@ public class Trasse {
     }    
     
     public boolean hasProgress(final PD pd) {
-        return pd.getProgress(id).checkPoint != 0;
+        return !pd.getProgress(id).isZero();
+    }
+
+    public boolean isLastCp(final int cpNumber) {
+        return cpNumber >= points.size()-1;
     }
     
 }

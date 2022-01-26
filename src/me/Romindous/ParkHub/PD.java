@@ -3,6 +3,7 @@ package me.Romindous.ParkHub;
 import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 import ru.komiss77.LocalDB;
 
 
@@ -10,8 +11,10 @@ import ru.komiss77.LocalDB;
 
 
 public class PD {
+    
     int tick;
     public final String name;
+    public BukkitTask task;
     
     //общая стата - собирать при загрузке прогресса
     public int totalCheckPoints;
@@ -27,8 +30,8 @@ public class PD {
     public int stageTime, stageJump, stageFall; //стата между двумя чекпоинтами для сравнения с контрольными данными при достижении следующего.
     
     //для меню
-    boolean hideCompleted;
-    Level showLevel;
+    boolean hideCompleted; //скрыть пройденные
+    Level showLevel; //какую сложность показывать
     
     public PD(final Player p) {
         name = p.getName();
@@ -49,7 +52,7 @@ public class PD {
             go = new Progress();
             progress.put(parkID, go);
             //!INSERT
-            LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `playerData` (hash,name,trasseID) VALUES ('"+(parkID^name.hashCode())+"','"+name+"','"+parkID+"');");
+            //LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `playerData` (hash,name,trasseID) VALUES ('"+(parkID^name.hashCode())+"','"+name+"','"+parkID+"');");
         }
         return go;
     }
@@ -57,14 +60,20 @@ public class PD {
     public void saveProgress(final int parkID) { 
         Progress go = progress.get(parkID);
         //!UPDATE
-        LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `playerData` SET `checkPoint`='"+go.checkPoint+"',`trasseTime`='"+go.trasseTime+"',`trasseJump`='"+go.trasseJump+"',`trasseFalls`='"+go.trasseFalls+"',`cheat`='"+(go.cheat?1:0)+"' WHERE `hash`='"+(parkID^name.hashCode())+"';");
+        if (!go.isZero()) {
+            LocalDB.executePstAsync(Bukkit.getConsoleSender(), 
+                     "INSERT INTO `playerData` (hash,name,trasseID) VALUES ('"+(parkID^name.hashCode())+"','"+name+"','"+parkID+"') ON DUPLICATE KEY "+
+                "UPDATE `done`='"+go.done+"',`checkPoint`='"+go.checkPoint+"',`trasseTime`='"+go.trasseTime+"',`trasseJump`='"+go.trasseJump+"',`trasseFalls`='"+go.trasseFalls+"',`cheat`='"+(go.cheat?1:0)+"' ;");
+        }
+        //LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `playerData` SET `checkPoint`='"+go.checkPoint+"',`trasseTime`='"+go.trasseTime+"',`trasseJump`='"+go.trasseJump+"',`trasseFalls`='"+go.trasseFalls+"',`cheat`='"+(go.cheat?1:0)+"' WHERE `hash`='"+(parkID^name.hashCode())+"';");
     }
 
     public void resetTrasse() {
         if (current!=null) { //есть проходимый паркур
-            saveProgress(current.id);
+            saveProgress(current.id); //сохранить, что пройдено
             current.inProgress.remove(name);
             current = null;
+            resetStage();
         }
     }
     
@@ -77,8 +86,24 @@ public class PD {
     public void setNextPoint(final CheckPoint next) { //установить коорд. след.контрольной точки
         resetStage();
         nextCpX = next.x;
-        nextCpY = next.z;
+        nextCpY = next.y;
         nextCpZ = next.z;
+    }
+
+    public void fall() {
+        if (current!=null) {
+            totalFalls++;
+            stageFall++;
+            getProgress(current.id).trasseFalls++;
+        }
+    }
+
+    public void jump() {
+        if (current!=null) {
+            totalJumps++;
+            stageJump++;
+            getProgress(current.id).trasseJump++;
+        }
     }
 
     

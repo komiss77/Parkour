@@ -9,11 +9,11 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import ru.komiss77.ApiOstrov;
-import ru.komiss77.modules.player.Oplayer;
 import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.ItemBuilder;
 import ru.komiss77.utils.ItemUtils;
 import ru.komiss77.utils.inventory.ClickableItem;
+import ru.komiss77.utils.inventory.ConfirmationGUI;
 import ru.komiss77.utils.inventory.InventoryContent;
 import ru.komiss77.utils.inventory.InventoryProvider;
 import ru.komiss77.utils.inventory.Pagination;
@@ -55,7 +55,7 @@ public class MainMenu implements InventoryProvider {
                 }));
 
 
-        content.set(4, ClickableItem.of(new ItemBuilder(Material.HEART_OF_THE_SEA)
+        content.set(4, ClickableItem.of(new ItemBuilder(Material.SPYGLASS)
                 .name("§3Рандомная Карта")
                 .lore("§7Нажмите для выбора")
                 .lore("§3рандомной §7карты!")
@@ -86,12 +86,15 @@ public class MainMenu implements InventoryProvider {
         
         
         
+        Progress go;
         
         for (Trasse t : Main.trasses.values()) {
             
             if (t.disabled) continue;
             if (pd.hideCompleted && t.isCompleted(pd)) continue;
             if (pd.showLevel!=null && pd.showLevel!=t.level) continue;
+            
+            go = pd.getProgress(t.id);
             
             final ItemStack is = new ItemBuilder(t.mat)
                 .name(t.displayName)
@@ -108,15 +111,45 @@ public class MainMenu implements InventoryProvider {
                 .lore("§7Напрыгано: "+t.totalJumps)
                 .lore("§7Нападано: "+t.totalFalls)
                 .lore("§6----------------------")
-                .lore( t.isCompleted(pd) ? "§aПройден" : (t.hasProgress(pd) ? "§7Ваш прогресс: §6"+pd.getProgress(t.id).checkPoint+" §7из §e"+t.size() : "§fНе начат") ) 
-                .lore("")
+                .lore( t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс: §6"+go.checkPoint+" §7из §e"+(t.size()-1) : "§fНе начат") ) 
+                .lore( (t.isCompleted(pd) || !t.hasProgress(pd)) ? "" : ApiOstrov.getPercentBar(t.size()-1, go.checkPoint, true))
                 .lore("")
                 .lore("§6----------------------")
                 .lore("§7ЛКМ - "+ (t.isCompleted(pd) ? "§cПройти заново" : (t.hasProgress(pd) ? "§aПродолжить" : "§bНачать") ) )
                 .lore("§7ПКМ - ТОП ")
                 .build();
             
-            entry.add(ClickableItem.empty(is));
+            entry.add(ClickableItem.of(is, e-> {
+                
+                if (e.isLeftClick()) {
+                    
+                    if (t.isCompleted(pd)) {
+                        
+                        ConfirmationGUI.open(p, "§4Сбросить и пройти заново?", (confirm)-> {
+                            
+                            if (confirm) {
+                                Main.joinParkur(p, t.id);
+                            } else {
+                                reopen(p, content);
+                            }
+                            
+                        });
+                        
+                        
+                    } else {
+                        
+                        Main.joinParkur(p, t.id);
+                        
+                    }
+                    
+                } else if (e.isRightClick()) {
+                    
+                    p.sendMessage("§8топ не готов");
+                
+                }
+                
+                
+            }));
         }
         
         

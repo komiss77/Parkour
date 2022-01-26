@@ -4,6 +4,7 @@ package me.Romindous.ParkHub;
 //прогресс игрока по каждой трассе
 public class Progress {
 
+    public int done; //прохождения
     public int checkPoint; //достигнутая точка на трассе
     
     public int trasseTime; //время затраченное на трассу
@@ -14,7 +15,7 @@ public class Progress {
     public Progress() {
     }
     
-    public Progress(final int checkPoint, final int trasseTime, final int trasseJump, final int trasseFalls, final boolean cheat) {
+    public Progress(final int done, final int checkPoint, final int trasseTime, final int trasseJump, final int trasseFalls, final boolean cheat) {
         this.checkPoint = checkPoint;
         this.trasseTime = trasseTime;
         this.trasseJump = trasseJump;
@@ -25,10 +26,15 @@ public class Progress {
     
     
     public void reset() {
+        //done не трогаем!
         checkPoint = 0;
         trasseTime = 0;
         trasseJump = 0;
         trasseFalls = 0;
+    }
+
+    public boolean isZero() {
+        return done==0 && checkPoint==0 && trasseTime ==0 && trasseJump==0 && trasseFalls==0 && !cheat;
     }
 
     

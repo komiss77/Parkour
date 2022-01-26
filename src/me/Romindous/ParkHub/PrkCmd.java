@@ -9,7 +9,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import ru.komiss77.ApiOstrov;
 import ru.komiss77.modules.player.profile.FriendView;
+import ru.komiss77.utils.inventory.ConfirmationGUI;
 import ru.komiss77.utils.inventory.SmartInventory;
 
 
@@ -69,6 +71,7 @@ public class PrkCmd implements CommandExecutor, TabCompleter {
         final Player p =(Player) sender;
         
         if (args.length==0) {
+            
             SmartInventory
                 .builder()
                 .id(p.getName())
@@ -76,11 +79,62 @@ public class PrkCmd implements CommandExecutor, TabCompleter {
                 .size(6, 9)
                 .title("§bВыбор Карты")
                 .build()
-                .open(p);            
+                .open(p); 
+            
         } else {
-            if (args[0].equalsIgnoreCase("stat")) {
-                p.sendMessage("stat");
+            
+            final PD pd = Main.data.get(p.getName());
+            
+            switch (args[0]) {
+                
+                case "stat":
+                    p.sendMessage("stat");
+                    return true;
+                
+                case "leave":
+                    Main.lobbyPlayer(p);
+                    return true;
+                
+                case "suicide":
+                    if (pd.current==null) {
+                        p.sendMessage("§6Вы не на трассе!");
+                        return true;
+                    }
+                    pd.fall();
+                    Main.joinParkur(p, pd.current.id);
+                    return true;
+                
+                case "restart":
+                    if (pd.current==null) {
+                        p.sendMessage("§6Вы не на трассе!");
+                        return true;
+                    }
+                    ConfirmationGUI.open(p, "§4Сбросить и пройти заново?", (confirm)-> {
+                            
+                        if (confirm) {
+                            final Progress go = pd.getProgress(pd.current.id);
+                            go.reset();
+                            pd.saveProgress(pd.current.id);
+                            Main.joinParkur(p, pd.current.id);
+                        } else {
+                            p.closeInventory();
+                        }
+
+                    });
+                    //final Progress go = pd.getProgress(pd.current.id);
+                    //go.reset();
+                    //pd.saveProgress(pd.current.id);
+                    //pd.progress.remove(pd.current.id);
+                    //Main.joinParkur(p, pd.current.id);
+                    return true;
+                
+                case "exit":
+                    ApiOstrov.sendToServer(p, "lobby0", "");
+                    return true;
+                
+                
             }
+
         }
     
         

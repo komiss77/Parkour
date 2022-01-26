@@ -14,8 +14,8 @@ public class CheckPoint {
     
     //контрольки от пркдыдущей точки. если столько не набрано, значит читер
     public int controlTime = 1;
-    public int controlJump = 1;
-    public int controlFall = 1;
+    public int controlJump = 10;
+    public int controlFall = 0;
 
     CheckPoint(final int x, final int y, final int z, final BlockFace bf, final int controlTime, final int controlJump, final int controlFall) {
         this.x = x;

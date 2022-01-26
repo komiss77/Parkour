@@ -29,7 +29,6 @@ import ru.komiss77.objects.CaseInsensitiveMap;
 import ru.komiss77.utils.ItemBuilder;
 import ru.komiss77.utils.OstrovConfig;
 import ru.komiss77.utils.OstrovConfigManager;
-import me.Romindous.ParkHub.Listener.MainLis;
 import ru.komiss77.Timer;
 
 
@@ -41,6 +40,7 @@ public class Main extends JavaPlugin {
     public static Location lobby;
     public static OstrovConfigManager configManager;
     public static OstrovConfig parkData;
+    public static OstrovConfig parkStat;
     
     public static final HashMap<Integer,Trasse> trasses;
     public static final CaseInsensitiveMap<PD> data;
@@ -48,7 +48,7 @@ public class Main extends JavaPlugin {
     //public static final BlockFace[] bfs;
 
     public static MenuItem select, stat, exit;
-    public static MenuItem suicide, toStatr, leave;
+    public static MenuItem suicide, navigator, toStatr, leave;
    
     static {
         trasses = new HashMap<>();
@@ -70,6 +70,7 @@ public class Main extends JavaPlugin {
         lobby.getWorld().setTime(6000);
         
         parkData = configManager.getNewConfig("parkData.yml");
+        parkStat = configManager.getNewConfig("parkStat.yml");
         
 
        
@@ -107,17 +108,30 @@ public class Main extends JavaPlugin {
                     tr.mat=Material.BEDROCK;
                 }
                 tr.descr = parkData.getString(mapPath+"descr");
-                tr.level = Level.valueOf(parkData.getString(mapPath+"level"));
                 tr.pay = parkData.getInt(mapPath+"pay");
+                tr.level = Level.valueOf(parkData.getString(mapPath+"level"));
                 tr.disabled = parkData.getBoolean(mapPath+"disabled");
-                tr.totalDone = parkData.getInt(mapPath+"totalDone",0);
-                tr.totalTime = parkData.getInt(mapPath+"totalTime",0);
-                tr.totalJumps = parkData.getInt(mapPath+"totalJumps",0);
-                tr.totalFalls = parkData.getInt(mapPath+"totalFalls",0);
                 tr.creator = parkData.getString(mapPath+"creator","§8аноним");
                 tr.createAt = parkData.getInt(mapPath+"createAt", Timer.getTime());
+                
                 trasses.put(tr.id, tr);
+                
+                mapPath = "stat."+id+".";
+                if (parkStat.getConfigurationSection(mapPath)!=null) {
+                    tr.totalDone = parkStat.getInt(mapPath+"totalDone",0);
+                    tr.totalTime = parkStat.getInt(mapPath+"totalTime",0);
+                    tr.totalJumps = parkStat.getInt(mapPath+"totalJumps",0);
+                    tr.totalFalls = parkStat.getInt(mapPath+"totalFalls",0);
+                }
+                
+                
             }
+            
+//for (Trasse t:trasses.values()) {
+    //t.saveConfig();
+    //t.saveStat();
+//}
+            
             Ostrov.log_ok("Загружено паркуров: "+trasses.size());
         }
 
@@ -129,6 +143,8 @@ public class Main extends JavaPlugin {
         new BukkitRunnable() {
             @Override
             public void run() {
+                Progress go;
+                
                 for (PD pd : data.values()) {
                     
                     if (pd.tick%20==0) {
@@ -144,10 +160,17 @@ public class Main extends JavaPlugin {
                                 lobbyPlayer(p); //pd.current = null там есть
                                 continue;
                             }
-                            pd.getProgress(pd.current.id).trasseTime++;
+                            go = pd.getProgress(pd.current.id);
+                            go.trasseTime++;
                             pd.stageTime++;
+                            pd.totalTime++;
                             
-                            gameScore(pd);
+                            if (pd.current.isLastCp(go.checkPoint)) {
+                                //финиш
+                                //табло удаляется на финише в MainLis
+                            } else {
+                                gameScore(pd, getDistance(p, pd));
+                            }
                             
                         }
                         
@@ -160,7 +183,8 @@ public class Main extends JavaPlugin {
         }.runTaskTimer(plug, 1, 1);
         
         
-        getServer().getPluginManager().registerEvents(new MainLis(), this);
+        getServer().getPluginManager().registerEvents(new ListenerPlayer(), this);
+        getServer().getPluginManager().registerEvents(new ListenerWorld(), this);
         //getServer().getPluginManager().registerEvents(new InterLis(), this);
         //getServer().getPluginManager().registerEvents(new InventLis(), this); 
         
@@ -169,6 +193,12 @@ public class Main extends JavaPlugin {
         getServer().getConsoleSender().sendMessage("§2ParkHub is ready!");
     }
     
+    private int getDistance(final Player p, final PD pd) {
+        return (Math.abs(p.getLocation().getBlockX() - pd.nextCpX) + Math.abs(p.getLocation().getBlockY() - pd.nextCpY) + Math.abs(p.getLocation().getBlockZ() - pd.nextCpZ))/3;
+    }      
+   // private static int square(final int num) {
+   //     return num * num;
+   // }    
 
         
         
@@ -180,7 +210,6 @@ public class Main extends JavaPlugin {
 
         
         
-
 
         
     public static void lobbyPlayer(final Player p) {
@@ -201,16 +230,20 @@ public class Main extends JavaPlugin {
 
         final PD pd = data.get(p.getName());
         if (pd!=null) {
+            if (pd.task!=null) {
+                pd.task.cancel();
+                pd.task = null;
+            }
             pd.resetTrasse();
             lobbyScore(p.getName());
+            if (PM.nameTagManager!=null) {
+                PM.nameTagManager.setNametag(p, "§7[§5ЛОББИ§7] ", pd.cheat ? " §4[§cЧИТЫ§4]" :"");
+            }
         }
 
-        p.playerListName(Component.text("§7[§5ЛОББИ§7] "+p.getName())); //p.playerListName(Component.text("§7[§5ЛОББИ§7] " + nm + data.getPerm(nm, "pls")));
+        p.playerListName(Component.text("§7[§5ЛОББИ§7] "+p.getName()+(pd.cheat ? " §4[§cЧИТЫ§4]" :"") ));
 
-        if (PM.nameTagManager!=null) {
-            PM.nameTagManager.setNametag(p, "§7[§5ЛОББИ§7] ", ""); //final Parkour ar = Parkour.getPlPark(other.getName());
-        }
-        
+        p.setCompassTarget(Main.lobby);
     }
 
         
@@ -261,6 +294,7 @@ public class Main extends JavaPlugin {
         
         p.getInventory().clear();
         suicide.giveForce(p);
+        navigator.giveForce(p);//p.getInventory().setItem(4, mkItm(Material.MAP, "§9Статистика", "§bПКМ §7- Топ статистика", p.hasPermission("ostrov.builder") ? "§3Шифт + ПКМ §7- Создание карты" : ""));
         toStatr.giveForce(p);
         leave.giveForce(p);
         
@@ -269,10 +303,30 @@ public class Main extends JavaPlugin {
             p.removePotionEffect(ef.getType());
         }
         
-        p.setPlayerListName("§7[§3"+tr.displayName+"§7] "+p.getName());
-        
         final CheckPoint cp = pd.current.getCp(go.checkPoint);
-        p.teleport(cp.getLocation(tr.worldName));
+        
+        final Location loc = cp.getLocation(tr.worldName);
+        final Location nextLoc = next.getLocation(tr.worldName);
+        
+        if (cp.bf!=BlockFace.SELF) {
+            loc.setDirection(cp.bf.getDirection());
+        } else {
+            loc.setDirection(nextLoc.toVector().subtract(loc.toVector()));
+        }
+        
+        p.teleport(loc);
+        
+        p.setCompassTarget(nextLoc);
+        
+p.sendMessage("§8log: curr="+pd.current.getCp(go.checkPoint));
+p.sendMessage("§8log: next="+next);
+        p.sendMessage(go.checkPoint==0? "§fВы на старте паркура "+tr.displayName : "§fВы на чекпоинте #"+go.checkPoint);
+        p.sendMessage("§6Ваш вгляд направлен на цель.");
+        
+        p.playerListName(Component.text("§7[§3"+tr.displayName+"§7] "+p.getName()+(pd.cheat ? " §4[§cЧИТЫ§4]" :"") ));
+        if (PM.nameTagManager!=null) {
+            PM.nameTagManager.setNametag(p, pd.cheat ? "§4[§cЧитак§4]" : "§7[§3"+getRank(pd.totalCheckPoints)+"§7] ", ""); //final Parkour ar = Parkour.getPlPark(other.getName());
+        }
     }
 
 
@@ -324,30 +378,30 @@ public class Main extends JavaPlugin {
 
     }
 
-    public void gameScore(final PD pd) {
+    
+    
+    public void gameScore(final PD pd, int distance) {
         final Oplayer op = PM.getOplayer(pd.name);
-
         final Progress go = pd.getProgress(pd.current.id);
         
-        op.score.getSideBar().setTitle("§7[§3Паркуры§7]");
-        op.score.getSideBar().updateLine(13, "");
-        op.score.getSideBar().updateLine(12, "§7Карта: "+pd.current.displayName);
+        op.score.getSideBar().setTitle(pd.current.displayName+" §7[§f"+pd.current.inProgress.size()+"§7]");
+        op.score.getSideBar().updateLine(13, "§7Время:");
+        op.score.getSideBar().updateLine(12, "§3"+ApiOstrov.secondToTime(go.trasseTime));
         op.score.getSideBar().updateLine(11, "");
-        op.score.getSideBar().updateLine(10, "§7Проходят: "+pd.current.inProgress.size());
-        op.score.getSideBar().updateLine(9, "");
-        op.score.getSideBar().updateLine(8, "§7Чекпоинт: §b"+go.checkPoint+" §7из §b"+(pd.current.size()) );
-        op.score.getSideBar().updateLine(7, "");
-        op.score.getSideBar().updateLine(6, "§7Время: "+ApiOstrov.secondToTime(go.trasseTime));
-        op.score.getSideBar().updateLine(5, "" );
-        op.score.getSideBar().updateLine(4, "§7Падений: "+go.trasseFalls);
+        op.score.getSideBar().updateLine(10,"§7Чекпоинт:" );
+        op.score.getSideBar().updateLine(9, go.checkPoint==0 ? "§fНачало" : "§b"+(go.checkPoint+1)+" §7из §b"+(pd.current.size()) );
+        op.score.getSideBar().updateLine(8, "");
+        op.score.getSideBar().updateLine(7, pd.current.isLastCp(go.checkPoint+1) ? "§aДо финиша§7:" : "§7До след. точки:");
+        op.score.getSideBar().updateLine(6, distance==0 ? "§3пара шагов" : "§3~"+distance+"m.");
+        op.score.getSideBar().updateLine(5, "");
+        op.score.getSideBar().updateLine(4, "§7Прыжки: §6"+go.trasseJump);
         op.score.getSideBar().updateLine(3, "");
-        op.score.getSideBar().updateLine(2, "§7Прыжки: "+go.trasseJump);
+        op.score.getSideBar().updateLine(2, "§7Падения: §c"+go.trasseFalls);
         op.score.getSideBar().updateLine(1, "");
 
+
     }   
-        
-        
-        
+  
         
         
         
@@ -375,8 +429,8 @@ public class Main extends JavaPlugin {
             }
     }
 
-    public static String getRank(final int ch) {
-        switch (ch / 100) {
+    public static String getRank(final int totalCheckPoints) {
+        switch (totalCheckPoints / 100) {
         case 0:
             return "Начинающий";
         case 1:
@@ -410,7 +464,7 @@ public class Main extends JavaPlugin {
         
         
     private void createMenuItems() {
-        final ItemStack is=new ItemBuilder(Material.COMPASS)
+        final ItemStack is=new ItemBuilder(Material.TARGET)
             .setName("§3Выбор Паркура")
             .build();
         select = new MenuItemBuilder("select", is)
@@ -446,7 +500,7 @@ public class Main extends JavaPlugin {
             .setName("§4Выход в лобби")
             .build();
         exit = new MenuItemBuilder("exit", is3)
-            .slot(7) //Chestplate
+            .slot(7)
             .giveOnJoin(false)
             .giveOnRespavn(false)
             .giveOnWorld_change(false)
@@ -454,13 +508,28 @@ public class Main extends JavaPlugin {
             .canDrop(false)
             .canPickup(false)
             .canMove(false)
+            .rightClickCmd("pk exit")
             .create();
+        
+        final ItemStack navi=new ItemBuilder(Material.COMPASS)
+            .setName("§aНаправление на чекпоинт")
+            .build();
+        navigator = new MenuItemBuilder("navigator", navi)
+            .slot(0)
+            .giveOnJoin(false)
+            .giveOnRespavn(false)
+            .giveOnWorld_change(false)
+            .anycase(true)
+            .canDrop(false)
+            .canPickup(false)
+            .canMove(false)
+            .create();        
         
         final ItemStack is4=new ItemBuilder(Material.REDSTONE)
             .setName("§3Харакири")
             .build();
         suicide = new MenuItemBuilder("suicide", is4)
-            .slot(0) //Chestplate
+            .slot(2)
             .giveOnJoin(false)
             .giveOnRespavn(false)
             .giveOnWorld_change(false)
@@ -468,13 +537,15 @@ public class Main extends JavaPlugin {
             .canDrop(false)
             .canPickup(false)
             .canMove(false)
+            .rightClickCmd("pk suicide")
             .create();
-        
+
+
         final ItemStack is5=new ItemBuilder(Material.HONEYCOMB)
-            .setName("§4В Начало Паркура")
+            .setName("§4Начать сначала")
             .build();
         toStatr = new MenuItemBuilder("toStatr", is5)
-            .slot(4) //Chestplate
+            .slot(4)
             .giveOnJoin(false)
             .giveOnRespavn(false)
             .giveOnWorld_change(false)
@@ -482,13 +553,14 @@ public class Main extends JavaPlugin {
             .canDrop(false)
             .canPickup(false)
             .canMove(false)
+            .rightClickCmd("pk restart")
             .create();
         
         final ItemStack is6=new ItemBuilder(Material.SLIME_BALL)
             .setName("§cВыйти с Карты")
             .build();
         leave = new MenuItemBuilder("leave", is6)
-            .slot(8) //Chestplate
+            .slot(8)
             .giveOnJoin(false)
             .giveOnRespavn(false)
             .giveOnWorld_change(false)
@@ -496,9 +568,12 @@ public class Main extends JavaPlugin {
             .canDrop(false)
             .canPickup(false)
             .canMove(false)
+            .rightClickCmd("pk leave")
             .create();
         
     }        	
+
+
 	
 
     
@@ -514,31 +589,5 @@ public class Main extends JavaPlugin {
     
 }
 
-    
-    enum Level {
-        Легко (Material.CHAINMAIL_HELMET),
-        Нормально (Material.IRON_HELMET),
-        Трудно (Material.DIAMOND_HELMET),
-        Нереально (Material.NETHERITE_HELMET)
-        ;
-        
-        
-        public final Material mat;
-        
-        private Level (final Material mat) {
-            this.mat = mat;
-        }
-        
-        public static Level next (final Level curr) {
-            if (curr==null) return Легко;
-            switch (curr) {
-                case Легко: return Нормально;
-                case Нормально: return Трудно;
-                case Трудно: return Нереально;
-            }
-            return null;
-        }
-        
-    }
     
 
