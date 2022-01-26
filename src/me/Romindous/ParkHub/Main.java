@@ -228,6 +228,7 @@ public class Main extends JavaPlugin {
         stat.giveForce(p);//p.getInventory().setItem(4, mkItm(Material.MAP, "§9Статистика", "§bПКМ §7- Топ статистика", p.hasPermission("ostrov.builder") ? "§3Шифт + ПКМ §7- Создание карты" : ""));
         exit.giveForce(p);//p.getInventory().setItem(7, mkItm(Material.MAGMA_CREAM, "§4Выход"));
 
+        //!! При первом тп в лобби после BungeeDataRecieved PD не будет!!!
         final PD pd = data.get(p.getName());
         if (pd!=null) {
             if (pd.task!=null) {
@@ -235,13 +236,8 @@ public class Main extends JavaPlugin {
                 pd.task = null;
             }
             pd.resetTrasse();
-            lobbyScore(p.getName());
-            if (PM.nameTagManager!=null) {
-                PM.nameTagManager.setNametag(p, "§7[§5ЛОББИ§7] ", pd.cheat ? " §4[§cЧИТЫ§4]" :"");
-            }
+            lobbyScore(p);
         }
-
-        p.playerListName(Component.text("§7[§5ЛОББИ§7] "+p.getName()+(pd.cheat ? " §4[§cЧИТЫ§4]" :"") ));
 
         p.setCompassTarget(Main.lobby);
     }
@@ -318,8 +314,8 @@ public class Main extends JavaPlugin {
         
         p.setCompassTarget(nextLoc);
         
-p.sendMessage("§8log: curr="+pd.current.getCp(go.checkPoint));
-p.sendMessage("§8log: next="+next);
+//p.sendMessage("§8log: curr="+pd.current.getCp(go.checkPoint));
+//p.sendMessage("§8log: next="+next);
         p.sendMessage(go.checkPoint==0? "§fВы на старте паркура "+tr.displayName : "§fВы на чекпоинте #"+go.checkPoint);
         p.sendMessage("§6Ваш вгляд направлен на цель.");
         
@@ -355,10 +351,13 @@ p.sendMessage("§8log: next="+next);
     
         
 
-    public static void lobbyScore(final String name) {
-
-        final Oplayer op = PM.getOplayer(name);
-        final PD pd = data.get(name);
+    public static void lobbyScore(final Player p) {
+        final PD pd = data.get(p.getName());
+        if (PM.nameTagManager!=null) {
+                PM.nameTagManager.setNametag(p, "§7[§5ЛОББИ§7] ", pd.cheat ? " §4[§cЧИТЫ§4]" :"");
+            }
+        p.playerListName(Component.text("§7[§5ЛОББИ§7] "+p.getName()+(pd.cheat ? " §4[§cЧИТЫ§4]" :"") ));
+        final Oplayer op = PM.getOplayer(p.getName());
 
         op.score.getSideBar().setTitle("§7[§3Паркуры§7]");
         op.score.getSideBar().updateLine(13, "");

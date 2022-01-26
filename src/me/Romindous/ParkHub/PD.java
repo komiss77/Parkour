@@ -5,6 +5,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import ru.komiss77.LocalDB;
+import ru.komiss77.Ostrov;
 
 
 
@@ -21,7 +22,7 @@ public class PD {
     public int totalFalls;
     public int totalTime;
     public int totalJumps;
-    public boolean cheat; //было нарушение при прохождении какой-то трассы
+    public boolean cheat; //было нарушение при прохождении какой-то трассы. флаг поставится при след.загрузке данных, чтобы меньше 
 
     public final HashMap<Integer,Progress> progress; //прогресс игрока по каждой трассе
     
@@ -58,12 +59,13 @@ public class PD {
     }
 
     public void saveProgress(final int parkID) { 
-        Progress go = progress.get(parkID);
+        Progress go = getProgress(parkID);//progress.get(parkID);
         //!UPDATE
         if (!go.isZero()) {
-            LocalDB.executePstAsync(Bukkit.getConsoleSender(), 
-                     "INSERT INTO `playerData` (hash,name,trasseID) VALUES ('"+(parkID^name.hashCode())+"','"+name+"','"+parkID+"') ON DUPLICATE KEY "+
-                "UPDATE `done`='"+go.done+"',`checkPoint`='"+go.checkPoint+"',`trasseTime`='"+go.trasseTime+"',`trasseJump`='"+go.trasseJump+"',`trasseFalls`='"+go.trasseFalls+"',`cheat`='"+(go.cheat?1:0)+"' ;");
+            final String querry = "INSERT INTO `playerData` (hash,name,trasseID,done,cheat) VALUES ('"+(parkID^name.hashCode())+"','"+name+"','"+parkID+"','"+go.done+"','"+(go.cheat?1:0)+"') ON DUPLICATE KEY "+
+                "UPDATE `done`='"+go.done+"',`checkPoint`='"+go.checkPoint+"',`trasseTime`='"+go.trasseTime+"',`trasseJump`='"+go.trasseJump+"',`trasseFalls`='"+go.trasseFalls+"',`cheat`='"+(go.cheat?1:0)+"' ;";
+            LocalDB.executePstAsync(Bukkit.getConsoleSender(), querry );
+//Ostrov.log_warn("querry="+querry);
         }
         //LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `playerData` SET `checkPoint`='"+go.checkPoint+"',`trasseTime`='"+go.trasseTime+"',`trasseJump`='"+go.trasseJump+"',`trasseFalls`='"+go.trasseFalls+"',`cheat`='"+(go.cheat?1:0)+"' WHERE `hash`='"+(parkID^name.hashCode())+"';");
     }

@@ -12,7 +12,10 @@ public class Progress {
     public int trasseFalls; //падения на трассе
     public boolean cheat; //было нарушение при прохождении
     
+    //public Progress(final int done, final boolean cheat) {
     public Progress() {
+        //this.done = done;
+        //this.cheat = cheat;
     }
     
     public Progress(final int done, final int checkPoint, final int trasseTime, final int trasseJump, final int trasseFalls, final boolean cheat) {
@@ -20,6 +23,7 @@ public class Progress {
         this.trasseTime = trasseTime;
         this.trasseJump = trasseJump;
         this.trasseFalls = trasseFalls;
+        this.done = done;
         this.cheat = cheat;
     }
 
@@ -27,6 +31,7 @@ public class Progress {
     
     public void reset() {
         //done не трогаем!
+        //cheat не трогаем!
         checkPoint = 0;
         trasseTime = 0;
         trasseJump = 0;
@@ -34,7 +39,7 @@ public class Progress {
     }
 
     public boolean isZero() {
-        return done==0 && checkPoint==0 && trasseTime ==0 && trasseJump==0 && trasseFalls==0 && !cheat;
+        return checkPoint==0 && trasseTime ==0 && trasseJump==0 && trasseFalls==0;
     }
 
     

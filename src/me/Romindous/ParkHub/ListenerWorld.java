@@ -56,7 +56,7 @@ public class ListenerWorld implements Listener {
     public void chat(DeluxeChatEvent e) {
         final Player p = e.getPlayer();
         final PD pd = Main.data.get(p.getName());
-        e.getDeluxeFormat().setPrefix( "§7<§6"+(pd.cheat ? "§4<§cЧитак§4>" : Main.getRank(pd.totalCheckPoints))+"§7> §7" );
+        e.getDeluxeFormat().setPrefix( (pd.cheat ? "§4<§cЧитак§4> §7" : ("§7<§6"+Main.getRank(pd.totalCheckPoints))+"§7> §7") );
     }
 
     

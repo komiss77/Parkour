@@ -71,6 +71,9 @@ public class ListenerPlayer implements Listener {
                         pd.totalJumps+=go.trasseJump;
                         pd.totalFalls+=go.trasseFalls;
                         if(go.cheat) {
+                            if (!pd.cheat) {
+                                p.sendMessage("§cМы обнаружили, что Вы проходили паркуры с читами. Можете продолжать в том же духе, но в ТОП Ваши результаты не попадут.");
+                            }
                             pd.cheat = true;
                         }
                     } else {
@@ -85,7 +88,7 @@ public class ListenerPlayer implements Listener {
             } finally {
                 
                 Ostrov.sync( ()->{
-                    Main.lobbyScore(p.getName());
+                    Main.lobbyScore(p);
                     broadcast(p, pd.cheat);
                 }, 0);
                 
@@ -202,10 +205,10 @@ public class ListenerPlayer implements Listener {
 
             final String log = ChatColor.stripColor(t.displayName)+"§7, reach point:"+go.checkPoint+" ("+pd.nextCpX+","+pd.nextCpY+","+pd.nextCpZ+") by time:"+pd.stageTime+"/"+cp.controlTime+"  jump:"+pd.stageJump+"/"+cp.controlJump + " fall:"+pd.stageFall+"/"+cp.controlFall;
             if (pd.stageTime<cp.controlTime || pd.stageJump<cp.controlJump || pd.stageFall<cp.controlFall) {
-                pd.cheat = true;
-                LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `cheatLog` (name,log,stamp) VALUES ('"+p.getName()+"', '"+log+"', '"+Timer.getTime()+"');");
+                go.cheat = true;
+                LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `cheatLog` (name,parkName,log,stamp) VALUES ('"+p.getName()+"', '"+ChatColor.stripColor(t.displayName)+"', '"+log+"', '"+Timer.getTime()+"');");
             }
-p.sendMessage("§8log: "+(pd.cheat?"§cCHEAT!§8 " :"§aOK§8 ")+log);
+p.sendMessage("§8log: "+(go.cheat?"§cCHEAT!§8 " :"§aOK§8 ")+log);
             go.checkPoint++;
             
             if (t.isLastCp(go.checkPoint)) { //прошел
@@ -214,40 +217,58 @@ p.sendMessage("§8log: "+(pd.cheat?"§cCHEAT!§8 " :"§aOK§8 ")+log);
                 t.totalTime+=go.trasseTime;
                 t.totalJumps+=go.trasseJump;
                 t.totalFalls+=go.trasseFalls;
-                pd.resetTrasse(); //если не ресануть, сразу срабатывает снова
+                pd.resetTrasse(); //если не ресануть, плита сразу срабатывает снова
                 
                 ApiOstrov.sendTitle(p, "", "§fВы прошли паркур!");
-                ApiOstrov.moneyChange(p, t.pay, "Паркуры");
-                ApiOstrov.addStat(p, Stat.PA_done);
-                PM.getOplayer(pd.name).score.getSideBar().reset();
-                p.getInventory().setItem(0, new ItemStack(Material.AIR));
-                p.getInventory().setItem(2, new ItemStack(Material.AIR));
-                p.getInventory().setItem(4, new ItemStack(Material.AIR));
                 
-                DonatEffect.spawnRandomFirework(p.getLocation());
-                p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 180, 0));
-                
-                final String name = p.getName();
-                pd.task = new BukkitRunnable() {
-                    int count = 15;
-                    @Override
-                    public void run() {
-                        final Player p = Bukkit.getPlayerExact(name);
-                        if (p==null || !p.isOnline()) {
-                            this.cancel();
+                if (pd.cheat) {
+                    
+                    p.sendMessage("§c*Читеры проходят без почестей*");
+                    Main.lobbyPlayer(p);
+                    //t.saveStat(); на читеров не делаем
+                    
+                } else {
+                    
+                    ApiOstrov.moneyChange(p, t.pay, "Паркуры");
+                    ApiOstrov.addStat(p, Stat.PA_done);
+                    PM.getOplayer(pd.name).score.getSideBar().reset();
+                    p.getInventory().setItem(0, new ItemStack(Material.AIR));
+                    p.getInventory().setItem(2, new ItemStack(Material.AIR));
+                    p.getInventory().setItem(4, new ItemStack(Material.AIR));
+                    DonatEffect.spawnRandomFirework(p.getLocation());
+                    p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 240, 0));
+                    
+                    final String name = p.getName();
+                    pd.task = new BukkitRunnable() {
+                        int count = 10;
+                        @Override
+                        public void run() {
+                            final Player p = Bukkit.getPlayerExact(name);
+                            if (p==null || !p.isOnline()) {
+                                this.cancel();
+                            }
+                            ApiOstrov.sendActionBarDirect(p, "§6Возвращение в лобби через: §e"+count);
+                            if (count==0) {
+                                this.cancel();
+                                Main.lobbyPlayer(p);
+                            }
+                            count--;
+                            if (count==14 && t.level==Level.Нормально) DonatEffect.spawnRandomFirework(p.getLocation());
+                            if (count==13 && t.level==Level.Трудно) DonatEffect.spawnRandomFirework(p.getLocation());
+                            if (count==12 && t.level==Level.Нереально) DonatEffect.spawnRandomFirework(p.getLocation());
                         }
-                        ApiOstrov.sendActionBarDirect(p, "§6Возвращение в лобби через: §e"+count);
-                        if (count==0) {
-                            this.cancel();
-                            Main.lobbyPlayer(p);
-                        }
-                        if (count==14 && t.level==Level.Нормально) DonatEffect.spawnRandomFirework(p.getLocation());
-                        if (count==13 && t.level==Level.Трудно) DonatEffect.spawnRandomFirework(p.getLocation());
-                        if (count==12 && t.level==Level.Нереально) DonatEffect.spawnRandomFirework(p.getLocation());
-                    }
-                }.runTaskTimer(Main.plug, 1, 20);
+                    }.runTaskTimer(Main.plug, 1, 20);
+                    
+                    if (!go.cheat) {//тихонько сохраним для нечитеров
+                        t.saveStat();
+                        final String msg = "§f"+pd.name+(ApiOstrov.isFemale(pd.name)?" §7прошла трассу ":" §7прошел трассу ")+t.displayName+" §7за §e"+ApiOstrov.secondToTime(go.trasseTime)+" §7(прыжки: §6"+go.trasseJump+"§7, падения: §4"+go.trasseFalls+"§7)";
+                    } 
+                    
+                }
                 
-                t.saveStat();
+               
+                
+                
                 
                 return;
             }
