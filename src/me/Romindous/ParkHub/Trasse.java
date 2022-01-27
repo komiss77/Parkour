@@ -18,7 +18,7 @@ public class Trasse {
     public final int id;
     public String displayName;
     public String creator = "";
-    int createAt = Timer.getTime();
+    public int createAt = Timer.getTime();
     public Material mat = Material.FEATHER;
     public String descr = "";
     public Level level = Level.Легко;
@@ -26,7 +26,7 @@ public class Trasse {
     
     public final String worldName;
     public final HashSet<String> inProgress;
-    boolean disabled = false;
+    public boolean disabled = false;
     
     public LinkedList<CheckPoint> points = new LinkedList();
     

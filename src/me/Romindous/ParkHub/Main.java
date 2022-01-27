@@ -50,8 +50,6 @@ public class Main extends JavaPlugin {
     
     public static final HashMap<Integer,Trasse> trasses;
     public static final CaseInsensitiveMap<PD> data;
-    
-    //public static final BlockFace[] bfs;
 
     public static MenuItem select, stat, exit;
     public static MenuItem suicide, navigator, toStatr, leave;
@@ -59,7 +57,6 @@ public class Main extends JavaPlugin {
     static {
         trasses = new HashMap<>();
         data = new CaseInsensitiveMap<>();
-        //bfs = new BlockFace[] {BlockFace.EAST, BlockFace.NORTH, BlockFace.WEST, BlockFace.SOUTH};
     }
 
     
@@ -436,7 +433,7 @@ public class Main extends JavaPlugin {
         op.score.getSideBar().updateLine(9, "§7⌚: "+ApiOstrov.secondToTime(pd.totalTime));
         op.score.getSideBar().updateLine(8, "§7☠: "+pd.totalFalls);
         op.score.getSideBar().updateLine(7, "§7⇪: "+pd.totalJumps);
-        op.score.getSideBar().updateLine(6, "§7Чекп. пройдено: §b"+pd.totalCheckPoints);
+        op.score.getSideBar().updateLine(6, "§7⚐: §b"+pd.totalCheckPoints);
         op.score.getSideBar().updateLine(5, "§7Средние падения за");
         op.score.getSideBar().updateLine(4, "§7чекп.: §3"+pd.stageFall+" §7/ §3"+pd.totalCheckPoints+"§7 = §3"+(pd.totalCheckPoints>0 ? ((int)pd.totalFalls/pd.totalCheckPoints) : 0) );
         //op.score.getSideBar().updateLine(5, ChatColor.GRAY + "чекп.: " + ChatColor.DARK_AQUA + (exst ? String.valueOf(rs.getInt("TFLS")) + ChatColor.GRAY + " / " + ChatColor.DARK_AQUA + rs.getInt("TCPTS") + ChatColor.GRAY + " = " + ChatColor.DARK_AQUA + lmRslt(rs.getFloat("TFLS") / rs.getFloat("TCPTS"), 4) : 0));
@@ -460,11 +457,11 @@ public class Main extends JavaPlugin {
         op.score.getSideBar().updateLine(9, "");
         op.score.getSideBar().updateLine(8, "§7☠: §c"+go.trasseFalls);
         op.score.getSideBar().updateLine(7, "");
-        op.score.getSideBar().updateLine(6,"§7Чекпоинт:" );
-        op.score.getSideBar().updateLine(5, go.checkPoint==0 ? "§fНачало" : "§b"+(go.checkPoint+1)+" §7из §b"+(pd.current.size()) );
-        op.score.getSideBar().updateLine(4, "");
-        op.score.getSideBar().updateLine(3, pd.current.isLastCp(go.checkPoint+1) ? "§aДо финиша§7:" : "§7До след. точки:");
-        op.score.getSideBar().updateLine(2, distance==0 ? "§3пара шагов" : "§3~"+distance+"m.");
+        op.score.getSideBar().updateLine(6,"§7⚐:"+ (go.checkPoint==0 ? "§fНачало" : "§b"+(go.checkPoint+1)+" §7из §b"+(pd.current.size())) );
+        op.score.getSideBar().updateLine(5, "");
+        op.score.getSideBar().updateLine(4, pd.current.isLastCp(go.checkPoint+1) ? "§aДо финиша§7:" : "§7До след. точки:");
+        op.score.getSideBar().updateLine(3, distance==0 ? "§3пара шагов" : "§3~"+distance+"m.");
+        op.score.getSideBar().updateLine(2, "");
         op.score.getSideBar().updateLine(1, "");
 
 

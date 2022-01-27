@@ -2,13 +2,16 @@ package me.Romindous.ParkHub;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import ru.komiss77.ApiOstrov;
+import ru.komiss77.Ostrov;
 import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.ItemBuilder;
 import ru.komiss77.utils.ItemUtils;
@@ -42,6 +45,7 @@ public class MainMenu implements InventoryProvider {
         final Pagination pagination = content.pagination();
         final ArrayList<ClickableItem> entry = new ArrayList<>();        
 
+final long l = System.currentTimeMillis();
 
         final PD pd = Main.data.get(p.getName());
         
@@ -97,7 +101,34 @@ public class MainMenu implements InventoryProvider {
             
             go = pd.getProgress(t.id);
             
-            final ItemStack is = new ItemBuilder(t.mat)
+            final List<String> lore = Arrays.asList(
+                "§6----------------------",
+                "§7Создан: §3"+ApiOstrov.dateFromStamp(t.createAt),
+                "§7Создатель: §f"+t.creator,
+                "§7Сложность: §5"+t.level.name(),
+                t.descr,
+                t.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+t.inProgress.size()) ,
+                "§7⚐: "+t.size(),
+                "§7Пройден: "+t.totalDone+" раз.",
+                "§7⌚ "+ApiOstrov.secondToTime(t.totalTime),
+                "§7⇪: "+t.totalFalls,
+                "§7☠: "+t.totalJumps,
+                "§6----------------------",
+                 t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс:": "§fНе начат"),
+                 (t.isCompleted(pd) || !t.hasProgress(pd)) ? "" : ApiOstrov.getPercentBar(t.size()-1, go.checkPoint, true),
+                t.hasProgress(pd) ? "§7⌚"+ApiOstrov.secondToTime(go.trasseTime) : "",
+                t.hasProgress(pd) ? "⚐:"+go.checkPoint+" ⇪:"+go.trasseJump+" ☠:"+go.trasseFalls : "",
+                "§6----------------------",
+                "§7ЛКМ - "+ (t.isCompleted(pd) ? "§cПройти заново" : (t.hasProgress(pd) ? "§aПродолжить" : "§bНачать") ),
+                "§7ПКМ - ТОП "
+                );
+            
+            final ItemStack is = new ItemStack(t.mat);
+            final ItemMeta im = is.getItemMeta();
+            im.setDisplayName(t.displayName);
+            im.setLore(lore);
+            is.setItemMeta(im);
+            /*new ItemBuilder(t.mat)
                 .name(t.displayName)
                 .lore("§6----------------------")
                 .lore("§7Создан: §3"+ApiOstrov.dateFromStamp(t.createAt))
@@ -106,19 +137,21 @@ public class MainMenu implements InventoryProvider {
                 .lore(t.descr)
                 //.lore("§6----------------------")
                 .lore(t.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+t.inProgress.size()) )
-                .lore("§7Чекпоинты: "+t.size())
+                .lore("§7⚐: "+t.size())
                 .lore("§7Пройден: "+t.totalDone+" раз.")
                 .lore("§7⌚ "+ApiOstrov.secondToTime(t.totalTime))
                 .lore("§7⇪: "+t.totalFalls)
                 .lore("§7☠: "+t.totalJumps)
                 .lore("§6----------------------")
-                .lore( t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс: §6"+go.checkPoint+" §7из §e"+(t.size()-1) : "§fНе начат") ) 
+                //.lore( t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс: §6"+go.checkPoint+" §7из §e"+(t.size()-1) : "§fНе начат") ) 
+                .lore( t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс:": "§fНе начат") ) 
                 .lore( (t.isCompleted(pd) || !t.hasProgress(pd)) ? "" : ApiOstrov.getPercentBar(t.size()-1, go.checkPoint, true))
-                .lore("")
+                .lore(t.hasProgress(pd) ? "§7⌚"+ApiOstrov.secondToTime(go.trasseTime) : "")
+                .lore(t.hasProgress(pd) ? "⚐:"+go.checkPoint+" ⇪:"+go.trasseJump+" ☠:"+go.trasseFalls : "")
                 .lore("§6----------------------")
                 .lore("§7ЛКМ - "+ (t.isCompleted(pd) ? "§cПройти заново" : (t.hasProgress(pd) ? "§aПродолжить" : "§bНачать") ) )
                 .lore("§7ПКМ - ТОП ")
-                .build();
+                .build();*/
             
             entry.add(ClickableItem.of(is, e-> {
                 
@@ -183,7 +216,7 @@ public class MainMenu implements InventoryProvider {
         pagination.addToIterator(content.newIterator(SlotIterator.Type.HORIZONTAL, SlotPos.of(1, 0)).allowOverride(false));
 
 
-        
+Ostrov.log_warn("Меню создано за "+(System.currentTimeMillis()-l)+"мс.");
         
 
     }

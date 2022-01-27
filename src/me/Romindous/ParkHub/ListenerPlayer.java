@@ -1,6 +1,7 @@
 package me.Romindous.ParkHub;
 
 
+import me.Romindous.ParkHub.builder.LocalBuilder;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -28,6 +29,7 @@ import ru.komiss77.events.BungeeDataRecieved;
 import ru.komiss77.ApiOstrov;
 import ru.komiss77.Timer;
 import ru.komiss77.enums.Stat;
+import ru.komiss77.events.BuilderMenuEvent;
 import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.DonatEffect;
 
@@ -39,8 +41,10 @@ import ru.komiss77.utils.DonatEffect;
 public class ListenerPlayer implements Listener {
 
     
-
-	
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onBuilderMenu(final BuilderMenuEvent e) {
+        LocalBuilder.open(e.getPlayer(), e.getSetupMode());
+    }
     
     
     @EventHandler(priority = EventPriority.NORMAL)
@@ -203,7 +207,7 @@ public class ListenerPlayer implements Listener {
             
             final CheckPoint cp = t.getCp(go.checkPoint);
 
-            final String log = ChatColor.stripColor(t.displayName)+"§7, reach point:"+go.checkPoint+" ("+pd.nextCpX+","+pd.nextCpY+","+pd.nextCpZ+") by time:"+pd.stageTime+"/"+cp.controlTime+"  jump:"+pd.stageJump+"/"+cp.controlJump + " fall:"+pd.stageFall+"/"+cp.controlFall;
+            final String log = "reach point:"+go.checkPoint+" ("+pd.nextCpX+","+pd.nextCpY+","+pd.nextCpZ+") by time:"+pd.stageTime+"/"+cp.controlTime+"  jump:"+pd.stageJump+"/"+cp.controlJump + " fall:"+pd.stageFall+"/"+cp.controlFall;
             if (pd.stageTime<cp.controlTime || pd.stageJump<cp.controlJump || pd.stageFall<cp.controlFall) {
                 if (!go.cheat) { //до этого не было чита - пометить везде
                     LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `playerData` SET `cheat` = '1' WHERE `name`='"+pd.name+"'");

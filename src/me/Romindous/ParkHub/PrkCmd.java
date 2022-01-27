@@ -1,12 +1,10 @@
 package me.Romindous.ParkHub;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import ru.komiss77.ApiOstrov;
 import ru.komiss77.Timer;
-import ru.komiss77.modules.player.profile.FriendView;
+import ru.komiss77.builder.SetupMode;
+import ru.komiss77.modules.player.Oplayer;
+import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.inventory.ConfirmationGUI;
 import ru.komiss77.utils.inventory.SmartInventory;
 
@@ -92,9 +92,19 @@ public class PrkCmd implements CommandExecutor, TabCompleter {
             
             switch (args[0]) {
                 
-                case "stat":
-                    p.sendMessage("stat");
-                    return true;
+               /* case "builder":
+                    if (!ApiOstrov.isLocalBuilder(p, true)) {
+                        return false;
+                    }
+                    final Oplayer op = PM.getOplayer(p);
+                    if (op.setup==null) {
+                        op.setup = new SetupMode(p);
+                    }
+                    return true;*/
+                    
+                //case "stat":
+                    //p.sendMessage("stat");
+                    //return true;
                 
                 case "leave":
                     Main.lobbyPlayer(p);
