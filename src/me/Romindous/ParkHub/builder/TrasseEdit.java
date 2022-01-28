@@ -210,12 +210,13 @@ public class TrasseEdit implements InventoryProvider{
         
         final PD pd = Main.data.get(p.getName());
         if (pd.task==null) {
-            content.set( 0, 6, ClickableItem.of( new ItemBuilder(Material.GLOW_BERRIES)
+            content.set( 0, 5, ClickableItem.of( new ItemBuilder(Material.GLOW_BERRIES)
                     .name("§3Включить трассировку")
                     .lore("§7Будет прорисовываться")
                     .lore("§7луч, соединяя по очереди")
                     .lore("§7все чекпоинты.")
                     .build(), e -> {
+                        if (pd.task!=null) return;
                 final String name = p.getName();
                 pd.task = new BukkitRunnable() {
                     int n = 0;
@@ -253,11 +254,12 @@ public class TrasseEdit implements InventoryProvider{
                             n++;
                         }
                     }
-                }.runTaskTimer(Main.plug, 1, 20);
+                }.runTaskTimer(Main.plug, 1,  10 + 100/t.points.size() );
+                reopen(p, content);
             }
             ));               
         } else {
-            content.set( 0, 6, ClickableItem.of( new ItemBuilder(Material.SWEET_BERRIES)
+            content.set( 0, 5, ClickableItem.of( new ItemBuilder(Material.SWEET_BERRIES)
                     .name("§6Выключить трассировку")
                     .build(), e -> {
                 pd.task.cancel();
@@ -268,7 +270,7 @@ public class TrasseEdit implements InventoryProvider{
         }
    
                 
-        content.set( 0, 7, ClickableItem.of( new ItemBuilder(Material.REPEATER)
+        content.set( 0, 6, ClickableItem.of( new ItemBuilder(Material.REPEATER)
                 .name("редактор чекпоинтов")
                 .build(), e -> {
             LocalBuilder.openCheckPointEditor(p, sm);

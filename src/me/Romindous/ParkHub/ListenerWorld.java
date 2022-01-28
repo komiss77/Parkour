@@ -24,6 +24,7 @@ import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.Sound;
 import me.clip.deluxechat.events.DeluxeChatEvent;
+import org.bukkit.ChatColor;
 import org.bukkit.Tag;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.Action;
@@ -74,7 +75,15 @@ public class ListenerWorld implements Listener {
                 || Tag.STANDING_SIGNS.isTagged(e.getClickedBlock().getType()) )   ) {
             final Sign s = (Sign) e.getClickedBlock().getState();
             final Player p = e.getPlayer();
-            p.sendMessage("1="+s.getLine(0));
+            if (ChatColor.stripColor(s.getLine(1)).equalsIgnoreCase("на трассу") && !s.getLine(2).isEmpty()) {
+                final String trasseName = ChatColor.stripColor(s.getLine(2));
+                for (Trasse t : Main.trasses.values()) {
+                    if (ChatColor.stripColor(t.displayName).equalsIgnoreCase(trasseName)) {
+                        Main.joinParkur(p, t.id);
+                        break;
+                    }
+                }
+            }
             return;
         }
         

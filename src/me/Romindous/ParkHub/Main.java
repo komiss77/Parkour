@@ -261,6 +261,10 @@ public class Main extends JavaPlugin {
             p.sendMessage("§cНет паркура "+pkId+"!");
             return;
         }
+        if (tr.disabled) {
+            p.sendMessage("§cПаркур "+tr.displayName+" §cвыключен!");
+            return;
+        }
         final PD pd = data.get(p.getName());
         if (pd==null) {
             p.sendMessage("§cДанные паркуриста не загружены!");
