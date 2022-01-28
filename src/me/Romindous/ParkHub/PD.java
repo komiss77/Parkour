@@ -71,6 +71,10 @@ public class PD {
     }
 
     public void resetTrasse() {
+        if (task!=null) {
+            task.cancel();
+            task = null;
+        }
         if (current!=null) { //есть проходимый паркур
             saveProgress(current.id); //сохранить, что пройдено
             current.inProgress.remove(name);

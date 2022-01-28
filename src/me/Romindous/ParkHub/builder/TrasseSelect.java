@@ -1,33 +1,26 @@
 package me.Romindous.ParkHub.builder;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import me.Romindous.ParkHub.Main;
-import me.Romindous.ParkHub.Trasse;
-import me.Romindous.ParkHub.builder.LocalBuilder.EditMode;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import java.util.LinkedList;
+
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 import ru.komiss77.ApiOstrov;
 import ru.komiss77.builder.SetupMode;
 import ru.komiss77.utils.ItemBuilder;
 import ru.komiss77.utils.ItemUtils;
-import ru.komiss77.utils.LocationUtil;
 import ru.komiss77.utils.inventory.ClickableItem;
-import ru.komiss77.utils.inventory.ConfirmationGUI;
 import ru.komiss77.utils.inventory.InventoryContent;
 import ru.komiss77.utils.inventory.InventoryProvider;
 import ru.komiss77.utils.inventory.Pagination;
 import ru.komiss77.utils.inventory.SlotIterator;
 import ru.komiss77.utils.inventory.SlotPos;
+import me.Romindous.ParkHub.Main;
+import me.Romindous.ParkHub.Trasse;
+import ru.komiss77.Timer;
 
 
 
@@ -37,13 +30,12 @@ import ru.komiss77.utils.inventory.SlotPos;
 
 
 
-
-public class MapSelect implements InventoryProvider{
+public class TrasseSelect implements InventoryProvider{
 
     private static final ItemStack fill = new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).build();;
     private final SetupMode sm;
     
-    MapSelect(final SetupMode sm) {
+    TrasseSelect(final SetupMode sm) {
         this.sm = sm;
     }
         
@@ -63,7 +55,8 @@ public class MapSelect implements InventoryProvider{
             
             final ItemStack is = new ItemBuilder(t.mat)
                 .name(t.displayName)
-                .lore("§6----------------------")
+                .lore(t.disabled ? "§4Выключен" : "§2Включен")
+                .lore("§3Мир: "+t.worldName)
                 .lore("§7Создан: §3"+ApiOstrov.dateFromStamp(t.createAt))
                 .lore("§7Создатель: §f"+t.creator)
                 .lore("§7Сложность: §5"+t.level.name())
@@ -74,15 +67,14 @@ public class MapSelect implements InventoryProvider{
                 .lore("§7⌚ "+ApiOstrov.secondToTime(t.totalTime))
                 .lore("§7⇪: "+t.totalFalls)
                 .lore("§7☠: "+t.totalJumps)
-                .lore("§6----------------------")
-                .lore("§7ЛКМ - выключить и редактировать")
+                .lore("§7ЛКМ - редактировать")
                 .build();
             
             entry.add(ClickableItem.of(is, e-> {
                 if (e.getClick()==ClickType.LEFT) {
-                    t.disabled = true;
+                    //t.service = true;
                     sm.arena = t;
-                    LocalBuilder.openTrasseMenu(p, sm);
+                    LocalBuilder.openTrasseEditor(p, sm);
                 } else if (e.getClick()==ClickType.DROP) {
                     
                 }
@@ -92,8 +84,14 @@ public class MapSelect implements InventoryProvider{
        
         
         entry.add(ClickableItem.of(  ItemUtils.add, e-> {
-                    p.sendMessage("создать");
-                    
+                    final Trasse t = new Trasse(ApiOstrov.generateId(), "новая трасса", p.getWorld().getName(), new LinkedList<>() );
+                    t.creator = p.getName();
+                    t.createAt = Timer.getTime();
+                    t.disabled = true;
+                    t.changed = true;
+                    Main.trasses.put(t.id, t);
+                    sm.arena = t;
+                    LocalBuilder.openTrasseEditor(p, sm);
                 }
             )
         );        
@@ -111,7 +109,20 @@ public class MapSelect implements InventoryProvider{
             }
             ));
         }
-
+                
+        content.set( 0, 4, ClickableItem.of( new ItemBuilder(Material.OAK_DOOR)
+                .name("Закончить режим Билдера")
+                .build(), e -> {
+                    for (Trasse t:Main.trasses.values()) {
+                        if (t.changed) {
+                            p.sendMessage("§6Внимание! Трасса "+t.displayName+" §cне сохранена!");
+                        }
+                    }
+                    p.performCommand("builder end");
+            }
+        ));
+        
+        
         if (!pagination.isFirst()) {
             content.set(0, 0, ClickableItem.of(ItemUtils.previosPage, e 
                     -> {

@@ -1,46 +1,84 @@
 package me.Romindous.ParkHub.builder;
 
+import me.Romindous.ParkHub.CheckPoint;
+import me.Romindous.ParkHub.Main;
+import me.Romindous.ParkHub.PD;
 import me.Romindous.ParkHub.Trasse;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.inventory.ItemStack;
 import ru.komiss77.builder.SetupMode;
+import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.inventory.SmartInventory;
 
 
 public class LocalBuilder {
 
     public static void open(final Player p, final SetupMode sm) {
-        
-        if (sm.arena==null || sm.loacalEditMode==null) {
+        p.getInventory().setItem(1, new ItemStack(Material.AIR)); //убрать выбор паркура
+        p.getInventory().setItem(7, new ItemStack(Material.AIR)); //убрать выход в лобби
+        final PD pd = Main.data.get(p.getName());
+        if (pd.current!=null) {
+            pd.resetTrasse();
+        }
+        PM.getOplayer(pd.name).score.getSideBar().reset();
+        if (sm.arena==null || sm.loacalEditMode==null || sm.loacalEditMode == EditMode.Main) {
             
             sm.loacalEditMode = EditMode.Main;
             SmartInventory.builder()
                 .id("MapSelect"+p.getName())
-                .provider(new MapSelect(sm))
+                .provider(new TrasseSelect(sm))
                 .size(6, 9)
                 .title("Выберите карту для редактора")
                 .build()
                 .open(p);
             
         } else if (sm.loacalEditMode == EditMode.Trasse) {
-            openTrasseMenu(p, sm);
+            
+            openTrasseEditor(p, sm);
+            
+        } else if (sm.loacalEditMode == EditMode.Points) {
+            
+            openCheckPointEditor(p, sm);
+            
         }
 
     }
 
-    public static void openTrasseMenu(final Player p, final SetupMode sm) {
+    public static void openTrasseEditor(final Player p, final SetupMode sm) {
         sm.loacalEditMode = EditMode.Trasse;
         SmartInventory.builder()
-            .id("MapEdit"+p.getName())
-            .provider(new MapEdit(sm))
-            .size(6, 9)
+            .id("TrasseEditor"+p.getName())
+            .provider(new TrasseEdit(sm))
+            .size(2, 9)
             .title("Карта "+((Trasse)sm.arena).displayName)
             .build()
             .open(p);
     }
     
     
-    
-    
+    public static void openCheckPointEditor(final Player p, final SetupMode sm) {
+        sm.loacalEditMode = EditMode.Points;
+        SmartInventory.builder()
+            .id("CheckPointEditor"+p.getName())
+            .provider(new PointsEdit(sm))
+            .size(6, 9)
+            .title("Карта "+((Trasse)sm.arena).displayName)
+            .build()
+            .open(p);
+    }
+
+    public static void openPointSettings(final Player p, final SetupMode sm, final CheckPoint cp) {
+        SmartInventory.builder()
+            .id("PointSettings"+p.getName())
+            .provider(new PointSettings(sm, cp))
+            .type(InventoryType.HOPPER)
+            .title("Настройки чекпоинта")
+            .build()
+            .open(p);
+    }
+        
     
     
     

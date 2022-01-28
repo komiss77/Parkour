@@ -1,6 +1,6 @@
 package me.Romindous.ParkHub;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -13,9 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 import ru.komiss77.ApiOstrov;
 import ru.komiss77.Timer;
-import ru.komiss77.builder.SetupMode;
-import ru.komiss77.modules.player.Oplayer;
-import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.inventory.ConfirmationGUI;
 import ru.komiss77.utils.inventory.SmartInventory;
 
@@ -24,7 +21,7 @@ public class PrkCmd implements CommandExecutor, TabCompleter {
 
     @Override
     public List<String> onTabComplete(final CommandSender send, final Command cmd, final String al, final String[] args) {
-        final List<String> sugg = new ArrayList<>();
+       // final List<String> sugg = new ArrayList<>();
        /* if (send.hasPermission("ostrov.builder")) {
                 if (args.length == 1) {
                         sugg.add("create");
@@ -53,7 +50,7 @@ public class PrkCmd implements CommandExecutor, TabCompleter {
                         }
                 }
         }*/
-        return sugg;
+        return Arrays.asList("leave","suicide","restart","way","exit");
     }
 
         

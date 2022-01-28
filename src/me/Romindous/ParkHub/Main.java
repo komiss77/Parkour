@@ -16,7 +16,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -99,7 +98,7 @@ public class Main extends JavaPlugin {
                 String[]split;
                 for (String cpString : parkData.getStringList(mapPath+"points")) {
                     split = cpString.split(",");
-                    final CheckPoint cp = new CheckPoint(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), BlockFace.valueOf(split[3]),
+                    final CheckPoint cp = new CheckPoint(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]),
                                                             Integer.parseInt(split[4]), Integer.parseInt(split[5]), Integer.parseInt(split[6]));
 
                     points.add(cp);
@@ -234,10 +233,6 @@ public class Main extends JavaPlugin {
         //!! При первом тп в лобби после BungeeDataRecieved PD не будет!!!
         final PD pd = data.get(p.getName());
         if (pd!=null) {
-            if (pd.task!=null) {
-                pd.task.cancel();
-                pd.task = null;
-            }
             pd.resetTrasse();
             lobbyScore(p);
         }
@@ -307,11 +302,11 @@ public class Main extends JavaPlugin {
         final Location loc = cp.getLocation(tr.worldName);
         final Location nextLoc = next.getLocation(tr.worldName);
         
-        if (cp.bf!=BlockFace.SELF) {
-            loc.setDirection(cp.bf.getDirection());
-        } else {
+        //if (cp.bf!=BlockFace.SELF) {
+            //loc.setDirection(cp.bf.getDirection());
+        //} else {
             loc.setDirection(nextLoc.toVector().subtract(loc.toVector()));
-        }
+        //}
         
         p.teleport(loc);
         
@@ -347,7 +342,7 @@ public class Main extends JavaPlugin {
                 try { 
                     stmt = ApiOstrov.getLocalConnection().createStatement();
 
-                    rs = stmt.executeQuery( "SELECT *  FROM `playerData` WHERE `trasseID`='"+t.id+"' AND `cheat`='0' ORDER BY `trasseTime` ASC LIMIT 24" );
+                    rs = stmt.executeQuery( "SELECT *  FROM `playerData` WHERE `trasseID`='"+t.id+"' AND `done`>'0' AND `cheat`='0' ORDER BY `trasseTime` ASC LIMIT 24" );
                     
                     int place = 1;
                     while (rs.next()) {
@@ -396,7 +391,7 @@ public class Main extends JavaPlugin {
             .lore("§7Место : §b"+place)
             .lore("§7⌚ : §f"+ApiOstrov.secondToTime(rs.getInt("trasseTime")))
             .lore("§7⇪ : §6"+rs.getInt("trasseJump"))
-            .lore("§7☠: §c"+rs.getInt("trasseFall"))
+            .lore("§7☠: §c"+rs.getInt("trasseFalls"))
             .lore("§7")
             .build();
         

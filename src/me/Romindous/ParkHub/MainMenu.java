@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import ru.komiss77.ApiOstrov;
-import ru.komiss77.Ostrov;
 import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.ItemBuilder;
 import ru.komiss77.utils.ItemUtils;
@@ -32,7 +31,16 @@ public class MainMenu implements InventoryProvider {
     
     private static final ClickableItem fill = ClickableItem.empty(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).name("§8.").build());
 
+    private static final ItemStack random;
     
+    static {
+        random = new ItemBuilder(Material.SPYGLASS)
+                .name("§3Рандомная Карта")
+                .lore("§7Нажмите для выбора")
+                .lore("§3рандомной §7карты!")
+                .build()
+                ;
+    }
 
     
     
@@ -45,7 +53,7 @@ public class MainMenu implements InventoryProvider {
         final Pagination pagination = content.pagination();
         final ArrayList<ClickableItem> entry = new ArrayList<>();        
 
-final long l = System.currentTimeMillis();
+//final long l = System.currentTimeMillis();
 
         final PD pd = Main.data.get(p.getName());
         
@@ -60,14 +68,10 @@ final long l = System.currentTimeMillis();
                 }));
 
 
-        content.set(4, ClickableItem.of(new ItemBuilder(Material.SPYGLASS)
-                .name("§3Рандомная Карта")
-                .lore("§7Нажмите для выбора")
-                .lore("§3рандомной §7карты!")
-                .build(), e-> {
+        content.set(4, ClickableItem.of(random, e-> {
                     final List <Trasse> candidate = new ArrayList<>();
                     for (Trasse t : Main.trasses.values()) {
-                        if (!t.disabled || !t.isCompleted(pd)) {
+                        if (!t.disabled  && !t.isCompleted(pd)) {
                             candidate.add(t);
                         }
                     }
@@ -121,7 +125,7 @@ final long l = System.currentTimeMillis();
                 "§6----------------------",
                 "§7ЛКМ - "+ (t.isCompleted(pd) ? "§cПройти заново" : (t.hasProgress(pd) ? "§aПродолжить" : "§bНачать") ),
                 "§7ПКМ - ТОП "
-                );
+            );
             
             final ItemStack is = new ItemStack(t.mat);
             final ItemMeta im = is.getItemMeta();
@@ -216,7 +220,7 @@ final long l = System.currentTimeMillis();
         pagination.addToIterator(content.newIterator(SlotIterator.Type.HORIZONTAL, SlotPos.of(1, 0)).allowOverride(false));
 
 
-Ostrov.log_warn("Меню создано за "+(System.currentTimeMillis()-l)+"мс.");
+//Ostrov.log_warn("Меню создано за "+(System.currentTimeMillis()-l)+"мс.");
         
 
     }

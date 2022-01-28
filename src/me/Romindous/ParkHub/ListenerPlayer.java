@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -208,14 +209,14 @@ public class ListenerPlayer implements Listener {
             final CheckPoint cp = t.getCp(go.checkPoint);
 
             final String log = "reach point:"+go.checkPoint+" ("+pd.nextCpX+","+pd.nextCpY+","+pd.nextCpZ+") by time:"+pd.stageTime+"/"+cp.controlTime+"  jump:"+pd.stageJump+"/"+cp.controlJump + " fall:"+pd.stageFall+"/"+cp.controlFall;
-            if (pd.stageTime<cp.controlTime || pd.stageJump<cp.controlJump || pd.stageFall<cp.controlFall) {
+            if (p.getGameMode()==GameMode.SURVIVAL && (pd.stageTime<cp.controlTime || pd.stageJump<cp.controlJump || pd.stageFall<cp.controlFall) ) {
                 if (!go.cheat) { //до этого не было чита - пометить везде
                     LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `playerData` SET `cheat` = '1' WHERE `name`='"+pd.name+"'");
                 }
                 go.cheat = true;
                 LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `cheatLog` (name,parkName,log,stamp) VALUES ('"+p.getName()+"', '"+ChatColor.stripColor(t.displayName)+"', '"+log+"', '"+Timer.getTime()+"');");
             }
-p.sendMessage("§8log: "+(go.cheat?"§cCHEAT!§8 " :"§aOK§8 ")+log);
+//p.sendMessage("§8log: "+(go.cheat?"§cCHEAT!§8 " :"§aOK§8 ")+log);
             go.checkPoint++;
             
             if (t.isLastCp(go.checkPoint)) { //прошел

@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.komiss77.Ostrov;
 import ru.komiss77.Timer;
@@ -26,7 +28,9 @@ public class Trasse {
     
     public final String worldName;
     public final HashSet<String> inProgress;
+    //public boolean service = false; //загружена в режим билдера
     public boolean disabled = false;
+    public boolean changed = false; //для иконки сохранения
     
     public LinkedList<CheckPoint> points = new LinkedList();
     
@@ -85,14 +89,29 @@ public class Trasse {
         return points.get(current);
     }
     
+    public CheckPoint getCp(final Location loc) {
+        for (CheckPoint cp:points) {
+            if (cp.x==loc.getBlockX() && cp.y==loc.getBlockY() && cp.z==loc.getBlockZ()) {
+                return cp;
+            }
+        }
+        return null;
+    }
+
+    
     public CheckPoint getNextCp(final int current) {
-        if (current>=points.size()-1) {
+        if (current<0 || current>=points.size()-1) {
             return points.getFirst();
         }
         return points.get(current+1);
+    }   
+    
+    public CheckPoint getNextCp(final CheckPoint current) {
+        final int idx = points.indexOf(current);
+        return getNextCp(idx);
     }
 
-    public void saveConfig() {
+    public void saveConfig(final CommandSender cs) {
         final String path = "trasses."+id+".";
         Main.parkData.set (path+"displayName", displayName);
         Main.parkData.set (path+"worldName", worldName);
@@ -110,7 +129,11 @@ public class Trasse {
         }
         Main.parkData.set (path+"points", list);
         Main.parkData.saveConfig();
+        changed = false;
         Ostrov.log_ok("Данные паркура "+displayName+" сохранены.");
+        if (cs!=null) {
+            cs.sendMessage("Данные паркура "+displayName+" сохранены.");
+        }
     }
     
     public void saveStat() {

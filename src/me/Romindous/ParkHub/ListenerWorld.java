@@ -1,6 +1,6 @@
 package me.Romindous.ParkHub;
 
-import io.papermc.paper.event.player.AsyncChatEvent;
+import me.Romindous.ParkHub.builder.LocalBuilder;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -22,10 +22,16 @@ import org.bukkit.event.player.PlayerArmorStandManipulateEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.StructureGrowEvent;
-import me.clip.deluxechat.events.DeluxeChatEvent;
 import org.bukkit.Sound;
+import me.clip.deluxechat.events.DeluxeChatEvent;
+import org.bukkit.Tag;
+import org.bukkit.block.Sign;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
 import ru.komiss77.ApiOstrov;
 import ru.komiss77.Ostrov;
+import ru.komiss77.modules.player.Oplayer;
+import ru.komiss77.modules.player.PM;
 
 
 
@@ -61,13 +67,63 @@ public class ListenerWorld implements Listener {
     }
 
     
-    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)    
+    public void onRightClick(final PlayerInteractEvent e) {
+        
+        if (e.getAction()==Action.RIGHT_CLICK_BLOCK && (Tag.SIGNS.isTagged(e.getClickedBlock().getType()) || Tag.WALL_SIGNS.isTagged(e.getClickedBlock().getType()) 
+                || Tag.STANDING_SIGNS.isTagged(e.getClickedBlock().getType()) )   ) {
+            final Sign s = (Sign) e.getClickedBlock().getState();
+            final Player p = e.getPlayer();
+            p.sendMessage("1="+s.getLine(0));
+            return;
+        }
+        
+        if (!ApiOstrov.isLocalBuilder(e.getPlayer()) || e.getAction()!=Action.RIGHT_CLICK_BLOCK || !e.getClickedBlock().getType().name().contains("_PRESSURE_")) {
+            return;
+        }
+        final Player p = e.getPlayer();
+        final Oplayer op = PM.getOplayer(p.getName());
+        if (op.setup!=null && op.setup.arena!=null) {
+            final Trasse t = (Trasse) op.setup.arena;
+            if (!t.worldName.equals(p.getWorld().getName())) {
+                p.sendMessage("§6В редактор загружена трасса "+t.displayName+" §6(мир="+t.worldName+"), а эта в другом мире!");
+                e.setCancelled(true);
+                return;
+            }
+            final CheckPoint cp = t.getCp(e.getClickedBlock().getLocation());
+            if (cp!=null) {
+                LocalBuilder.openPointSettings(p, op.setup, cp);
+            } else {
+                p.sendMessage("§7Это не чекпоинт редактируемой трассы "+t.displayName+"!");
+            }
+        }
+    }
     
     
     
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)    
     public void onPlace(final BlockPlaceEvent e) {
-        if (!ApiOstrov.isLocalBuilder(e.getPlayer()) ) e.setCancelled(true);
+        if (!ApiOstrov.isLocalBuilder(e.getPlayer()) ) {
+            e.setCancelled(true);
+            return;
+        }
+        if (!e.getBlock().getType().name().contains("_PRESSURE_")) return;
+        final Player p = e.getPlayer();
+        final Oplayer op = PM.getOplayer(p.getName());
+        if (op.setup!=null && op.setup.arena!=null) {
+            final Trasse t = (Trasse) op.setup.arena;
+            if (!t.worldName.equals(p.getWorld().getName())) {
+                 p.sendMessage("§6В редактор загружена трасса "+t.displayName+" §6(мир="+t.worldName+"), но вы ставите плиту в другом мире!");
+                 e.setCancelled(true);
+                return;
+            }
+            final CheckPoint cp = new CheckPoint(e.getBlock().getX(), e.getBlock().getY(), e.getBlock().getZ(), 10, 2, 0);
+            t.points.add(cp);
+            t.changed = true;
+            p.sendMessage("§aВы добавили чекпоинт §f#"+t.points.indexOf(cp)+" §aдля трассы "+t.displayName+"§a.");
+            p.sendMessage("§3ПКМ на плиту - настройки чекпоинта. §6Сохраните изменения!");
+        }
+        
         
     }
     
@@ -79,11 +135,36 @@ public class ListenerWorld implements Listener {
     
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)    
     public void onBreak(final BlockBreakEvent e) {
-        if (!ApiOstrov.isLocalBuilder(e.getPlayer()) ) e.setCancelled(true);
-
+        if (!ApiOstrov.isLocalBuilder(e.getPlayer()) ) {
+            e.setCancelled(true);
+            return;
+        }
+        if (!e.getBlock().getType().name().contains("_PRESSURE_")) return;
+        final Player p = e.getPlayer();
         
+        for (Trasse t : Main.trasses.values()) {
+            if (t.worldName.equals(p.getWorld().getName())) { //перебираем трассы в этом мире
+                final CheckPoint cp = t.getCp(e.getBlock().getLocation()); 
+                if (cp!=null) { //если это чекпоинт какой-то трассы
+                    final Oplayer op = PM.getOplayer(p.getName());
+                    if (op.setup==null || op.setup.arena==null || ((Trasse)op.setup.arena).id!=t.id ) {
+                        p.sendMessage("§cЭта плита - чекпоинт трассы "+t.displayName+"§c, чтобы удалить чекпоинт загрузите трассу в редактор.");
+                        e.setCancelled(true);
+                        return;
+                    }
+                    p.sendMessage("§eВы удалили чекпоинт §f#"+t.points.indexOf(cp)+" §eу трассы "+t.displayName+"§e. Сохраните изменения!");
+                    t.points.remove(cp);
+                    t.changed = true;
+                }
+            }
+        }
+
     }
 
+    
+    
+    
+    
     
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)    
     public void onHangingBreakByEntityEvent(final HangingBreakByEntityEvent e) {
