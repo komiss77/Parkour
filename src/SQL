@@ -10,7 +10,7 @@ CREATE TABLE `cheatLog` (
 
 
 
-CREATE TABLE `playerData` (
+CREATE TABLE `parkData` (
   `hash` int NOT NULL,
   `name` varchar(16) NOT NULL,
   `trasseID` int NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE `playerData` (
 ALTER TABLE `cheatLog`
   ADD PRIMARY KEY (`id`);
 
-ALTER TABLE `playerData`
+ALTER TABLE `parkData`
   ADD PRIMARY KEY (`hash`),
   ADD KEY `name` (`name`),
   ADD KEY `trasseID` (`trasseID`);

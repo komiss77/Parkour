@@ -65,7 +65,7 @@ public class ListenerPlayer implements Listener {
             
             try {  
                 stmt = LocalDB.GetConnection().createStatement(); 
-                rs = stmt.executeQuery( "SELECT * FROM `playerData` WHERE `name` = '"+pd.name+"';" );
+                rs = stmt.executeQuery( "SELECT * FROM `parkData` WHERE `name` = '"+pd.name+"';" );
                 
                 while (rs.next()) {
                     if (Main.trasses.containsKey(rs.getInt("trasseID"))) {
@@ -211,7 +211,7 @@ public class ListenerPlayer implements Listener {
             final String log = "reach point:"+go.checkPoint+" ("+pd.nextCpX+","+pd.nextCpY+","+pd.nextCpZ+") by time:"+pd.stageTime+"/"+cp.controlTime+"  jump:"+pd.stageJump+"/"+cp.controlJump + " fall:"+pd.stageFall+"/"+cp.controlFall;
             if (p.getGameMode()==GameMode.SURVIVAL && (pd.stageTime<cp.controlTime || pd.stageJump<cp.controlJump || pd.stageFall<cp.controlFall) ) {
                 if (!go.cheat) { //до этого не было чита - пометить везде
-                    LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `playerData` SET `cheat` = '1' WHERE `name`='"+pd.name+"'");
+                    LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `parkData` SET `cheat` = '1' WHERE `name`='"+pd.name+"'");
                 }
                 go.cheat = true;
                 LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `cheatLog` (name,parkName,log,stamp) VALUES ('"+p.getName()+"', '"+ChatColor.stripColor(t.displayName)+"', '"+log+"', '"+Timer.getTime()+"');");

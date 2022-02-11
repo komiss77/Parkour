@@ -296,7 +296,7 @@ public class TrasseEdit implements InventoryProvider{
                         Main.parkStat.set("stat."+t.id, null);
                         Main.parkStat.saveConfig();
                         
-                        LocalDB.executePstAsync(p, "DELETE FROM `playerData` WHERE `trasseID`='"+t.id+"'; ");
+                        LocalDB.executePstAsync(p, "DELETE FROM `parkData` WHERE `trasseID`='"+t.id+"'; ");
                         
                         p.sendMessage("§cТрасса "+t.displayName+" §cудалена.");
                         sm.loacalEditMode = EditMode.Main;

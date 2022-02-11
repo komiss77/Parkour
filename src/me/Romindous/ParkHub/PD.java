@@ -53,7 +53,7 @@ public class PD {
             go = new Progress();
             progress.put(parkID, go);
             //!INSERT
-            //LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `playerData` (hash,name,trasseID) VALUES ('"+(parkID^name.hashCode())+"','"+name+"','"+parkID+"');");
+            //LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `parkData` (hash,name,trasseID) VALUES ('"+(parkID^name.hashCode())+"','"+name+"','"+parkID+"');");
         }
         return go;
     }
@@ -62,12 +62,12 @@ public class PD {
         Progress go = getProgress(parkID);//progress.get(parkID);
         //!UPDATE
         if (!go.isZero()) {
-            final String querry = "INSERT INTO `playerData` (hash,name,trasseID,done,cheat) VALUES ('"+(parkID^name.hashCode())+"','"+name+"','"+parkID+"','"+go.done+"','"+(go.cheat?1:0)+"') ON DUPLICATE KEY "+
+            final String querry = "INSERT INTO `parkData` (hash,name,trasseID,done,cheat) VALUES ('"+(parkID^name.hashCode())+"','"+name+"','"+parkID+"','"+go.done+"','"+(go.cheat?1:0)+"') ON DUPLICATE KEY "+
                 "UPDATE `done`='"+go.done+"',`checkPoint`='"+go.checkPoint+"',`trasseTime`='"+go.trasseTime+"',`trasseJump`='"+go.trasseJump+"',`trasseFalls`='"+go.trasseFalls+"',`cheat`='"+(go.cheat?1:0)+"' ;";
             LocalDB.executePstAsync(Bukkit.getConsoleSender(), querry );
 //Ostrov.log_warn("querry="+querry);
         }
-        //LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `playerData` SET `checkPoint`='"+go.checkPoint+"',`trasseTime`='"+go.trasseTime+"',`trasseJump`='"+go.trasseJump+"',`trasseFalls`='"+go.trasseFalls+"',`cheat`='"+(go.cheat?1:0)+"' WHERE `hash`='"+(parkID^name.hashCode())+"';");
+        //LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `parkData` SET `checkPoint`='"+go.checkPoint+"',`trasseTime`='"+go.trasseTime+"',`trasseJump`='"+go.trasseJump+"',`trasseFalls`='"+go.trasseFalls+"',`cheat`='"+(go.cheat?1:0)+"' WHERE `hash`='"+(parkID^name.hashCode())+"';");
     }
 
     public void resetTrasse() {

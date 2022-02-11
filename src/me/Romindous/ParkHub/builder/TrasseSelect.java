@@ -1,7 +1,9 @@
 package me.Romindous.ParkHub.builder;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -20,6 +22,7 @@ import ru.komiss77.utils.inventory.SlotIterator;
 import ru.komiss77.utils.inventory.SlotPos;
 import me.Romindous.ParkHub.Main;
 import me.Romindous.ParkHub.Trasse;
+import org.bukkit.inventory.meta.ItemMeta;
 import ru.komiss77.Timer;
 
 
@@ -32,7 +35,7 @@ import ru.komiss77.Timer;
 
 public class TrasseSelect implements InventoryProvider{
 
-    private static final ItemStack fill = new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).build();;
+    //private static final ItemStack fill = new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE).build();;
     private final SetupMode sm;
     
     TrasseSelect(final SetupMode sm) {
@@ -53,7 +56,29 @@ public class TrasseSelect implements InventoryProvider{
         
         for (Trasse t : Main.trasses.values()) {
             
-            final ItemStack is = new ItemBuilder(t.mat)
+            final List<String> lore = Arrays.asList(
+                t.disabled ? "§4Выключен" : "§2Включен",
+                "§3Мир: "+t.worldName,
+                "§7Создан: §3"+ApiOstrov.dateFromStamp(t.createAt),
+                "§7Создатель: §f"+t.creator,
+                "§7Сложность: §5"+t.level.name(),
+                t.descr,
+                t.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+t.inProgress.size()),
+                "§7⚐: "+t.size(),
+                "§7Пройден: "+t.totalDone+" раз.",
+                "§7⌚ "+ApiOstrov.secondToTime(t.totalTime),
+                "§7⇪: "+t.totalFalls,
+                "§7☠: "+t.totalJumps,
+                "§7ЛКМ - редактировать"
+            );
+
+            final ItemStack is = new ItemStack(t.mat);
+            final ItemMeta im = is.getItemMeta();
+            im.setDisplayName(t.displayName);
+            im.setLore(lore);
+            is.setItemMeta(im);
+            
+            /*final ItemStack is = new ItemBuilder(t.mat)
                 .name(t.displayName)
                 .lore(t.disabled ? "§4Выключен" : "§2Включен")
                 .lore("§3Мир: "+t.worldName)
@@ -68,7 +93,7 @@ public class TrasseSelect implements InventoryProvider{
                 .lore("§7⇪: "+t.totalFalls)
                 .lore("§7☠: "+t.totalJumps)
                 .lore("§7ЛКМ - редактировать")
-                .build();
+                .build();*/
             
             entry.add(ClickableItem.of(is, e-> {
                 if (e.getClick()==ClickType.LEFT) {
@@ -119,6 +144,7 @@ public class TrasseSelect implements InventoryProvider{
                         }
                     }
                     p.performCommand("builder end");
+                    Main.lobbyPlayer(p);
             }
         ));
         

@@ -50,7 +50,7 @@ public class Main extends JavaPlugin {
     public static final HashMap<Integer,Trasse> trasses;
     public static final CaseInsensitiveMap<PD> data;
 
-    public static MenuItem select, stat, exit;
+    public static MenuItem select, exit;
     public static MenuItem suicide, navigator, toStatr, leave;
    
     static {
@@ -346,7 +346,7 @@ public class Main extends JavaPlugin {
                 try { 
                     stmt = ApiOstrov.getLocalConnection().createStatement();
 
-                    rs = stmt.executeQuery( "SELECT *  FROM `playerData` WHERE `trasseID`='"+t.id+"' AND `done`>'0' AND `cheat`='0' ORDER BY `trasseTime` ASC LIMIT 24" );
+                    rs = stmt.executeQuery( "SELECT *  FROM `parkData` WHERE `trasseID`='"+t.id+"' AND `done`>'0' AND `cheat`='0' ORDER BY `trasseTime` ASC LIMIT 24" );
                     
                     int place = 1;
                     while (rs.next()) {
@@ -429,10 +429,10 @@ public class Main extends JavaPlugin {
         op.score.getSideBar().updateLine(12, "§bЛобби");
         op.score.getSideBar().updateLine(11, "");
         op.score.getSideBar().updateLine(10, "§7Ваша статистика: ");
-        op.score.getSideBar().updateLine(9, "§7⌚: "+ApiOstrov.secondToTime(pd.totalTime));
-        op.score.getSideBar().updateLine(8, "§7☠: "+pd.totalFalls);
-        op.score.getSideBar().updateLine(7, "§7⇪: "+pd.totalJumps);
-        op.score.getSideBar().updateLine(6, "§7⚐: §b"+pd.totalCheckPoints);
+        op.score.getSideBar().updateLine(9, "§f⌚: §3"+ApiOstrov.secondToTime(pd.totalTime));
+        op.score.getSideBar().updateLine(8, "§f⇪: §6"+pd.totalJumps);
+        op.score.getSideBar().updateLine(7, "§f☠: §4"+pd.totalFalls);
+        op.score.getSideBar().updateLine(6, "§f⚐: §b"+pd.totalCheckPoints);
         op.score.getSideBar().updateLine(5, "§7Средние падения за");
         op.score.getSideBar().updateLine(4, "§7чекп.: §3"+pd.stageFall+" §7/ §3"+pd.totalCheckPoints+"§7 = §3"+(pd.totalCheckPoints>0 ? ((int)pd.totalFalls/pd.totalCheckPoints) : 0) );
         //op.score.getSideBar().updateLine(5, ChatColor.GRAY + "чекп.: " + ChatColor.DARK_AQUA + (exst ? String.valueOf(rs.getInt("TFLS")) + ChatColor.GRAY + " / " + ChatColor.DARK_AQUA + rs.getInt("TCPTS") + ChatColor.GRAY + " = " + ChatColor.DARK_AQUA + lmRslt(rs.getFloat("TFLS") / rs.getFloat("TCPTS"), 4) : 0));
@@ -544,7 +544,7 @@ public class Main extends JavaPlugin {
             .rightClickCmd("pk")
             .create();
         
-        final ItemStack is2=new ItemBuilder(Material.MAP)
+       /* final ItemStack is2=new ItemBuilder(Material.MAP)
             .setName("§9Статистика")
             .lore("§bПКМ §7- Топ статистика")
             .build();
@@ -558,7 +558,7 @@ public class Main extends JavaPlugin {
             .canPickup(false)
             .canMove(false)
             .rightClickCmd("pk stat")
-            .create();
+            .create();*/
         
         final ItemStack is3=new ItemBuilder(Material.MAGMA_CREAM)
             .setName("§4Выход в лобби")

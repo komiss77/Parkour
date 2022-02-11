@@ -4,10 +4,8 @@ import me.Romindous.ParkHub.CheckPoint;
 import me.Romindous.ParkHub.Main;
 import me.Romindous.ParkHub.PD;
 import me.Romindous.ParkHub.Trasse;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.ItemStack;
 import ru.komiss77.builder.SetupMode;
 import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.inventory.SmartInventory;
@@ -16,8 +14,13 @@ import ru.komiss77.utils.inventory.SmartInventory;
 public class LocalBuilder {
 
     public static void open(final Player p, final SetupMode sm) {
-        p.getInventory().setItem(1, new ItemStack(Material.AIR)); //убрать выбор паркура
-        p.getInventory().setItem(7, new ItemStack(Material.AIR)); //убрать выход в лобби
+        Main.select.takeAway(p);//p.getInventory().setItem(1, new ItemStack(Material.AIR)); //убрать выбор паркура
+        Main.toStatr.takeAway(p);//p.getInventory().setItem(7, new ItemStack(Material.AIR)); //убрать выход в лобби
+        Main.suicide.takeAway(p);//
+        Main.exit.takeAway(p);//
+        Main.leave.takeAway(p);//
+        
+        
         final PD pd = Main.data.get(p.getName());
         if (pd.current!=null) {
             pd.resetTrasse();
