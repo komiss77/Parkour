@@ -108,12 +108,12 @@ public class PrkCmd implements CommandExecutor, TabCompleter {
                     return true;
                 
                 case "suicide":
-                    if (!p.hasPermission("parkhub.suicide")) {
-                        p.sendMessage("§7Суицид - роскошь, требующая привилегии §3Воина§7!");
-                        return true;
-                    }
                     if (pd.current==null) {
                         p.sendMessage("§6Вы не на трассе!");
+                        return true;
+                    }
+                    if (!p.hasPermission("parkhub.suicide")) {
+                        p.sendMessage("§7Суицид - роскошь, требующая привилегии §3Воина§7!");
                         return true;
                     }
                     pd.fall();

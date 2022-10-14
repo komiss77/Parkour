@@ -7,6 +7,21 @@
 
 
 
+18.04
+ Could not pass event InventoryClickEvent to Ostrov v2.0
+java.lang.ArrayIndexOutOfBoundsException: arraycopy: length -18 is negative
+	at java.util.Arrays.copyOfRange(Arrays.java:3787) ~[?:?]
+	at java.util.Arrays.copyOfRange(Arrays.java:3742) ~[?:?]
+	at ru.komiss77.utils.inventory.Pagination.getPageItems(Pagination.java:17) ~[Ostrov.jar:?]
+	at ru.komiss77.utils.inventory.Pagination.addToIterator(Pagination.java:63) ~[Ostrov.jar:?]
+at me.Romindous.ParkHub.MainMenu.init(MainMenu.java:220) ~[Parkur.jar:?]
+	at ru.komiss77.utils.inventory.SmartInventory.open(SmartInventory.java:39) ~[Ostrov.jar:?]
+	at ru.komiss77.utils.inventory.InventoryProvider.reopen(InventoryProvider.java:16) ~[Ostrov.jar:?]
+at me.Romindous.ParkHub.MainMenu.lambda$init$2(MainMenu.java:91) ~[Parkur.jar:?]
+	at ru.komiss77.utils.inventory.ClickableItem.run(ClickableItem.java:30) ~[Ostrov.jar:?]
+	at ru.komiss77.utils.inventory.InventoryAPIListener.lambda$onInventoryClick$0(InventoryAPIListener.java:57) ~[Ostrov.jar:?]
+	at java.util.Optional.ifPresent(Optional.java:178) ~[?:?]
+	at ru.komiss77.utils.inventory.InventoryAPIListener.onInventoryClick(InventoryAPIListener.java:57) ~[Ostrov.jar:?]
 
 
 

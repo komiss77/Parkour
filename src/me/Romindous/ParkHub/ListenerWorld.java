@@ -241,7 +241,10 @@ public class ListenerWorld implements Listener {
                         Main.lobbyPlayer(p);
                         p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1, 1);
                     } else {
-                        p.performCommand("pk suicide");
+                        //p.performCommand("pk suicide"); бесконечное падение!
+                        pd.fall();
+                        Main.joinParkur(p, pd.current.id);
+                        p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1, 1);
                     }
                     return;
                     

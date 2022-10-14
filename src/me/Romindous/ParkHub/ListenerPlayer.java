@@ -42,6 +42,8 @@ import ru.komiss77.utils.DonatEffect;
 public class ListenerPlayer implements Listener {
 
     
+    private static boolean anticheat = false;
+    
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBuilderMenu(final BuilderMenuEvent e) {
         LocalBuilder.open(e.getPlayer(), e.getSetupMode());
@@ -209,7 +211,7 @@ public class ListenerPlayer implements Listener {
             final CheckPoint cp = t.getCp(go.checkPoint);
 
             final String log = "reach point:"+go.checkPoint+" ("+pd.nextCpX+","+pd.nextCpY+","+pd.nextCpZ+") by time:"+pd.stageTime+"/"+cp.controlTime+"  jump:"+pd.stageJump+"/"+cp.controlJump + " fall:"+pd.stageFall+"/"+cp.controlFall;
-            if (p.getGameMode()==GameMode.SURVIVAL && (pd.stageTime<cp.controlTime || pd.stageJump<cp.controlJump || pd.stageFall<cp.controlFall) ) {
+            if (anticheat && p.getGameMode()==GameMode.SURVIVAL && (pd.stageTime<cp.controlTime || pd.stageJump<cp.controlJump || pd.stageFall<cp.controlFall) ) {
                 if (!go.cheat) { //до этого не было чита - пометить везде
                     LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `parkData` SET `cheat` = '1' WHERE `name`='"+pd.name+"'");
                 }

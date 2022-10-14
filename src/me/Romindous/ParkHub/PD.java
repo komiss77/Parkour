@@ -5,7 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 import ru.komiss77.LocalDB;
-import ru.komiss77.Ostrov;
 
 
 
