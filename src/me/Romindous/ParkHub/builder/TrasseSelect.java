@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -80,19 +79,19 @@ public class TrasseSelect implements InventoryProvider{
             
             /*final ItemStack is = new ItemBuilder(t.mat)
                 .name(t.displayName)
-                .lore(t.disabled ? "§4Выключен" : "§2Включен")
-                .lore("§3Мир: "+t.worldName)
-                .lore("§7Создан: §3"+ApiOstrov.dateFromStamp(t.createAt))
-                .lore("§7Создатель: §f"+t.creator)
-                .lore("§7Сложность: §5"+t.level.name())
-                .lore(t.descr)
-                .lore(t.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+t.inProgress.size()) )
-                .lore("§7⚐: "+t.size())
-                .lore("§7Пройден: "+t.totalDone+" раз.")
-                .lore("§7⌚ "+ApiOstrov.secondToTime(t.totalTime))
-                .lore("§7⇪: "+t.totalFalls)
-                .lore("§7☠: "+t.totalJumps)
-                .lore("§7ЛКМ - редактировать")
+                .addLore("t.disabled ? "§4Выключен" : "§2Включен")
+                .addLore("§3Мир: "+t.worldName)
+                .addLore("§7Создан: §3"+ApiOstrov.dateFromStamp(t.createAt))
+                .addLore("§7Создатель: §f"+t.creator)
+                .addLore("§7Сложность: §5"+t.level.name())
+                .addLore("t.descr)
+                .addLore("t.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+t.inProgress.size()) )
+                .addLore("§7⚐: "+t.size())
+                .addLore("§7Пройден: "+t.totalDone+" раз.")
+                .addLore("§7⌚ "+ApiOstrov.secondToTime(t.totalTime))
+                .addLore("§7⇪: "+t.totalFalls)
+                .addLore("§7☠: "+t.totalJumps)
+                .addLore("§7ЛКМ - редактировать")
                 .build();*/
             
             entry.add(ClickableItem.of(is, e-> {

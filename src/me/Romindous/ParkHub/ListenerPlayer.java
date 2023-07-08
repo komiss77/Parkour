@@ -1,7 +1,5 @@
 package me.Romindous.ParkHub;
 
-
-import me.Romindous.ParkHub.builder.LocalBuilder;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,7 +11,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,8 +28,11 @@ import ru.komiss77.ApiOstrov;
 import ru.komiss77.Timer;
 import ru.komiss77.enums.Stat;
 import ru.komiss77.events.BuilderMenuEvent;
+import ru.komiss77.events.LocalDataLoadEvent;
 import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.DonatEffect;
+import me.Romindous.ParkHub.builder.LocalBuilder;
+import ru.komiss77.utils.TCUtils;
 
 
 
@@ -47,6 +47,11 @@ public class ListenerPlayer implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBuilderMenu(final BuilderMenuEvent e) {
         LocalBuilder.open(e.getPlayer(), e.getSetupMode());
+    }
+    
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onLocalData(final LocalDataLoadEvent e) {
+        e.setLogoutLocation(null);
     }
     
     
@@ -66,7 +71,7 @@ public class ListenerPlayer implements Listener {
             ResultSet rs = null;
             
             try {  
-                stmt = LocalDB.GetConnection().createStatement(); 
+                stmt = LocalDB.getConnection().createStatement(); 
                 rs = stmt.executeQuery( "SELECT * FROM `parkData` WHERE `name` = '"+pd.name+"';" );
                 
                 while (rs.next()) {
@@ -216,7 +221,7 @@ public class ListenerPlayer implements Listener {
                     LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `parkData` SET `cheat` = '1' WHERE `name`='"+pd.name+"'");
                 }
                 go.cheat = true;
-                LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `cheatLog` (name,parkName,log,stamp) VALUES ('"+p.getName()+"', '"+ChatColor.stripColor(t.displayName)+"', '"+log+"', '"+Timer.getTime()+"');");
+                LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `cheatLog` (name,parkName,log,stamp) VALUES ('"+p.getName()+"', '"+TCUtils.stripColor(t.displayName)+"', '"+log+"', '"+Timer.getTime()+"');");
             }
 //p.sendMessage("§8log: "+(go.cheat?"§cCHEAT!§8 " :"§aOK§8 ")+log);
             go.checkPoint++;

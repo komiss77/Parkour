@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
@@ -34,6 +35,7 @@ import ru.komiss77.utils.ItemBuilder;
 import ru.komiss77.utils.OstrovConfig;
 import ru.komiss77.utils.OstrovConfigManager;
 import ru.komiss77.Timer;
+import ru.komiss77.utils.TCUtils;
 import ru.komiss77.utils.inventory.SmartInventory;
 
 
@@ -86,7 +88,7 @@ public class Main extends JavaPlugin {
                 worldName = parkData.getString(mapPath+"worldName");
                 World w = Bukkit.getWorld(worldName);
                 if (w==null) {
-                    w = ApiOstrov.getWorldManager().load(Bukkit.getConsoleSender(), worldName, World.Environment.NORMAL, WorldManager.Generator.Empty);
+                    w = WorldManager.load(Bukkit.getConsoleSender(), worldName, World.Environment.NORMAL, WorldManager.Generator.Empty);
                 }
                 if (w==null) {
                     Ostrov.log_err("Мир "+worldName+" для паркура "+id+" не создан!");
@@ -322,9 +324,12 @@ public class Main extends JavaPlugin {
         p.sendMessage("§6Ваш вгляд направлен на цель.");
         
         p.playerListName(Component.text("§7[§3"+tr.displayName+"§7] "+p.getName()+(pd.cheat ? " §4[§cЧИТЫ§4]" :"") ));
-        if (PM.nameTagManager!=null) {
-            PM.nameTagManager.setNametag(p, pd.cheat ? "§4[§cЧитак§4]" : "§7[§3"+getRank(pd.totalCheckPoints)+"§7] ", ""); //final Parkour ar = Parkour.getPlPark(other.getName());
-        }
+        //if (PM.nameTagManager!=null) {
+        final Oplayer op = PM.getOplayer(p);
+        TextComponent c = TCUtils.format(pd.cheat ? "§4[§cЧитак§4]" : "§7[§3"+getRank(pd.totalCheckPoints)+"§7] ");
+        op.tag(c, Component.text(""));
+            //PM.nameTagManager.setNametag(p, pd.cheat ? "§4[§cЧитак§4]" : "§7[§3"+getRank(pd.totalCheckPoints)+"§7] ", ""); //final Parkour ar = Parkour.getPlPark(other.getName());
+        //
     }
 
 
@@ -391,12 +396,12 @@ public class Main extends JavaPlugin {
         
         )
             .name("§f"+rs.getString("name"))
-            .lore("§7")
-            .lore("§7Место : §b"+place)
-            .lore("§7⌚ : §f"+ApiOstrov.secondToTime(rs.getInt("trasseTime")))
-            .lore("§7⇪ : §6"+rs.getInt("trasseJump"))
-            .lore("§7☠: §c"+rs.getInt("trasseFalls"))
-            .lore("§7")
+            .addLore("§7")
+            .addLore("§7Место : §b"+place)
+            .addLore("§7⌚ : §f"+ApiOstrov.secondToTime(rs.getInt("trasseTime")))
+            .addLore("§7⇪ : §6"+rs.getInt("trasseJump"))
+            .addLore("§7☠: §c"+rs.getInt("trasseFalls"))
+            .addLore("§7")
             .build();
         
     }    
@@ -418,11 +423,14 @@ public class Main extends JavaPlugin {
 
     public static void lobbyScore(final Player p) {
         final PD pd = data.get(p.getName());
-        if (PM.nameTagManager!=null) {
-                PM.nameTagManager.setNametag(p, "§7[§5ЛОББИ§7] ", pd.cheat ? " §4[§cЧИТЫ§4]" :"");
-            }
-        p.playerListName(Component.text("§7[§5ЛОББИ§7] "+p.getName()+(pd.cheat ? " §4[§cЧИТЫ§4]" :"") ));
-        final Oplayer op = PM.getOplayer(p.getName());
+        //if (PM.nameTagManager!=null) {
+        final Oplayer op = PM.getOplayer(p);
+        TextComponent pr = TCUtils.format("§7[§5ЛОББИ§7] ");
+        TextComponent s = TCUtils.format( pd.cheat ? " §4[§cЧИТЫ§4]" : "");
+        op.tag(pr, s);
+                //NametagManager.setNametag(p, "§7[§5ЛОББИ§7] ", pd.cheat ? " §4[§cЧИТЫ§4]" :"");
+        //    }
+        //p.playerListName(Component.text("§7[§5ЛОББИ§7] "+p.getName()+(pd.cheat ? " §4[§cЧИТЫ§4]" :"") ));
 
         op.score.getSideBar().setTitle("§7[§3Паркуры§7]");
         op.score.getSideBar().updateLine(13, "");
@@ -529,7 +537,7 @@ public class Main extends JavaPlugin {
         
     private void createMenuItems() {
         final ItemStack is=new ItemBuilder(Material.TARGET)
-            .setName("§3Выбор Паркура")
+            .name("§3Выбор Паркура")
             .build();
         select = new MenuItemBuilder("select", is)
             .slot(1) //Chestplate
@@ -546,7 +554,7 @@ public class Main extends JavaPlugin {
         
        /* final ItemStack is2=new ItemBuilder(Material.MAP)
             .setName("§9Статистика")
-            .lore("§bПКМ §7- Топ статистика")
+            .addLore("§bПКМ §7- Топ статистика")
             .build();
         stat = new MenuItemBuilder("stat", is2)
             .slot(4) //Chestplate
@@ -561,7 +569,7 @@ public class Main extends JavaPlugin {
             .create();*/
         
         final ItemStack is3=new ItemBuilder(Material.MAGMA_CREAM)
-            .setName("§4Выход в лобби")
+            .name("§4Выход в лобби")
             .build();
         exit = new MenuItemBuilder("exit", is3)
             .slot(7)
@@ -576,11 +584,11 @@ public class Main extends JavaPlugin {
             .create();
         
         final ItemStack navi=new ItemBuilder(Material.COMPASS)
-            .setName("§aНави")
-            .lore("§7Всегда показывает")
-            .lore("§7направление на след.")
-            .lore("§7чекпоинт.")
-            .lore("§7ПКМ - подсветить путь")
+            .name("§aНави")
+            .addLore("§7Всегда показывает")
+            .addLore("§7направление на след.")
+            .addLore("§7чекпоинт.")
+            .addLore("§7ПКМ - подсветить путь")
             .build();
         navigator = new MenuItemBuilder("navigator", navi)
             .slot(0)
@@ -595,7 +603,7 @@ public class Main extends JavaPlugin {
             .create();        
         
         final ItemStack is4=new ItemBuilder(Material.REDSTONE)
-            .setName("§3Харакири")
+            .name("§3Харакири")
             .build();
         suicide = new MenuItemBuilder("suicide", is4)
             .slot(2)
@@ -611,7 +619,7 @@ public class Main extends JavaPlugin {
 
 
         final ItemStack is5=new ItemBuilder(Material.HONEYCOMB)
-            .setName("§4Начать сначала")
+            .name("§4Начать сначала")
             .build();
         toStatr = new MenuItemBuilder("toStatr", is5)
             .slot(4)
@@ -626,7 +634,7 @@ public class Main extends JavaPlugin {
             .create();
         
         final ItemStack is6=new ItemBuilder(Material.SLIME_BALL)
-            .setName("§cВыйти с Карты")
+            .name("§cВыйти с Карты")
             .build();
         leave = new MenuItemBuilder("leave", is6)
             .slot(8)

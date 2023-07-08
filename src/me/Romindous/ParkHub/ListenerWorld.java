@@ -1,6 +1,6 @@
 package me.Romindous.ParkHub;
 
-import me.Romindous.ParkHub.builder.LocalBuilder;
+import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -23,8 +23,6 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.Sound;
-import me.clip.deluxechat.events.DeluxeChatEvent;
-import org.bukkit.ChatColor;
 import org.bukkit.Tag;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.Action;
@@ -33,6 +31,11 @@ import ru.komiss77.ApiOstrov;
 import ru.komiss77.Ostrov;
 import ru.komiss77.modules.player.Oplayer;
 import ru.komiss77.modules.player.PM;
+import ru.komiss77.utils.TCUtils;
+import me.Romindous.ParkHub.builder.LocalBuilder;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import ru.komiss77.events.ChatPrepareEvent;
 
 
 
@@ -61,10 +64,12 @@ public class ListenerWorld implements Listener {
 
     //***************************        
     @EventHandler 
-    public void chat(DeluxeChatEvent e) {
+    public void chat(ChatPrepareEvent e) {
         final Player p = e.getPlayer();
         final PD pd = Main.data.get(p.getName());
-        e.getDeluxeFormat().setPrefix( (pd.cheat ? "§4<§cЧитак§4> §7" : ("§7<§6"+Main.getRank(pd.totalCheckPoints))+"§7> §7") );
+        final TextComponent tc = TCUtils.format(pd.cheat ? "§4<§cЧитак§4> §7" : ("§7<§6"+Main.getRank(pd.totalCheckPoints))+"§7> §7");
+        e.setSenderGameInfo(tc);
+        e.setViewerGameInfo(tc);//e.getDeluxeFormat().setPrefix(  pd.cheat ? "§4<§cЧитак§4> §7" : ("§7<§6"+Main.getRank(pd.totalCheckPoints))+"§7> §7" );
     }
 
     
@@ -75,10 +80,13 @@ public class ListenerWorld implements Listener {
                 || Tag.STANDING_SIGNS.isTagged(e.getClickedBlock().getType()) )   ) {
             final Sign s = (Sign) e.getClickedBlock().getState();
             final Player p = e.getPlayer();
-            if (ChatColor.stripColor(s.getLine(1)).equalsIgnoreCase("на трассу") && !s.getLine(2).isEmpty()) {
-                final String trasseName = ChatColor.stripColor(s.getLine(2));
+            final List<Component>lines = s.lines();
+            //if (TCUtils.stripColor(s.getLine(1)).equalsIgnoreCase("на трассу") && !s.getLine(2).isEmpty()) {
+            if (TCUtils.stripColor(TCUtils.toString(lines.get(1))).equalsIgnoreCase("на трассу") && !TCUtils.toString(lines.get(2)).isEmpty()) {
+                //final String trasseName = TCUtils.stripColor(s.getLine(2));
+                final String trasseName = TCUtils.stripColor(TCUtils.toString(lines.get(2)));
                 for (Trasse t : Main.trasses.values()) {
-                    if (ChatColor.stripColor(t.displayName).equalsIgnoreCase(trasseName)) {
+                    if (TCUtils.stripColor(t.displayName).equalsIgnoreCase(trasseName)) {
                         Main.joinParkur(p, t.id);
                         break;
                     }
@@ -177,7 +185,7 @@ public class ListenerWorld implements Listener {
     
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)    
     public void onHangingBreakByEntityEvent(final HangingBreakByEntityEvent e) {
-        if (  e.getRemover()!=null && e.getRemover().getType()==EntityType.PLAYER && !Ostrov.isCitizen(e.getEntity()) ) {
+        if (  e.getRemover()!=null && e.getRemover().getType()==EntityType.PLAYER ) {
                 if (!ApiOstrov.isLocalBuilder((Player) e.getRemover()) ) e.setCancelled(true);
         } 
 
