@@ -326,8 +326,8 @@ public class Main extends JavaPlugin {
         p.playerListName(Component.text("§7[§3"+tr.displayName+"§7] "+p.getName()+(pd.cheat ? " §4[§cЧИТЫ§4]" :"") ));
         //if (PM.nameTagManager!=null) {
         final Oplayer op = PM.getOplayer(p);
-        TextComponent c = TCUtils.format(pd.cheat ? "§4[§cЧитак§4]" : "§7[§3"+getRank(pd.totalCheckPoints)+"§7] ");
-        op.tag(c, Component.text(""));
+        //TextComponent c = TCUtils.format(pd.cheat ? "§4[§cЧитак§4]" : "§7[§3"+getRank(pd.totalCheckPoints)+"§7] ");
+        op.tag(pd.cheat ? "§4[§cЧитак§4]" : "§7[§3"+getRank(pd.totalCheckPoints)+"§7] ", null);
             //PM.nameTagManager.setNametag(p, pd.cheat ? "§4[§cЧитак§4]" : "§7[§3"+getRank(pd.totalCheckPoints)+"§7] ", ""); //final Parkour ar = Parkour.getPlPark(other.getName());
         //
     }
@@ -425,9 +425,9 @@ public class Main extends JavaPlugin {
         final PD pd = data.get(p.getName());
         //if (PM.nameTagManager!=null) {
         final Oplayer op = PM.getOplayer(p);
-        TextComponent pr = TCUtils.format("§7[§5ЛОББИ§7] ");
-        TextComponent s = TCUtils.format( pd.cheat ? " §4[§cЧИТЫ§4]" : "");
-        op.tag(pr, s);
+        //TextComponent pr = TCUtils.format("§7[§5ЛОББИ§7] ");
+        //TextComponent s = TCUtils.format( pd.cheat ? " §4[§cЧИТЫ§4]" : "");
+        op.tag("§7[§5ЛОББИ§7] ", pd.cheat ? " §4[§cЧИТЫ§4]" : null);
                 //NametagManager.setNametag(p, "§7[§5ЛОББИ§7] ", pd.cheat ? " §4[§cЧИТЫ§4]" :"");
         //    }
         //p.playerListName(Component.text("§7[§5ЛОББИ§7] "+p.getName()+(pd.cheat ? " §4[§cЧИТЫ§4]" :"") ));
