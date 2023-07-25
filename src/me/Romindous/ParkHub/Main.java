@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.GameRule;
@@ -436,15 +435,16 @@ public class Main extends JavaPlugin {
         op.score.getSideBar().updateLine(13, "");
         op.score.getSideBar().updateLine(12, "§bЛобби");
         op.score.getSideBar().updateLine(11, "");
-        op.score.getSideBar().updateLine(10, "§7Ваша статистика: ");
-        op.score.getSideBar().updateLine(9, "§f⌚: §3"+ApiOstrov.secondToTime(pd.totalTime));
-        op.score.getSideBar().updateLine(8, "§f⇪: §6"+pd.totalJumps);
-        op.score.getSideBar().updateLine(7, "§f☠: §4"+pd.totalFalls);
-        op.score.getSideBar().updateLine(6, "§f⚐: §b"+pd.totalCheckPoints);
-        op.score.getSideBar().updateLine(5, "§7Средние падения за");
-        op.score.getSideBar().updateLine(4, "§7чекп.: §3"+pd.stageFall+" §7/ §3"+pd.totalCheckPoints+"§7 = §3"+(pd.totalCheckPoints>0 ? ((int)pd.totalFalls/pd.totalCheckPoints) : 0) );
+        op.score.getSideBar().updateLine(10, "§7Ранг:");
+        op.score.getSideBar().updateLine(9, "§b"+getRank(pd.totalCheckPoints));
+        
+        op.score.getSideBar().updateLine(8, "§f⌚: §a"+ApiOstrov.secondToTime(pd.totalTime).replaceFirst("час.", ":").replaceFirst("мин.", ":").replaceFirst("сек.", ""));
+        op.score.getSideBar().updateLine(7, "§f⇪: §6"+pd.totalJumps);
+        op.score.getSideBar().updateLine(6, "§f☠: §4"+pd.totalFalls);
+        op.score.getSideBar().updateLine(5, "§f⚐: §b"+pd.totalCheckPoints);
+        op.score.getSideBar().updateLine(4, "§7Падений за");
+        op.score.getSideBar().updateLine(3, "§7чекп.: §3"+pd.stageFall+" §7/ §3"+pd.totalCheckPoints+"§7 = §3"+(pd.totalCheckPoints>0 ? ((int)pd.totalFalls/pd.totalCheckPoints) : 0) );
         //op.score.getSideBar().updateLine(5, ChatColor.GRAY + "чекп.: " + ChatColor.DARK_AQUA + (exst ? String.valueOf(rs.getInt("TFLS")) + ChatColor.GRAY + " / " + ChatColor.DARK_AQUA + rs.getInt("TCPTS") + ChatColor.GRAY + " = " + ChatColor.DARK_AQUA + lmRslt(rs.getFloat("TFLS") / rs.getFloat("TCPTS"), 4) : 0));
-        op.score.getSideBar().updateLine(3, "§7Ранг: §b" + getRank(pd.totalCheckPoints));
         op.score.getSideBar().updateLine(2, "§7До след. ранга: §b" + (getToNxtRnk(pd.totalCheckPoints)));
         op.score.getSideBar().updateLine(1, "");
 
