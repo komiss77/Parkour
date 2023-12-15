@@ -1,6 +1,6 @@
 package me.Romindous.ParkHub;
 
-
+import java.awt.geom.Point2D;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -34,7 +34,7 @@ import ru.komiss77.utils.ItemBuilder;
 import ru.komiss77.utils.OstrovConfig;
 import ru.komiss77.utils.OstrovConfigManager;
 import ru.komiss77.Timer;
-import ru.komiss77.utils.TCUtils;
+import ru.komiss77.utils.LocationUtil;
 import ru.komiss77.utils.inventory.SmartInventory;
 
 
@@ -97,12 +97,27 @@ public class Main extends JavaPlugin {
                 
                 final LinkedList<CheckPoint> points = new LinkedList<>();
                 String[]split;
+                CheckPoint previos=null;
+                Location loc1 = w.getSpawnLocation().clone();
+                Location loc2 = loc1.clone();
+//Ostrov.log(parkData.getString(mapPath+"displayName"));
                 for (String cpString : parkData.getStringList(mapPath+"points")) {
                     split = cpString.split(",");
                     final CheckPoint cp = new CheckPoint(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]),
                                                             Integer.parseInt(split[4]), Integer.parseInt(split[5]), Integer.parseInt(split[6]));
 
                     points.add(cp);
+                    if (previos!=null && cp.controlFall==0 && cp.controlJump==0 && cp.controlTime==0 ) {
+                        loc1.set(cp.x, cp.y, cp.z);
+                        loc2.set(previos.x, previos.y, previos.z);
+                        int dist = LocationUtil.getDistance(loc1, loc2);//расс.между чекпоинтами
+                        if (cp.y > previos.y) { //точка выше предыдущей
+                            cp.controlJump = cp.y - previos.y;
+                        }
+                        cp.controlTime =  dist / 6; //мин.время для пробега по прямой
+//Ostrov.log(" x:"+cp.x+" "+previos.x+" z:"+cp.z+" "+previos.z+" dist="+dist+" controlJump="+cp.controlJump+" controlTime="+cp.controlTime );
+                    }
+                    previos = cp;
 		}
                 final Trasse tr = new Trasse( Integer.parseInt(id), parkData.getString(mapPath+"displayName"), worldName, points);
                 
@@ -217,6 +232,7 @@ public class Main extends JavaPlugin {
         
     public static void lobbyPlayer(final Player p) {
         p.closeInventory();
+        p.setVelocity(p.getVelocity().zero());
         p.teleport(lobby);
         p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
         p.setHealth(20);
@@ -312,7 +328,7 @@ public class Main extends JavaPlugin {
         //} else {
             loc.setDirection(nextLoc.toVector().subtract(loc.toVector()));
         //}
-        
+        p.setVelocity(p.getVelocity().zero());
         p.teleport(loc);
         
         p.setCompassTarget(nextLoc);
