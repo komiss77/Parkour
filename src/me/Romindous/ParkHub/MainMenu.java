@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -14,6 +15,7 @@ import ru.komiss77.ApiOstrov;
 import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.ItemBuilder;
 import ru.komiss77.utils.ItemUtils;
+import ru.komiss77.utils.TCUtils;
 import ru.komiss77.utils.inventory.ClickableItem;
 import ru.komiss77.utils.inventory.ConfirmationGUI;
 import ru.komiss77.utils.inventory.InventoryContent;
@@ -105,32 +107,32 @@ public class MainMenu implements InventoryProvider {
             
             go = pd.getProgress(t.id);
             
-            final List<String> lore = Arrays.asList(
-                "§6----------------------",
-                "§7Создан: §3"+ApiOstrov.dateFromStamp(t.createAt),
-                "§7Создатель: §f"+t.creator,
-                "§7Сложность: §5"+t.level.name(),
-                t.descr,
-                t.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+t.inProgress.size()) ,
-                "§7⚐: "+t.size(),
-                "§7Пройден: "+t.totalDone+" раз.",
-                "§7⌚ "+ApiOstrov.secondToTime(t.totalTime),
-                "§7⇪: "+t.totalFalls,
-                "§7☠: "+t.totalJumps,
-                "§6----------------------",
-                 t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс:": "§fНе начат"),
-                 (t.isCompleted(pd) || !t.hasProgress(pd)) ? "" : ApiOstrov.getPercentBar(t.size()-1, go.checkPoint, true),
-                t.hasProgress(pd) ? "§7⌚"+ApiOstrov.secondToTime(go.trasseTime) : "",
-                t.hasProgress(pd) ? "⚐:"+go.checkPoint+" ⇪:"+go.trasseJump+" ☠:"+go.trasseFalls : "",
-                "§6----------------------",
-                "§7ЛКМ - "+ (t.isCompleted(pd) ? "§cПройти заново" : (t.hasProgress(pd) ? "§aПродолжить" : "§bНачать") ),
-                "§7ПКМ - ТОП "
+            final List<Component> lore = Arrays.asList(
+                Component.text("§6----------------------"),
+                Component.text("§7Создан: §3"+ApiOstrov.dateFromStamp(t.createAt)),
+                Component.text("§7Создатель: §f"+t.creator),
+                Component.text("§7Сложность: §5"+t.level.name()),
+                Component.text(t.descr),
+                Component.text(t.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+t.inProgress.size()) ),
+                Component.text("§7⚐: "+t.size()),
+                Component.text("§7Пройден: "+t.totalDone+" раз."),
+                Component.text("§7⌚ "+ApiOstrov.secondToTime(t.totalTime)),
+                Component.text("§7⇪: "+t.totalFalls),
+                Component.text("§7☠: "+t.totalJumps),
+                Component.text("§6----------------------"),
+                Component.text(t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс:": "§fНе начат")),
+                Component.text( (t.isCompleted(pd) || !t.hasProgress(pd)) ? "" : ApiOstrov.getPercentBar(t.size()-1, go.checkPoint, true) ),
+                Component.text(t.hasProgress(pd) ? "§7⌚"+ApiOstrov.secondToTime(go.trasseTime) : ""),
+                Component.text(t.hasProgress(pd) ? "⚐:"+go.checkPoint+" ⇪:"+go.trasseJump+" ☠:"+go.trasseFalls : ""),
+                Component.text("§6----------------------"),
+                Component.text("§7ЛКМ - "+ (t.isCompleted(pd) ? "§cПройти заново" : (t.hasProgress(pd) ? "§aПродолжить" : "§bНачать") ) ),
+                Component.text("§7ПКМ - ТОП ")
             );
             
             final ItemStack is = new ItemStack(t.mat);
             final ItemMeta im = is.getItemMeta();
-            im.setDisplayName(t.displayName);
-            im.setLore(lore);
+            im.displayName(TCUtils.format(t.displayName));
+            im.lore(lore);
             is.setItemMeta(im);
             /*new ItemBuilder(t.mat)
                 .name(t.displayName)
@@ -197,7 +199,7 @@ public class MainMenu implements InventoryProvider {
         
         
 
-        pagination.setItems(entry.toArray(new ClickableItem[entry.size()]));
+        pagination.setItems(entry.toArray(ClickableItem[]::new));
         pagination.setItemsPerPage(45);    
 
 

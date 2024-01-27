@@ -1,6 +1,5 @@
 package me.Romindous.ParkHub;
 
-import java.awt.geom.Point2D;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -114,7 +113,7 @@ public class Main extends JavaPlugin {
                         if (cp.y > previos.y) { //точка выше предыдущей
                             cp.controlJump = cp.y - previos.y;
                         }
-                        cp.controlTime =  dist / 6; //мин.время для пробега по прямой
+                        cp.controlTime =  dist / 6 - 1; //мин.время для пробега по прямой
 //Ostrov.log(" x:"+cp.x+" "+previos.x+" z:"+cp.z+" "+previos.z+" dist="+dist+" controlJump="+cp.controlJump+" controlTime="+cp.controlTime );
                     }
                     previos = cp;
@@ -564,7 +563,7 @@ public class Main extends JavaPlugin {
             .canDrop(false)
             .canPickup(false)
             .canMove(false)
-            .leftClickCmd("menu")
+            .leftClickCmd("serv")
             .rightClickCmd("pk")
             .create();
         

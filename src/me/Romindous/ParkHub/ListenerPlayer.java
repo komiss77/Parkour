@@ -41,8 +41,9 @@ import ru.komiss77.utils.TCUtils;
 
 public class ListenerPlayer implements Listener {
 
+    private static final boolean SET_CHEAT = false;
     
-    private static boolean anticheat = false;
+    private static boolean anticheat = true;
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBuilderMenu(final BuilderMenuEvent e) {
@@ -84,9 +85,9 @@ public class ListenerPlayer implements Listener {
                         pd.totalFalls+=go.trasseFalls;
                         if(go.cheat) {
                             if (!pd.cheat) {
-                                p.sendMessage("§cМы обнаружили, что Вы проходили паркуры с читами. Можете продолжать в том же духе, но в ТОП Ваши результаты не попадут.");
+                                p.sendMessage("§cМы заподозрили, что Вы могли использовать читы. Если опасения подвердятся, ваш результат будет аннулирован.");
                             }
-                            pd.cheat = true;
+                            if (SET_CHEAT) pd.cheat = true;
                         }
                     } else {
                         Ostrov.log_warn("Загрузка прогресса "+pd.name+" : нет паркура с ИД "+rs.getInt("trasseID")+"!");
@@ -119,7 +120,7 @@ public class ListenerPlayer implements Listener {
 
         
         for (Player pl:Bukkit.getOnlinePlayers()) {
-            pl.setPlayerListFooter( "§7Паркуристов на трассах: §b" + Bukkit.getOnlinePlayers().size());
+            pl.sendPlayerListFooter( Component.text("§7Паркуристов на трассах: §b" + Bukkit.getOnlinePlayers().size()));
         }
 
     }
@@ -173,7 +174,7 @@ public class ListenerPlayer implements Listener {
                     break;
             }
         }
-        p.setPlayerListHeader("§7<§bПаркуры§7>\n" + msg);
+        p.sendPlayerListHeader(Component.text("§7<§bПаркуры§7>\n" + msg));
     }
     
     
@@ -186,7 +187,7 @@ public class ListenerPlayer implements Listener {
             }
         }
         for (Player pl:Bukkit.getOnlinePlayers()) {
-            pl.setPlayerListFooter( "§7Паркуристов на трассах: §b" + (Bukkit.getOnlinePlayers().size()-1) );
+            pl.sendPlayerListFooter( Component.text( "§7Паркуристов на трассах: §b" + (Bukkit.getOnlinePlayers().size()-1) ));
         }
     }
     
@@ -261,6 +262,7 @@ public class ListenerPlayer implements Listener {
                             final Player p = Bukkit.getPlayerExact(name);
                             if (p==null || !p.isOnline()) {
                                 this.cancel();
+                                return;
                             }
                             ApiOstrov.sendActionBarDirect(p, "§6Возвращение в лобби через: §e"+count);
                             if (count==0) {

@@ -21,6 +21,7 @@ import ru.komiss77.utils.inventory.SlotIterator;
 import ru.komiss77.utils.inventory.SlotPos;
 import me.Romindous.ParkHub.Main;
 import me.Romindous.ParkHub.Trasse;
+import net.kyori.adventure.text.Component;
 import org.bukkit.inventory.meta.ItemMeta;
 import ru.komiss77.Timer;
 
@@ -55,26 +56,26 @@ public class TrasseSelect implements InventoryProvider{
         
         for (Trasse t : Main.trasses.values()) {
             
-            final List<String> lore = Arrays.asList(
-                t.disabled ? "§4Выключен" : "§2Включен",
-                "§3Мир: "+t.worldName,
-                "§7Создан: §3"+ApiOstrov.dateFromStamp(t.createAt),
-                "§7Создатель: §f"+t.creator,
-                "§7Сложность: §5"+t.level.name(),
-                t.descr,
-                t.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+t.inProgress.size()),
-                "§7⚐: "+t.size(),
-                "§7Пройден: "+t.totalDone+" раз.",
-                "§7⌚ "+ApiOstrov.secondToTime(t.totalTime),
-                "§7⇪: "+t.totalFalls,
-                "§7☠: "+t.totalJumps,
-                "§7ЛКМ - редактировать"
+            final List<Component> lore = Arrays.asList(
+                Component.text(t.disabled ? "§4Выключен" : "§2Включен"),
+                Component.text("§3Мир: "+t.worldName),
+                Component.text("§7Создан: §3"+ApiOstrov.dateFromStamp(t.createAt)),
+                Component.text("§7Создатель: §f"+t.creator),
+                Component.text("§7Сложность: §5"+t.level.name()),
+                Component.text(t.descr),
+                Component.text(t.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+t.inProgress.size())),
+                Component.text("§7⚐: "+t.size()),
+                Component.text("§7Пройден: "+t.totalDone+" раз."),
+                Component.text("§7⌚ "+ApiOstrov.secondToTime(t.totalTime)),
+                Component.text("§7⇪: "+t.totalFalls),
+                Component.text("§7☠: "+t.totalJumps),
+                Component.text("§7ЛКМ - редактировать")
             );
 
             final ItemStack is = new ItemStack(t.mat);
             final ItemMeta im = is.getItemMeta();
-            im.setDisplayName(t.displayName);
-            im.setLore(lore);
+            im.displayName(Component.text(t.displayName));
+            im.lore(lore);
             is.setItemMeta(im);
             
             /*final ItemStack is = new ItemBuilder(t.mat)
