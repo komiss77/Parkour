@@ -158,7 +158,7 @@ public class PrkCmd implements CommandExecutor, TabCompleter {
                     int limit = 36;
                     while (from.getBlockX()!=to.getBlockX() && from.getBlockY()!=to.getBlockY() && from.getBlockZ()!=to.getBlockZ()) {
                         from.add(v);
-                        from.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, from, 1, 0, 0, 0);
+                        from.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, from, 1, 0, 0, 0);
                         limit--;
                         if (limit==0) break;
                     }

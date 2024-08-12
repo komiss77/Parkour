@@ -30,9 +30,11 @@ import ru.komiss77.enums.Stat;
 import ru.komiss77.events.BuilderMenuEvent;
 import ru.komiss77.events.LocalDataLoadEvent;
 import ru.komiss77.modules.player.PM;
-import ru.komiss77.utils.DonatEffect;
+import ru.komiss77.utils.ParticleUtil;
 import me.Romindous.ParkHub.builder.LocalBuilder;
-import ru.komiss77.utils.TCUtils;
+import ru.komiss77.utils.ScreenUtil;
+import ru.komiss77.utils.TCUtil;
+import ru.komiss77.utils.TimeUtil;
 
 
 
@@ -222,7 +224,7 @@ public class ListenerPlayer implements Listener {
                     LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `parkData` SET `cheat` = '1' WHERE `name`='"+pd.name+"'");
                 }
                 go.cheat = true;
-                LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `cheatLog` (name,parkName,log,stamp) VALUES ('"+p.getName()+"', '"+TCUtils.stripColor(t.displayName)+"', '"+log+"', '"+Timer.getTime()+"');");
+                LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `cheatLog` (name,parkName,log,stamp) VALUES ('"+p.getName()+"', '"+TCUtil.strip(t.displayName)+"', '"+log+"', '"+Timer.getTime()+"');");
             }
 //p.sendMessage("§8log: "+(go.cheat?"§cCHEAT!§8 " :"§aOK§8 ")+log);
             go.checkPoint++;
@@ -235,7 +237,7 @@ public class ListenerPlayer implements Listener {
                 t.totalFalls+=go.trasseFalls;
                 pd.resetTrasse(); //если не ресануть, плита сразу срабатывает снова
                 
-                ApiOstrov.sendTitle(p, "", "§fВы прошли паркур!");
+                ScreenUtil.sendTitle(p, "", "§fВы прошли паркур!");
                 
                 if (pd.cheat) {
                     
@@ -251,7 +253,7 @@ public class ListenerPlayer implements Listener {
                     p.getInventory().setItem(0, new ItemStack(Material.AIR));
                     p.getInventory().setItem(2, new ItemStack(Material.AIR));
                     p.getInventory().setItem(4, new ItemStack(Material.AIR));
-                    DonatEffect.spawnRandomFirework(p.getLocation());
+                    ParticleUtil.spawnRandomFirework(p.getLocation());
                     p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 240, 0));
                     
                     final String name = p.getName();
@@ -264,21 +266,21 @@ public class ListenerPlayer implements Listener {
                                 this.cancel();
                                 return;
                             }
-                            ApiOstrov.sendActionBarDirect(p, "§6Возвращение в лобби через: §e"+count);
+                            ScreenUtil.sendActionBarDirect(p, "§6Возвращение в лобби через: §e"+count);
                             if (count==0) {
                                 this.cancel();
                                 Main.lobbyPlayer(p);
                             }
                             count--;
-                            if (count==14 && t.level==Level.Нормально) DonatEffect.spawnRandomFirework(p.getLocation());
-                            if (count==13 && t.level==Level.Трудно) DonatEffect.spawnRandomFirework(p.getLocation());
-                            if (count==12 && t.level==Level.Нереально) DonatEffect.spawnRandomFirework(p.getLocation());
+                            if (count==14 && t.level==Level.Нормально) ParticleUtil.spawnRandomFirework(p.getLocation());
+                            if (count==13 && t.level==Level.Трудно) ParticleUtil.spawnRandomFirework(p.getLocation());
+                            if (count==12 && t.level==Level.Нереально) ParticleUtil.spawnRandomFirework(p.getLocation());
                         }
                     }.runTaskTimer(Main.plug, 1, 20);
                     
                     if (!go.cheat) {//тихонько сохраним для нечитеров
                         t.saveStat();
-                        final String msg = "§f"+pd.name+(ApiOstrov.isFemale(pd.name)?" §7прошла трассу ":" §7прошел трассу ")+t.displayName+" §7за §e"+ApiOstrov.secondToTime(go.trasseTime)+" §7(⇪: §6"+go.trasseJump+"§7, ☠: §4"+go.trasseFalls+"§7)";
+                        final String msg = "§f"+pd.name+(ApiOstrov.isFemale(pd.name)?" §7прошла трассу ":" §7прошел трассу ")+t.displayName+" §7за §e"+TimeUtil.secondToTime(go.trasseTime)+" §7(⇪: §6"+go.trasseJump+"§7, ☠: §4"+go.trasseFalls+"§7)";
                     } 
                     
                 }
@@ -296,7 +298,7 @@ public class ListenerPlayer implements Listener {
             pd.setNextPoint(next);
             p.setCompassTarget(next.getLocation(p.getWorld().getName()));
             
-            ApiOstrov.sendTitle(p, "", "§7Чекпоинт §b#" + (go.checkPoint+1)+" §7пройден.");
+            ScreenUtil.sendTitle(p, "", "§7Чекпоинт §b#" + (go.checkPoint+1)+" §7пройден.");
             p.playSound(e.getClickedBlock().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1 + ((float) go.checkPoint / (float) t.size()));
             
             pd.saveProgress(t.id);

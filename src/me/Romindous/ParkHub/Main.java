@@ -21,19 +21,20 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.Sound;
 import org.bukkit.scheduler.BukkitRunnable;
+import ru.komiss77.LocalDB;
 import ru.komiss77.modules.player.Oplayer;
 import ru.komiss77.modules.player.PM;
-import ru.komiss77.ApiOstrov;
 import ru.komiss77.Ostrov;
 import ru.komiss77.modules.menuItem.MenuItem;
 import ru.komiss77.modules.menuItem.MenuItemBuilder;
 import ru.komiss77.modules.world.WorldManager;
 import ru.komiss77.objects.CaseInsensitiveMap;
 import ru.komiss77.utils.ItemBuilder;
-import ru.komiss77.utils.OstrovConfig;
-import ru.komiss77.utils.OstrovConfigManager;
+import ru.komiss77.OConfig;
+import ru.komiss77.OConfigManager;
 import ru.komiss77.Timer;
-import ru.komiss77.utils.LocationUtil;
+import ru.komiss77.utils.LocUtil;
+import ru.komiss77.utils.TimeUtil;
 import ru.komiss77.utils.inventory.SmartInventory;
 
 
@@ -43,9 +44,9 @@ public class Main extends JavaPlugin {
     
     public static Main plug;
     public static Location lobby;
-    public static OstrovConfigManager configManager;
-    public static OstrovConfig parkData;
-    public static OstrovConfig parkStat;
+    public static OConfigManager configManager;
+    public static OConfig parkData;
+    public static OConfig parkStat;
     
     public static final HashMap<Integer,Trasse> trasses;
     public static final CaseInsensitiveMap<PD> data;
@@ -65,7 +66,7 @@ public class Main extends JavaPlugin {
     public void onEnable() {
         
         plug = this;
-        configManager = new OstrovConfigManager(this);
+        configManager = new OConfigManager(this);
         
         lobby = Bukkit.getWorlds().get(0).getSpawnLocation();
         lobby.getWorld().setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
@@ -109,7 +110,7 @@ public class Main extends JavaPlugin {
                     if (previos!=null && cp.controlFall==0 && cp.controlJump==0 && cp.controlTime==0 ) {
                         loc1.set(cp.x, cp.y, cp.z);
                         loc2.set(previos.x, previos.y, previos.z);
-                        int dist = LocationUtil.getDistance(loc1, loc2);//расс.между чекпоинтами
+                        int dist = LocUtil.getDistance(loc1, loc2);//расс.между чекпоинтами
                         if (cp.y > previos.y) { //точка выше предыдущей
                             cp.controlJump = cp.y - previos.y;
                         }
@@ -340,7 +341,7 @@ public class Main extends JavaPlugin {
         p.playerListName(Component.text("§7[§3"+tr.displayName+"§7] "+p.getName()+(pd.cheat ? " §4[§cЧИТЫ§4]" :"") ));
         //if (PM.nameTagManager!=null) {
         final Oplayer op = PM.getOplayer(p);
-        //TextComponent c = TCUtils.format(pd.cheat ? "§4[§cЧитак§4]" : "§7[§3"+getRank(pd.totalCheckPoints)+"§7] ");
+        //TextComponent c = TCUtil.form(pd.cheat ? "§4[§cЧитак§4]" : "§7[§3"+getRank(pd.totalCheckPoints)+"§7] ");
         op.tag(pd.cheat ? "§4[§cЧитак§4]" : "§7[§3"+getRank(pd.totalCheckPoints)+"§7] ", null);
             //PM.nameTagManager.setNametag(p, pd.cheat ? "§4[§cЧитак§4]" : "§7[§3"+getRank(pd.totalCheckPoints)+"§7] ", ""); //final Parkour ar = Parkour.getPlPark(other.getName());
         //
@@ -363,7 +364,7 @@ public class Main extends JavaPlugin {
                 ResultSet rs = null;
                 
                 try { 
-                    stmt = ApiOstrov.getLocalConnection().createStatement();
+                    stmt = LocalDB.getConnection().createStatement();
 
                     rs = stmt.executeQuery( "SELECT *  FROM `parkData` WHERE `trasseID`='"+t.id+"' AND `done`>'0' AND `cheat`='0' ORDER BY `trasseTime` ASC LIMIT 24" );
                     
@@ -410,12 +411,12 @@ public class Main extends JavaPlugin {
         
         )
             .name("§f"+rs.getString("name"))
-            .addLore("§7")
-            .addLore("§7Место : §b"+place)
-            .addLore("§7⌚ : §f"+ApiOstrov.secondToTime(rs.getInt("trasseTime")))
-            .addLore("§7⇪ : §6"+rs.getInt("trasseJump"))
-            .addLore("§7☠: §c"+rs.getInt("trasseFalls"))
-            .addLore("§7")
+            .lore("§7")
+            .lore("§7Место : §b"+place)
+            .lore("§7⌚ : §f"+TimeUtil.secondToTime(rs.getInt("trasseTime")))
+            .lore("§7⇪ : §6"+rs.getInt("trasseJump"))
+            .lore("§7☠: §c"+rs.getInt("trasseFalls"))
+            .lore("§7")
             .build();
         
     }    
@@ -439,8 +440,8 @@ public class Main extends JavaPlugin {
         final PD pd = data.get(p.getName());
         //if (PM.nameTagManager!=null) {
         final Oplayer op = PM.getOplayer(p);
-        //TextComponent pr = TCUtils.format("§7[§5ЛОББИ§7] ");
-        //TextComponent s = TCUtils.format( pd.cheat ? " §4[§cЧИТЫ§4]" : "");
+        //TextComponent pr = TCUtil.form("§7[§5ЛОББИ§7] ");
+        //TextComponent s = TCUtil.form( pd.cheat ? " §4[§cЧИТЫ§4]" : "");
         op.tag("§7[§5ЛОББИ§7] ", pd.cheat ? " §4[§cЧИТЫ§4]" : null);
                 //NametagManager.setNametag(p, "§7[§5ЛОББИ§7] ", pd.cheat ? " §4[§cЧИТЫ§4]" :"");
         //    }
@@ -453,7 +454,7 @@ public class Main extends JavaPlugin {
         op.score.getSideBar().updateLine(10, "§7Ранг:");
         op.score.getSideBar().updateLine(9, "§b"+getRank(pd.totalCheckPoints));
         
-        op.score.getSideBar().updateLine(8, "§f⌚: §a"+ApiOstrov.secondToTime(pd.totalTime).replaceFirst("час.", ":").replaceFirst("мин.", ":").replaceFirst("сек.", ""));
+        op.score.getSideBar().updateLine(8, "§f⌚: §a"+TimeUtil.secondToTime(pd.totalTime).replaceFirst("час.", ":").replaceFirst("мин.", ":").replaceFirst("сек.", ""));
         op.score.getSideBar().updateLine(7, "§f⇪: §6"+pd.totalJumps);
         op.score.getSideBar().updateLine(6, "§f☠: §4"+pd.totalFalls);
         op.score.getSideBar().updateLine(5, "§f⚐: §b"+pd.totalCheckPoints);
@@ -473,7 +474,7 @@ public class Main extends JavaPlugin {
         
         op.score.getSideBar().setTitle(pd.current.displayName+" §7[§f"+pd.current.inProgress.size()+"§7]");
         op.score.getSideBar().updateLine(13, "");
-        op.score.getSideBar().updateLine(12, "§7⌚: §3"+ApiOstrov.secondToTime(go.trasseTime));
+        op.score.getSideBar().updateLine(12, "§7⌚: §3"+TimeUtil.secondToTime(go.trasseTime));
         op.score.getSideBar().updateLine(11, "");
         op.score.getSideBar().updateLine(10, "§7⇪: §6"+go.trasseJump);
         op.score.getSideBar().updateLine(9, "");
@@ -569,7 +570,7 @@ public class Main extends JavaPlugin {
         
        /* final ItemStack is2=new ItemBuilder(Material.MAP)
             .setName("§9Статистика")
-            .addLore("§bПКМ §7- Топ статистика")
+            .lore("§bПКМ §7- Топ статистика")
             .build();
         stat = new MenuItemBuilder("stat", is2)
             .slot(4) //Chestplate
@@ -600,10 +601,10 @@ public class Main extends JavaPlugin {
         
         final ItemStack navi=new ItemBuilder(Material.COMPASS)
             .name("§aНави")
-            .addLore("§7Всегда показывает")
-            .addLore("§7направление на след.")
-            .addLore("§7чекпоинт.")
-            .addLore("§7ПКМ - подсветить путь")
+            .lore("§7Всегда показывает")
+            .lore("§7направление на след.")
+            .lore("§7чекпоинт.")
+            .lore("§7ПКМ - подсветить путь")
             .build();
         navigator = new MenuItemBuilder("navigator", navi)
             .slot(0)

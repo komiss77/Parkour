@@ -28,10 +28,9 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.komiss77.ApiOstrov;
-import ru.komiss77.Ostrov;
 import ru.komiss77.modules.player.Oplayer;
 import ru.komiss77.modules.player.PM;
-import ru.komiss77.utils.TCUtils;
+import ru.komiss77.utils.TCUtil;
 import me.Romindous.ParkHub.builder.LocalBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
@@ -67,7 +66,7 @@ public class ListenerWorld implements Listener {
     public void chat(ChatPrepareEvent e) {
         final Player p = e.getPlayer();
         final PD pd = Main.data.get(p.getName());
-        final TextComponent tc = TCUtils.format(pd.cheat ? "§4<§cЧитак§4> §7" : ("§7<§6"+Main.getRank(pd.totalCheckPoints))+"§7> §7");
+        final TextComponent tc = Component.text(pd.cheat ? "§4<§cЧитак§4> §7" : ("§7<§6"+Main.getRank(pd.totalCheckPoints))+"§7> §7");
         e.setSenderGameInfo(tc);
         e.setViewerGameInfo(tc);//e.getDeluxeFormat().setPrefix(  pd.cheat ? "§4<§cЧитак§4> §7" : ("§7<§6"+Main.getRank(pd.totalCheckPoints))+"§7> §7" );
     }
@@ -81,12 +80,12 @@ public class ListenerWorld implements Listener {
             final Sign s = (Sign) e.getClickedBlock().getState();
             final Player p = e.getPlayer();
             final List<Component>lines = s.lines();
-            //if (TCUtils.stripColor(s.getLine(1)).equalsIgnoreCase("на трассу") && !s.getLine(2).isEmpty()) {
-            if (TCUtils.stripColor(TCUtils.toString(lines.get(1))).equalsIgnoreCase("на трассу") && !TCUtils.toString(lines.get(2)).isEmpty()) {
-                //final String trasseName = TCUtils.stripColor(s.getLine(2));
-                final String trasseName = TCUtils.stripColor(TCUtils.toString(lines.get(2)));
+            //if (TCUtil.strip(s.getLine(1)).equalsIgnoreCase("на трассу") && !s.getLine(2).isEmpty()) {
+            if (TCUtil.strip(TCUtil.deform(lines.get(1))).equalsIgnoreCase("на трассу") && !TCUtil.deform(lines.get(2)).isEmpty()) {
+                //final String trasseName = TCUtil.strip(s.getLine(2));
+                final String trasseName = TCUtil.strip(TCUtil.deform(lines.get(2)));
                 for (Trasse t : Main.trasses.values()) {
-                    if (TCUtils.stripColor(t.displayName).equalsIgnoreCase(trasseName)) {
+                    if (TCUtil.strip(t.displayName).equalsIgnoreCase(trasseName)) {
                         Main.joinParkur(p, t.id);
                         break;
                     }

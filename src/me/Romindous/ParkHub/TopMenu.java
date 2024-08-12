@@ -43,11 +43,11 @@ public class TopMenu implements InventoryProvider {
         
        /* contents.set( 0, 0, ClickableItem.of( new ItemBuilder(Material.REPEATER)
                 .name("§fКритерий лидерства")
-                .addLore("")
-                .addLore("§7Сейчас: §b"+topType.displayName)
-                .addLore("")
-                .addLore("§7ЛКМ - показать ТОП по "+topType.next(topType).displayName)
-                .addLore("")
+                .lore("")
+                .lore("§7Сейчас: §b"+topType.displayName)
+                .lore("")
+                .lore("§7ЛКМ - показать ТОП по "+topType.next(topType).displayName)
+                .lore("")
                 .build(), e -> {
             
                     MenuManager.openTop(player, TopType.next(topType));

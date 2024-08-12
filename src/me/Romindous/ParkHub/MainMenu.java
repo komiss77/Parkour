@@ -14,8 +14,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import ru.komiss77.ApiOstrov;
 import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.ItemBuilder;
-import ru.komiss77.utils.ItemUtils;
-import ru.komiss77.utils.TCUtils;
+import ru.komiss77.utils.*;
+import ru.komiss77.utils.TCUtil;
 import ru.komiss77.utils.inventory.ClickableItem;
 import ru.komiss77.utils.inventory.ConfirmationGUI;
 import ru.komiss77.utils.inventory.InventoryContent;
@@ -38,8 +38,8 @@ public class MainMenu implements InventoryProvider {
     static {
         random = new ItemBuilder(Material.SPYGLASS)
                 .name("§3Рандомная Карта")
-                .addLore("§7Нажмите для выбора")
-                .addLore("§3рандомной §7карты!")
+                .lore("§7Нажмите для выбора")
+                .lore("§3рандомной §7карты!")
                 .build()
                 ;
     }
@@ -62,8 +62,8 @@ public class MainMenu implements InventoryProvider {
         
         content.set(2, ClickableItem.of(new ItemBuilder(pd.hideCompleted ? Material.LIGHTNING_ROD : Material.LEVER)
                 .name("§3Фильтр по прохождению")
-                .addLore( "§7Сейчас показаны: §f"+(pd.hideCompleted ? "непройденные" : "все") )
-                .addLore("§7Клик - показать §b" + (pd.hideCompleted ? "все" : "непройденные") )
+                .lore( "§7Сейчас показаны: §f"+(pd.hideCompleted ? "непройденные" : "все") )
+                .lore("§7Клик - показать §b" + (pd.hideCompleted ? "все" : "непройденные") )
                 .build(), e-> {
                     pd.hideCompleted = !pd.hideCompleted;
                     reopen(p, content);
@@ -86,8 +86,8 @@ public class MainMenu implements InventoryProvider {
         
         content.set(6, ClickableItem.of(new ItemBuilder(pd.showLevel==null ? Material.LIGHTNING_ROD : pd.showLevel.mat)
                 .name("§3Фильтр по сложности")
-                .addLore("§7Сейчас показаны: §f"+ (pd.showLevel==null ? "все" : pd.showLevel.name()) )
-                .addLore("§7Клик - показать §b" + (Level.next(pd.showLevel)==null ? "Все" : Level.next(pd.showLevel).name()) )
+                .lore("§7Сейчас показаны: §f"+ (pd.showLevel==null ? "все" : pd.showLevel.name()) )
+                .lore("§7Клик - показать §b" + (Level.next(pd.showLevel)==null ? "Все" : Level.next(pd.showLevel).name()) )
                 .build(), e-> {
                     pd.showLevel = Level.next(pd.showLevel);
                     reopen(p, content);
@@ -109,20 +109,20 @@ public class MainMenu implements InventoryProvider {
             
             final List<Component> lore = Arrays.asList(
                 Component.text("§6----------------------"),
-                Component.text("§7Создан: §3"+ApiOstrov.dateFromStamp(t.createAt)),
+                Component.text("§7Создан: §3"+TimeUtil.dateFromStamp(t.createAt)),
                 Component.text("§7Создатель: §f"+t.creator),
                 Component.text("§7Сложность: §5"+t.level.name()),
                 Component.text(t.descr),
                 Component.text(t.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+t.inProgress.size()) ),
                 Component.text("§7⚐: "+t.size()),
                 Component.text("§7Пройден: "+t.totalDone+" раз."),
-                Component.text("§7⌚ "+ApiOstrov.secondToTime(t.totalTime)),
+                Component.text("§7⌚ "+TimeUtil.secondToTime(t.totalTime)),
                 Component.text("§7⇪: "+t.totalFalls),
                 Component.text("§7☠: "+t.totalJumps),
                 Component.text("§6----------------------"),
                 Component.text(t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс:": "§fНе начат")),
-                Component.text( (t.isCompleted(pd) || !t.hasProgress(pd)) ? "" : ApiOstrov.getPercentBar(t.size()-1, go.checkPoint, true) ),
-                Component.text(t.hasProgress(pd) ? "§7⌚"+ApiOstrov.secondToTime(go.trasseTime) : ""),
+                Component.text( (t.isCompleted(pd) || !t.hasProgress(pd)) ? "" : StringUtil.getPercentBar(t.size()-1, go.checkPoint, true) ),
+                Component.text(t.hasProgress(pd) ? "§7⌚"+TimeUtil.secondToTime(go.trasseTime) : ""),
                 Component.text(t.hasProgress(pd) ? "⚐:"+go.checkPoint+" ⇪:"+go.trasseJump+" ☠:"+go.trasseFalls : ""),
                 Component.text("§6----------------------"),
                 Component.text("§7ЛКМ - "+ (t.isCompleted(pd) ? "§cПройти заново" : (t.hasProgress(pd) ? "§aПродолжить" : "§bНачать") ) ),
@@ -131,32 +131,32 @@ public class MainMenu implements InventoryProvider {
             
             final ItemStack is = new ItemStack(t.mat);
             final ItemMeta im = is.getItemMeta();
-            im.displayName(TCUtils.format(t.displayName));
+            im.displayName(TCUtil.form(t.displayName));
             im.lore(lore);
             is.setItemMeta(im);
             /*new ItemBuilder(t.mat)
                 .name(t.displayName)
-                .addLore("§6----------------------")
-                .addLore("§7Создан: §3"+ApiOstrov.dateFromStamp(t.createAt))
-                .addLore("§7Создатель: §f"+t.creator)
-                .addLore("§7Сложность: §5"+t.level.name())
-                .addLore("t.descr)
-                //.addLore("§6----------------------")
-                .addLore("t.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+t.inProgress.size()) )
-                .addLore("§7⚐: "+t.size())
-                .addLore("§7Пройден: "+t.totalDone+" раз.")
-                .addLore("§7⌚ "+ApiOstrov.secondToTime(t.totalTime))
-                .addLore("§7⇪: "+t.totalFalls)
-                .addLore("§7☠: "+t.totalJumps)
-                .addLore("§6----------------------")
-                //.addLore(" t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс: §6"+go.checkPoint+" §7из §e"+(t.size()-1) : "§fНе начат") ) 
-                .addLore(" t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс:": "§fНе начат") ) 
-                .addLore(" (t.isCompleted(pd) || !t.hasProgress(pd)) ? "" : ApiOstrov.getPercentBar(t.size()-1, go.checkPoint, true))
-                .addLore("t.hasProgress(pd) ? "§7⌚"+ApiOstrov.secondToTime(go.trasseTime) : "")
-                .addLore("t.hasProgress(pd) ? "⚐:"+go.checkPoint+" ⇪:"+go.trasseJump+" ☠:"+go.trasseFalls : "")
-                .addLore("§6----------------------")
-                .addLore("§7ЛКМ - "+ (t.isCompleted(pd) ? "§cПройти заново" : (t.hasProgress(pd) ? "§aПродолжить" : "§bНачать") ) )
-                .addLore("§7ПКМ - ТОП ")
+                .lore("§6----------------------")
+                .lore("§7Создан: §3"+TimeUtil.dateFromStamp(t.createAt))
+                .lore("§7Создатель: §f"+t.creator)
+                .lore("§7Сложность: §5"+t.level.name())
+                .lore("t.descr)
+                //.lore("§6----------------------")
+                .lore("t.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+t.inProgress.size()) )
+                .lore("§7⚐: "+t.size())
+                .lore("§7Пройден: "+t.totalDone+" раз.")
+                .lore("§7⌚ "+TimeUtil.secondToTime(t.totalTime))
+                .lore("§7⇪: "+t.totalFalls)
+                .lore("§7☠: "+t.totalJumps)
+                .lore("§6----------------------")
+                //.lore(" t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс: §6"+go.checkPoint+" §7из §e"+(t.size()-1) : "§fНе начат") ) 
+                .lore(" t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс:": "§fНе начат") ) 
+                .lore(" (t.isCompleted(pd) || !t.hasProgress(pd)) ? "" : ApiOstrov.getPercentBar(t.size()-1, go.checkPoint, true))
+                .lore("t.hasProgress(pd) ? "§7⌚"+TimeUtil.secondToTime(go.trasseTime) : "")
+                .lore("t.hasProgress(pd) ? "⚐:"+go.checkPoint+" ⇪:"+go.trasseJump+" ☠:"+go.trasseFalls : "")
+                .lore("§6----------------------")
+                .lore("§7ЛКМ - "+ (t.isCompleted(pd) ? "§cПройти заново" : (t.hasProgress(pd) ? "§aПродолжить" : "§bНачать") ) )
+                .lore("§7ПКМ - ТОП ")
                 .build();*/
             
             entry.add(ClickableItem.of(is, e-> {
@@ -204,7 +204,7 @@ public class MainMenu implements InventoryProvider {
 
 
         if (!pagination.isLast()) {
-            content.set(0, 8, ClickableItem.of(ItemUtils.nextPage, e 
+            content.set(0, 8, ClickableItem.of(ItemUtil.nextPage, e 
                     -> {
                 content.getHost().open(p, pagination.next().getPage()) ;
             }
@@ -212,7 +212,7 @@ public class MainMenu implements InventoryProvider {
         }
 
         if (!pagination.isFirst()) {
-            content.set(0, 0, ClickableItem.of(ItemUtils.previosPage, e 
+            content.set(0, 0, ClickableItem.of(ItemUtil.previosPage, e 
                     -> {
                 content.getHost().open(p, pagination.previous().getPage()) ;
                })

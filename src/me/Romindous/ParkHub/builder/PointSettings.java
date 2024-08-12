@@ -13,6 +13,7 @@ import ru.komiss77.utils.inventory.InventoryProvider;
 import ru.komiss77.ApiOstrov;
 import ru.komiss77.utils.inventory.InputButton;
 import me.Romindous.ParkHub.Trasse;
+import ru.komiss77.utils.TimeUtil;
 
 
 
@@ -50,11 +51,11 @@ public class PointSettings implements InventoryProvider{
         content.set(0, new InputButton(InputButton.InputType.ANVILL, new ItemBuilder(Material.OAK_SIGN)
                 .name("§7Назначить номер чекпоинта")
 
-                .addLore("§7")
-                .addLore("§7Сейчас: §а"+t.points.indexOf(cp))
-                .addLore("§7")
-                .addLore("§7ЛКМ - изменить")
-                .addLore("§7")
+                .lore("§7")
+                .lore("§7Сейчас: §а"+t.points.indexOf(cp))
+                .lore("§7")
+                .lore("§7ЛКМ - изменить")
+                .lore("§7")
                 .build(),  ""+t.points.indexOf(cp), msg -> {
 
                     final int amm = ApiOstrov.getInteger(msg);
@@ -82,16 +83,16 @@ public class PointSettings implements InventoryProvider{
         
         content.set(1, new InputButton(InputButton.InputType.ANVILL, new ItemBuilder(Material.CLOCK)
                 .name("§7Контрольное время")
-                .addLore("§7для достижения этого")
-                .addLore("§7чекпоинта от предыдущего.")
-                .addLore("§7Если пройти быстрее,")
-                .addLore("§7игрок получит метку §cчит")
-                .addLore("§7")
-                .addLore("§7Сейчас: "+ApiOstrov.secondToTime(cp.controlTime))
-                .addLore("§7")
-                .addLore("§7Устанавливается в СЕКУНДАХ")
-                .addLore("§7ЛКМ - изменить")
-                .addLore("§7")
+                .lore("§7для достижения этого")
+                .lore("§7чекпоинта от предыдущего.")
+                .lore("§7Если пройти быстрее,")
+                .lore("§7игрок получит метку §cчит")
+                .lore("§7")
+                .lore("§7Сейчас: "+TimeUtil.secondToTime(cp.controlTime))
+                .lore("§7")
+                .lore("§7Устанавливается в СЕКУНДАХ")
+                .lore("§7ЛКМ - изменить")
+                .lore("§7")
                 .build(),  ""+cp.controlTime, msg -> {
 
                     final int amm = ApiOstrov.getInteger(msg);
@@ -118,15 +119,15 @@ public class PointSettings implements InventoryProvider{
         
         content.set(2, new InputButton(InputButton.InputType.ANVILL, new ItemBuilder(Material.SLIME_BLOCK)
                 .name("§7Контрольные прыжки")
-                .addLore("§7для достижения этого")
-                .addLore("§7чекпоинта от предыдущего.")
-                .addLore("§7Если будет меньше,")
-                .addLore("§7игрок получит метку §cчит")
-                .addLore("§7")
-                .addLore("§7Сейчас: "+cp.controlJump)
-                .addLore("§7")
-                .addLore("§7ЛКМ - изменить")
-                .addLore("§7")
+                .lore("§7для достижения этого")
+                .lore("§7чекпоинта от предыдущего.")
+                .lore("§7Если будет меньше,")
+                .lore("§7игрок получит метку §cчит")
+                .lore("§7")
+                .lore("§7Сейчас: "+cp.controlJump)
+                .lore("§7")
+                .lore("§7ЛКМ - изменить")
+                .lore("§7")
                 .build(),  ""+cp.controlJump, msg -> {
 
                     final int amm = ApiOstrov.getInteger(msg);
@@ -152,15 +153,15 @@ public class PointSettings implements InventoryProvider{
         
         content.set(3, new InputButton(InputButton.InputType.ANVILL, new ItemBuilder(Material.BONE)
                 .name("§7Контрольные падения")
-                .addLore("§7для достижения этого")
-                .addLore("§7чекпоинта от предыдущего.")
-                .addLore("§7Если будет меньше,")
-                .addLore("§7игрок получит метку §cчит")
-                .addLore("§7")
-                .addLore("§7Сейчас: "+cp.controlFall)
-                .addLore("§7")
-                .addLore("§7ЛКМ - изменить")
-                .addLore("§7")
+                .lore("§7для достижения этого")
+                .lore("§7чекпоинта от предыдущего.")
+                .lore("§7Если будет меньше,")
+                .lore("§7игрок получит метку §cчит")
+                .lore("§7")
+                .lore("§7Сейчас: "+cp.controlFall)
+                .lore("§7")
+                .lore("§7ЛКМ - изменить")
+                .lore("§7")
                 .build(),  ""+cp.controlFall, msg -> {
 
                     final int amm = ApiOstrov.getInteger(msg);

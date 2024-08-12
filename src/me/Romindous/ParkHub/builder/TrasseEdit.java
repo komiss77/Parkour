@@ -15,7 +15,7 @@ import ru.komiss77.LocalDB;
 import ru.komiss77.builder.SetupMode;
 import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.ItemBuilder;
-import ru.komiss77.utils.TCUtils;
+import ru.komiss77.utils.TCUtil;
 import ru.komiss77.utils.inventory.ClickableItem;
 import ru.komiss77.utils.inventory.ConfirmationGUI;
 import ru.komiss77.utils.inventory.InputButton;
@@ -63,10 +63,10 @@ public class TrasseEdit implements InventoryProvider{
         
         content.set( 0, 0, ClickableItem.of(new ItemBuilder(t.mat)
             .name("§fЛоготип трассы")
-            .addLore("§7")
-            .addLore("§7Положите сюда предмет,")
-            .addLore("§7и он станет иконкой.")
-            .addLore("§7")
+            .lore("§7")
+            .lore("§7Положите сюда предмет,")
+            .lore("§7и он станет иконкой.")
+            .lore("§7")
             .build(), e -> {
                  if (e.isLeftClick() && e.getCursor() != null && e.getCursor().getType() != Material.AIR) {
                     t.mat = e.getCursor().getType();
@@ -83,12 +83,12 @@ public class TrasseEdit implements InventoryProvider{
         
         content.set(0, 1, new InputButton(InputButton.InputType.ANVILL, new ItemBuilder(Material.NAME_TAG)
                 .name("§fНазвание трассы")
-                .addLore("§7")
-                .addLore("§7Сейчас: "+t.displayName)
-                .addLore("§7Можно добавлять цветовые коды!")
-                .addLore("§7")
-                .addLore("§7ЛКМ - изменить")
-                .addLore("§7")
+                .lore("§7")
+                .lore("§7Сейчас: "+t.displayName)
+                .lore("§7Можно добавлять цветовые коды!")
+                .lore("§7")
+                .lore("§7ЛКМ - изменить")
+                .lore("§7")
                 .build(),  t.displayName.replaceAll("§", "&"), msg -> {
                     //msg = msg.replaceAll("&k", "").replaceAll("&", "§");
                     
@@ -99,14 +99,14 @@ public class TrasseEdit implements InventoryProvider{
                     }
                     
                     for (final Trasse tr : Main.trasses.values()) {
-                        if ( t.id!= tr.id && TCUtils.stripColor(tr.displayName).equalsIgnoreCase(TCUtils.stripColor(msg))) {
+                        if ( t.id!= tr.id && TCUtil.strip(tr.displayName).equalsIgnoreCase(TCUtil.strip(msg))) {
                             p.sendMessage("§cТрасса с таким названием уже есть!");
                             PM.soundDeny(p);
                             return;
                         }
                     }
                     
-                    if (TCUtils.stripColor(t.displayName).equals(TCUtils.stripColor(msg))) {
+                    if (TCUtil.strip(t.displayName).equals(TCUtil.strip(msg))) {
                         p.sendMessage("§cНичего не изменилось..");
                         PM.soundDeny(p);
                         return;
@@ -121,11 +121,11 @@ public class TrasseEdit implements InventoryProvider{
         
         content.set(0, 2, new InputButton(InputButton.InputType.ANVILL, new ItemBuilder(Material.NAME_TAG)
                 .name("§fКраткое описание трассы")
-                .addLore("§7")
-                .addLore("§7Сейчас: "+t.descr)
-                .addLore("§7")
-                .addLore("§7ЛКМ - изменить")
-                .addLore("§7")
+                .lore("§7")
+                .lore("§7Сейчас: "+t.descr)
+                .lore("§7")
+                .lore("§7ЛКМ - изменить")
+                .lore("§7")
                 .build(),  t.descr.replaceAll("§", "&"), msg -> {
                     //msg = msg.replaceAll("&k", "").replaceAll("&", "§");
                     
@@ -153,8 +153,8 @@ public class TrasseEdit implements InventoryProvider{
         
          content.set( 0, 3, ClickableItem.of( new ItemBuilder(t.level.mat)
                 .name("сложность")
-                .addLore("§7Сейчас - "+t.level)
-                 .addLore("§7ЛКМ - менять")
+                .lore("§7Сейчас - "+t.level)
+                 .lore("§7ЛКМ - менять")
                 .build(), e -> 
         {
             switch (t.level) {
@@ -181,11 +181,11 @@ public class TrasseEdit implements InventoryProvider{
          
         content.set(0, 4, new InputButton(InputButton.InputType.ANVILL, new ItemBuilder(Material.GOLD_INGOT)
                 .name("§fНаграда за прохождение")
-                .addLore("§7")
-                .addLore("§7Сейчас: "+t.pay+" лони")
-                .addLore("§7")
-                .addLore("§7ЛКМ - изменить")
-                .addLore("§7")
+                .lore("§7")
+                .lore("§7Сейчас: "+t.pay+" лони")
+                .lore("§7")
+                .lore("§7ЛКМ - изменить")
+                .lore("§7")
                 .build(),  ""+t.pay, msg -> {
 
                     final int amm = ApiOstrov.getInteger(msg);
@@ -212,9 +212,9 @@ public class TrasseEdit implements InventoryProvider{
         if (pd.task==null) {
             content.set( 0, 5, ClickableItem.of( new ItemBuilder(Material.GLOW_BERRIES)
                     .name("§3Включить трассировку")
-                    .addLore("§7Будет прорисовываться")
-                    .addLore("§7луч, соединяя по очереди")
-                    .addLore("§7все чекпоинты.")
+                    .lore("§7Будет прорисовываться")
+                    .lore("§7луч, соединяя по очереди")
+                    .lore("§7все чекпоинты.")
                     .build(), e -> {
                         if (pd.task!=null) return;
                 final String name = p.getName();
@@ -246,7 +246,7 @@ public class TrasseEdit implements InventoryProvider{
                                 int limit = 48;
                                 while (from.getBlockX()!=to.getBlockX() && from.getBlockY()!=to.getBlockY() && from.getBlockZ()!=to.getBlockZ()) {
                                     from.add(v);
-                                    from.getWorld().spawnParticle(Particle.VILLAGER_HAPPY, from, 1, 0, 0, 0);
+                                    from.getWorld().spawnParticle(Particle.HAPPY_VILLAGER, from, 1, 0, 0, 0);
                                     limit--;
                                     if (limit==0) break;
                                 }
@@ -320,9 +320,9 @@ public class TrasseEdit implements InventoryProvider{
         if (t.disabled) {
            content.set(1, 1, ClickableItem.of( new ItemBuilder(Material.RED_CONCRETE)
                 .name("§7включение трассы")
-                .addLore("§7сейчас §4выключена")
-                .addLore(t.points.size()<2 ? "§cВключение невозможно -" : "")
-                .addLore(t.points.size()<2 ? "§cМеньше 2 чекпоинтов!" : "§7ЛКМ - включить")
+                .lore("§7сейчас §4выключена")
+                .lore(t.points.size()<2 ? "§cВключение невозможно -" : "")
+                .lore(t.points.size()<2 ? "§cМеньше 2 чекпоинтов!" : "§7ЛКМ - включить")
                 .build(), e -> {
                     if (t.points.size()>2) {
                         p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 5);
@@ -336,7 +336,7 @@ public class TrasseEdit implements InventoryProvider{
         } else {
             content.set(1, 1, ClickableItem.of( new ItemBuilder(Material.GREEN_CONCRETE)
                     .name("§7выключение трассы")
-                    .addLore("§7сейчас §2включена")
+                    .lore("§7сейчас §2включена")
                     .build(), e -> {
                        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BELL, 1, 5);
                        t.disabled=true;
@@ -364,13 +364,13 @@ public class TrasseEdit implements InventoryProvider{
         if (t.changed) {
             content.set(1, 7, ClickableItem.of(new ItemBuilder(Material.JUKEBOX)
                 .name("§aСохранить изменения")
-                .addLore("§7")
-                .addLore("§7Вы внесли изменения,")
-                .addLore("§7рекомендуется сохранение.")
-                .addLore("§7")
-                .addLore("§cБез сохранения все изменения будут")
-                .addLore("§cутеряны после перезагрузки сервера!")
-                .addLore("§7")
+                .lore("§7")
+                .lore("§7Вы внесли изменения,")
+                .lore("§7рекомендуется сохранение.")
+                .lore("§7")
+                .lore("§cБез сохранения все изменения будут")
+                .lore("§cутеряны после перезагрузки сервера!")
+                .lore("§7")
                 .build(), e -> {
                     t.saveConfig(p);
                     reopen(p, content);
