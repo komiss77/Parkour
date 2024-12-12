@@ -234,7 +234,7 @@ public class Main extends JavaPlugin {
         p.closeInventory();
         p.setVelocity(p.getVelocity().zero());
         p.teleport(lobby);
-        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+        p.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
         p.setHealth(20);
         p.setGameMode(GameMode.SURVIVAL);
         p.setFireTicks(0);
@@ -302,7 +302,7 @@ public class Main extends JavaPlugin {
         pd.setNextPoint(next);//постав.коорд.след.чекпоинта
         
         p.closeInventory();
-        p.getAttribute(Attribute.GENERIC_MAX_HEALTH).setBaseValue(20);
+        p.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
         p.setHealth(20);
         p.setGameMode(GameMode.SURVIVAL);
         p.setFireTicks(0);

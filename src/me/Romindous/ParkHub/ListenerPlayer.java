@@ -32,6 +32,8 @@ import ru.komiss77.events.LocalDataLoadEvent;
 import ru.komiss77.modules.player.PM;
 import ru.komiss77.utils.ParticleUtil;
 import me.Romindous.ParkHub.builder.LocalBuilder;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+import ru.komiss77.builder.SetupMode;
 import ru.komiss77.utils.ScreenUtil;
 import ru.komiss77.utils.TCUtil;
 import ru.komiss77.utils.TimeUtil;
@@ -50,6 +52,22 @@ public class ListenerPlayer implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBuilderMenu(final BuilderMenuEvent e) {
         LocalBuilder.open(e.getPlayer(), e.getSetupMode());
+    }
+    
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPlayerQuit(final PlayerQuitEvent e) {
+        final SetupMode sm = PM.getOplayer(e.getPlayer()).setup;
+        if (sm!=null) {
+            sm.loacalEditMode = null;
+        }
+    }
+
+    @EventHandler (ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onWorldChange (final PlayerChangedWorldEvent e) {
+        final SetupMode sm = PM.getOplayer(e.getPlayer()).setup;
+        if (sm!=null) {
+            sm.loacalEditMode = null;
+        }
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
