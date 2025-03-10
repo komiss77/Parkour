@@ -14,7 +14,6 @@ import org.bukkit.GameRule;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -201,8 +200,8 @@ public class Main extends JavaPlugin {
         }.runTaskTimer(plug, 1, 1);
         
         
-        getServer().getPluginManager().registerEvents(new ListenerPlayer(), this);
-        getServer().getPluginManager().registerEvents(new ListenerWorld(), this);
+        getServer().getPluginManager().registerEvents(new PlayerLst(), this);
+        getServer().getPluginManager().registerEvents(new WorldLst(), this);
         //getServer().getPluginManager().registerEvents(new InterLis(), this);
         //getServer().getPluginManager().registerEvents(new InventLis(), this); 
         
@@ -224,17 +223,14 @@ public class Main extends JavaPlugin {
     public void onDisable() {
         getServer().getConsoleSender().sendMessage("§2ParkHub is off!");
     }
-	
 
-        
-        
-
+    
         
     public static void lobbyPlayer(final Player p) {
         p.closeInventory();
         p.setVelocity(p.getVelocity().zero());
         p.teleport(lobby);
-        p.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
+        //p.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
         p.setHealth(20);
         p.setGameMode(GameMode.SURVIVAL);
         p.setFireTicks(0);
@@ -250,26 +246,13 @@ public class Main extends JavaPlugin {
         //!! При первом тп в лобби после BungeeDataRecieved PD не будет!!!
         final PD pd = data.get(p.getName());
         if (pd!=null) {
-            pd.resetTrasse();
+            pd.resetTrasse(true);
             lobbyScore(p);
         }
 
         p.setCompassTarget(Main.lobby);
     }
 
-        
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 
     public static void joinParkur(final Player p, final int pkId) {
 
@@ -293,16 +276,16 @@ public class Main extends JavaPlugin {
         
         final Progress go = pd.getProgress(pkId); //null не будет
         //если достигнута последняя точка ?? -предварительно сбрасывать при выботе карты, если пройден!
-        if (tr.isCompleted(pd)) { // если пройден - сбрасывать!
-            go.reset();
+        //if (tr.isCompleted(pd)) { // если пройден - сбрасывать!
+         //   go.reset();
             pd.saveProgress(tr.id);
-        }
+        //}
         
         final CheckPoint next = pd.current.getNextCp(go.checkPoint);
         pd.setNextPoint(next);//постав.коорд.след.чекпоинта
         
         p.closeInventory();
-        p.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
+        //p.getAttribute(Attribute.MAX_HEALTH).setBaseValue(20);
         p.setHealth(20);
         p.setGameMode(GameMode.SURVIVAL);
         p.setFireTicks(0);
@@ -313,7 +296,7 @@ public class Main extends JavaPlugin {
         toStatr.giveForce(p);
         leave.giveForce(p);
         
-        p.playSound(p.getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
+        p.playSound(p.getEyeLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1);
         for (PotionEffect ef : p.getActivePotionEffects()) {
             p.removePotionEffect(ef.getType());
         }
@@ -366,7 +349,7 @@ public class Main extends JavaPlugin {
                 try { 
                     stmt = LocalDB.getConnection().createStatement();
 
-                    rs = stmt.executeQuery( "SELECT *  FROM `parkData` WHERE `trasseID`='"+t.id+"' AND `done`>'0' AND `cheat`='0' ORDER BY `trasseTime` ASC LIMIT 24" );
+                    rs = stmt.executeQuery( "SELECT * FROM `completions` WHERE `trasseID`='"+t.id+"' ORDER BY `time` ASC LIMIT 24" );
                     
                     int place = 1;
                     while (rs.next()) {
@@ -413,9 +396,9 @@ public class Main extends JavaPlugin {
             .name("§f"+rs.getString("name"))
             .lore("§7")
             .lore("§7Место : §b"+place)
-            .lore("§7⌚ : §f"+TimeUtil.secondToTime(rs.getInt("trasseTime")))
-            .lore("§7⇪ : §6"+rs.getInt("trasseJump"))
-            .lore("§7☠: §c"+rs.getInt("trasseFalls"))
+            .lore("§7⌚ : §f"+TimeUtil.secondToTime(rs.getInt("time")))
+            .lore("§7⇪ : §6"+rs.getInt("jump"))
+            .lore("§7☠: §c"+rs.getInt("falls"))
             .lore("§7")
             .build();
         

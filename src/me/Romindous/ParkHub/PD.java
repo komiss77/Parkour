@@ -16,7 +16,7 @@ public class PD {
     public final String name;
     public BukkitTask task;
     
-    //общая стата - собирать при загрузке прогресса
+    //общая стата - собирать при загрузке прогрессов
     public int totalCheckPoints;
     public int totalFalls;
     public int totalTime;
@@ -24,6 +24,7 @@ public class PD {
     public boolean cheat; //было нарушение при прохождении какой-то трассы. флаг поставится при след.загрузке данных, чтобы меньше 
 
     public final HashMap<Integer,Progress> progress; //прогресс игрока по каждой трассе
+    public final HashMap<Integer,CompleteInfo> completions; //завершенные паркуры
     
     public Trasse current; //текущий паркур, или null если не на трассе
     public int nextCpX,nextCpY,nextCpZ; //коорд.след.чекпоинта
@@ -36,6 +37,7 @@ public class PD {
     public PD(final Player p) {
         name = p.getName();
         progress = new HashMap<>();
+        completions = new HashMap<>();
     }
 
     
@@ -49,7 +51,7 @@ public class PD {
     public Progress getProgress(final int parkID) { 
         Progress go = progress.get(parkID);
         if (go==null) {
-            go = new Progress();
+            go = new Progress(parkID^name.hashCode());
             progress.put(parkID, go);
             //!INSERT
             //LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `parkData` (hash,name,trasseID) VALUES ('"+(parkID^name.hashCode())+"','"+name+"','"+parkID+"');");
@@ -57,25 +59,27 @@ public class PD {
         return go;
     }
 
-    public void saveProgress(final int parkID) { 
+    public void saveProgress(final int parkID) {
         Progress go = getProgress(parkID);//progress.get(parkID);
         //!UPDATE
-        if (!go.isZero()) {
-            final String querry = "INSERT INTO `parkData` (hash,name,trasseID,done,cheat) VALUES ('"+(parkID^name.hashCode())+"','"+name+"','"+parkID+"','"+go.done+"','"+(go.cheat?1:0)+"') ON DUPLICATE KEY "+
-                "UPDATE `done`='"+go.done+"',`checkPoint`='"+go.checkPoint+"',`trasseTime`='"+go.trasseTime+"',`trasseJump`='"+go.trasseJump+"',`trasseFalls`='"+go.trasseFalls+"',`cheat`='"+(go.cheat?1:0)+"' ;";
+        if (go.haProgress()) {
+            final String querry = "INSERT INTO `parkData` (hash,name,trasseID,cheat) VALUES ('"+go.hash+"','"+name+"','"+parkID+"','"+(go.cheat?1:0)+"') ON DUPLICATE KEY "+
+                "UPDATE `checkPoint`='"+go.checkPoint+"',`trasseTime`='"+go.trasseTime+"',`trasseJump`='"+go.trasseJump+"',`trasseFalls`='"+go.trasseFalls+"',`cheat`='"+(go.cheat?1:0)+"' ;";
             LocalDB.executePstAsync(Bukkit.getConsoleSender(), querry );
 //Ostrov.log_warn("querry="+querry);
         }
         //LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `parkData` SET `checkPoint`='"+go.checkPoint+"',`trasseTime`='"+go.trasseTime+"',`trasseJump`='"+go.trasseJump+"',`trasseFalls`='"+go.trasseFalls+"',`cheat`='"+(go.cheat?1:0)+"' WHERE `hash`='"+(parkID^name.hashCode())+"';");
     }
 
-    public void resetTrasse() {
+    public void resetTrasse(final boolean saveProgress) {
         if (task!=null) {
             task.cancel();
             task = null;
         }
         if (current!=null) { //есть проходимый паркур
-            saveProgress(current.id); //сохранить, что пройдено
+            if (saveProgress) {
+                saveProgress(current.id);//сохранить, что пройдено
+            } 
             current.inProgress.remove(name);
             current = null;
             resetStage();

@@ -118,7 +118,7 @@ public class PrkCmd implements CommandExecutor, TabCompleter {
                     }
                     pd.fall();
                     Main.joinParkur(p, pd.current.id);
-                    p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1, 1);
+                    p.playSound(p.getEyeLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1, 1);
                     return true;
                 
                 case "restart":
@@ -133,7 +133,7 @@ public class PrkCmd implements CommandExecutor, TabCompleter {
                             go.reset();
                             pd.saveProgress(pd.current.id);
                             Main.joinParkur(p, pd.current.id);
-                            p.playSound(p.getLocation(), Sound.BLOCK_CONDUIT_DEACTIVATE, 1, 1.5f);
+                            p.playSound(p.getEyeLocation(), Sound.BLOCK_CONDUIT_DEACTIVATE, 1, 1.5f);
                         } else {
                             p.closeInventory();
                         }

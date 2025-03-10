@@ -34,6 +34,7 @@ import ru.komiss77.utils.TCUtil;
 import me.Romindous.ParkHub.builder.LocalBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
+import ru.komiss77.Ostrov;
 import ru.komiss77.events.ChatPrepareEvent;
 
 
@@ -41,7 +42,7 @@ import ru.komiss77.events.ChatPrepareEvent;
 
 
 
-public class ListenerWorld implements Listener {
+public class WorldLst implements Listener {
     
 
 
@@ -184,7 +185,7 @@ public class ListenerWorld implements Listener {
     
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)    
     public void onHangingBreakByEntityEvent(final HangingBreakByEntityEvent e) {
-        if (  e.getRemover()!=null && e.getRemover().getType()==EntityType.PLAYER ) {
+        if (e.getRemover().getType()==EntityType.PLAYER ) {
                 if (!ApiOstrov.isLocalBuilder((Player) e.getRemover()) ) e.setCancelled(true);
         } 
 
@@ -236,23 +237,24 @@ public class ListenerWorld implements Listener {
     public void onEntityDamage(final EntityDamageEvent e) { 
         
        
-        if (e.getEntityType()==EntityType.PLAYER ) {
+        if (e.getEntity() instanceof final Player p) {
             //final LivingEntity le = (LivingEntity) e.getEntity();
             switch (e.getCause()) {
                 case VOID:
                     e.setDamage(0);
-                    final Player p = (Player) e.getEntity();
                     p.setFallDistance(0);
+                    Ostrov.sync( () -> {
                     final PD pd = Main.data.get(p.getName());
-                    if (pd.current==null) {
-                        Main.lobbyPlayer(p);
-                        p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1, 1);
-                    } else {
-                        //p.performCommand("pk suicide"); бесконечное падение!
-                        pd.fall();
-                        Main.joinParkur(p, pd.current.id);
-                        p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1, 1);
-                    }
+                        if (pd.current==null) {
+                            Main.lobbyPlayer(p);
+                            p.playSound(p.getEyeLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1, 1);
+                        } else {
+                            //p.performCommand("pk suicide"); бесконечное падение!
+                            pd.fall();
+                            Main.joinParkur(p, pd.current.id);
+                            p.playSound(p.getEyeLocation(), Sound.ENTITY_PLAYER_ATTACK_CRIT, 1, 1);
+                        }
+                    }, 2); //на некоторых клиентах из-за пинга бесконечное падение
                     return;
                     
                 case FALL:
@@ -277,12 +279,12 @@ public class ListenerWorld implements Listener {
                   // return;
 
                 case ENTITY_ATTACK: //ентити ударяет
-                    if (e instanceof EntityDamageByEntityEvent) {
-                        final EntityDamageByEntityEvent ee = (EntityDamageByEntityEvent) e;
+                    if (e instanceof EntityDamageByEntityEvent ee) {
                         if (ee.getDamager().getType() == EntityType.PLAYER) {
                             e.setCancelled(true);
                         }
                     }
+
                 default:
                     e.setCancelled(true);
                     //return;

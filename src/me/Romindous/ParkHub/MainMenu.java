@@ -15,7 +15,6 @@ import ru.komiss77.utils.ItemBuilder;
 import ru.komiss77.utils.*;
 import ru.komiss77.utils.TCUtil;
 import ru.komiss77.utils.inventory.ClickableItem;
-import ru.komiss77.utils.inventory.ConfirmationGUI;
 import ru.komiss77.utils.inventory.InventoryContent;
 import ru.komiss77.utils.inventory.InventoryProvider;
 import ru.komiss77.utils.inventory.Pagination;
@@ -27,10 +26,7 @@ import ru.komiss77.utils.inventory.SlotPos;
 
 public class MainMenu implements InventoryProvider {
     
-    
-    
-    private static final ClickableItem fill = ClickableItem.empty(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).name("§8.").build());
-
+    //private static final ClickableItem fill = ClickableItem.empty(new ItemBuilder(Material.WHITE_STAINED_GLASS_PANE).name("§8.").build());
     private static final ItemStack random;
     
     static {
@@ -41,14 +37,13 @@ public class MainMenu implements InventoryProvider {
                 .build()
                 ;
     }
-
     
     
     
     @Override
     public void init(final Player p, final InventoryContent content) {
         //p.playSound(p.getLocation(), Sound.BLOCK_COMPARATOR_CLICK, 5, 5);
-        p.playSound(p.getLocation(), Sound.BLOCK_BEEHIVE_ENTER, 1, 1);
+        p.playSound(p.getEyeLocation(), Sound.BLOCK_BEEHIVE_ENTER, 1, 1);
         
         final Pagination pagination = content.pagination();
         final ArrayList<ClickableItem> entry = new ArrayList<>();        
@@ -71,7 +66,7 @@ public class MainMenu implements InventoryProvider {
         content.set(4, ClickableItem.of(random, e-> {
                     final List <Trasse> candidate = new ArrayList<>();
                     for (Trasse t : Main.trasses.values()) {
-                        if (!t.disabled  && !t.isCompleted(pd)) {
+                        if (!t.disabled  && !pd.completions.containsKey(t.id) ) {//!t.isCompleted(pd)) {
                             candidate.add(t);
                         }
                     }
@@ -95,78 +90,81 @@ public class MainMenu implements InventoryProvider {
         
         
         
-        Progress go;
+        Progress progress;
+        CompleteInfo ci;
         
-        for (Trasse t : Main.trasses.values()) {
+        for (Trasse trasse : Main.trasses.values()) {
             
-            if (t.disabled) continue;
-            if (pd.hideCompleted && t.isCompleted(pd)) continue;
-            if (pd.showLevel!=null && pd.showLevel!=t.level) continue;
+            if (trasse.disabled) continue;
+            if (pd.showLevel!=null && pd.showLevel!=trasse.level) continue;
+            ci = pd.completions.get(trasse.id);
+            if (pd.hideCompleted && ci != null) continue;
+            progress = pd.progress.get(trasse.id);
             
-            go = pd.getProgress(t.id);
+            final List<Component> lore = new ArrayList<>();
+                lore.add(Component.text(trasse.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+trasse.inProgress.size()) ) );
+                lore.add(Component.text("§6----------------------") );
+                lore.add(Component.text("§7Сложность: §5"+trasse.level.name()) );
+                lore.add(Component.text("§7Создан: §3"+TimeUtil.ddMMyy(trasse.createAt)) );
+                lore.add(Component.text("§7Создатель: §f"+trasse.creator) );
+                lore.add(Component.text("§7⚐: "+trasse.size()) );
+                lore.add(Component.text("§7Пройден: "+trasse.totalDone+" раз.") );
+                //Component.text("§7⌚ "+TimeUtil.secondToTime(trasse.totalTime)),
+                lore.add(Component.text("§7⇪: "+trasse.totalFalls) );
+                lore.add(Component.text("§7☠: "+trasse.totalJumps) );
+                lore.add(Component.text(trasse.descr) );
+                lore.add(Component.text("§6----------------------"));
+                //Component.text(t.isCompleted(pd) ? "§fПройден §a"+progress.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс:": "§fНе начат")),
+                lore.add(Component.text( ci!=null ? "§fВаши прохождения: §a"+ci.done : "§7Не пройден ни разу.") );
+                //Component.text( (trasse.isCompleted(pd) || !trasse.hasProgress(pd)) ? "" : StringUtil.getPercentBar(trasse.size()-1, progress.checkPoint, true) ),
+                //Component.text(trasse.hasProgress(pd) ? "§7⌚"+TimeUtil.secondToTime(progress.trasseTime) : ""),
+                //Component.text(trasse.hasProgress(pd) ? "⚐:"+progress.checkPoint+" ⇪:"+progress.trasseJump+" ☠:"+progress.trasseFalls : ""),
+                //Component.text("§6----------------------"),
+                //Component.text("§7ЛКМ - "+ (trasse.isCompleted(pd) ? "§cПройти заново" : (trasse.hasProgress(pd) ? "§aПродолжить" : "§bНачать") ) ),
+                //Component.text("§7ПКМ - ТОП ")
             
-            final List<Component> lore = Arrays.asList(
-                Component.text("§6----------------------"),
-                Component.text("§7Создан: §3"+TimeUtil.dateFromStamp(t.createAt)),
-                Component.text("§7Создатель: §f"+t.creator),
-                Component.text("§7Сложность: §5"+t.level.name()),
-                Component.text(t.descr),
-                Component.text(t.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+t.inProgress.size()) ),
-                Component.text("§7⚐: "+t.size()),
-                Component.text("§7Пройден: "+t.totalDone+" раз."),
-                Component.text("§7⌚ "+TimeUtil.secondToTime(t.totalTime)),
-                Component.text("§7⇪: "+t.totalFalls),
-                Component.text("§7☠: "+t.totalJumps),
-                Component.text("§6----------------------"),
-                Component.text(t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс:": "§fНе начат")),
-                Component.text( (t.isCompleted(pd) || !t.hasProgress(pd)) ? "" : StringUtil.getPercentBar(t.size()-1, go.checkPoint, true) ),
-                Component.text(t.hasProgress(pd) ? "§7⌚"+TimeUtil.secondToTime(go.trasseTime) : ""),
-                Component.text(t.hasProgress(pd) ? "⚐:"+go.checkPoint+" ⇪:"+go.trasseJump+" ☠:"+go.trasseFalls : ""),
-                Component.text("§6----------------------"),
-                Component.text("§7ЛКМ - "+ (t.isCompleted(pd) ? "§cПройти заново" : (t.hasProgress(pd) ? "§aПродолжить" : "§bНачать") ) ),
-                Component.text("§7ПКМ - ТОП ")
-            );
+            if (progress == null) {
+                //lore.add( Component.text( "§8не начат") );
+                lore.add( Component.text( "§6----------------------") );
+                if (ci!=null) {
+                    lore.add( Component.text( "§7ЛКМ - §bПройти заново") );
+                    lore.add( Component.text( "§e*§6Предыдущий результат") );
+                    lore.add( Component.text( "§e*§6будет перезаписан!") );
+                } else {
+                    lore.add( Component.text( "§7ЛКМ - §bНачать прохождение") );
+                }
+                
+            } else if (progress.haProgress()) {
+                lore.add(Component.text("§7Текущий прогресс"));
+                lore.add( Component.text( StringUtil.getPercentBar(trasse.size()-1, progress.checkPoint, true) ) );
+                lore.add(Component.text( "§7⌚"+TimeUtil.secondToTime(progress.trasseTime) ) );
+                lore.add(Component.text( "⚐:"+progress.checkPoint+" ⇪:"+progress.trasseJump+" ☠:"+progress.trasseFalls ) );
+                lore.add( Component.text( "§6----------------------") );
+                lore.add( Component.text( "§7ЛКМ - §aПродолжить") );
+            } else {
+                lore.add( Component.text( "§8нет прогресса") );
+                lore.add( Component.text( "§6----------------------") );
+                lore.add( Component.text( "§7ЛКМ - §aПродолжить прохождение") );
+            }
+            lore.add( Component.text( "§7ПКМ - ТОП") );
             
-            final ItemStack is = new ItemStack(t.mat);
+            
+            final ItemStack is = new ItemStack(trasse.mat);
             final ItemMeta im = is.getItemMeta();
-            im.displayName(TCUtil.form(t.displayName));
+            im.displayName(TCUtil.form(trasse.displayName));
             im.lore(lore);
             is.setItemMeta(im);
-            /*new ItemBuilder(t.mat)
-                .name(t.displayName)
-                .lore("§6----------------------")
-                .lore("§7Создан: §3"+TimeUtil.dateFromStamp(t.createAt))
-                .lore("§7Создатель: §f"+t.creator)
-                .lore("§7Сложность: §5"+t.level.name())
-                .lore("t.descr)
-                //.lore("§6----------------------")
-                .lore("t.inProgress.isEmpty() ? "§7никого нет" : ("§7Проходят: "+t.inProgress.size()) )
-                .lore("§7⚐: "+t.size())
-                .lore("§7Пройден: "+t.totalDone+" раз.")
-                .lore("§7⌚ "+TimeUtil.secondToTime(t.totalTime))
-                .lore("§7⇪: "+t.totalFalls)
-                .lore("§7☠: "+t.totalJumps)
-                .lore("§6----------------------")
-                //.lore(" t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс: §6"+go.checkPoint+" §7из §e"+(t.size()-1) : "§fНе начат") ) 
-                .lore(" t.isCompleted(pd) ? "§fПройден §a"+go.done+" §fраз" : (t.hasProgress(pd) ? "§7Ваш прогресс:": "§fНе начат") ) 
-                .lore(" (t.isCompleted(pd) || !t.hasProgress(pd)) ? "" : ApiOstrov.getPercentBar(t.size()-1, go.checkPoint, true))
-                .lore("t.hasProgress(pd) ? "§7⌚"+TimeUtil.secondToTime(go.trasseTime) : "")
-                .lore("t.hasProgress(pd) ? "⚐:"+go.checkPoint+" ⇪:"+go.trasseJump+" ☠:"+go.trasseFalls : "")
-                .lore("§6----------------------")
-                .lore("§7ЛКМ - "+ (t.isCompleted(pd) ? "§cПройти заново" : (t.hasProgress(pd) ? "§aПродолжить" : "§bНачать") ) )
-                .lore("§7ПКМ - ТОП ")
-                .build();*/
             
             entry.add(ClickableItem.of(is, e-> {
                 
                 if (e.isLeftClick()) {
                     
-                    if (t.isCompleted(pd)) {
+                    /*if (trasse.isCompleted(pd)) {
                         
                         ConfirmationGUI.open(p, "§4Сбросить и пройти заново?", (confirm)-> {
                             
                             if (confirm) {
-                                Main.joinParkur(p, t.id);
+                                Main.joinParkur(p, trasse.id);
                             } else {
                                 reopen(p, content);
                             }
@@ -174,15 +172,15 @@ public class MainMenu implements InventoryProvider {
                         });
                         
                         
-                    } else {
+                    } else {*/
                         
-                        Main.joinParkur(p, t.id);
+                        Main.joinParkur(p, trasse.id);
                         
-                    }
+                   // }
                     
                 } else if (e.isRightClick()) {
                     
-                    Main.openTop(p, t);
+                    Main.openTop(p, trasse);
                 
                 }
                 

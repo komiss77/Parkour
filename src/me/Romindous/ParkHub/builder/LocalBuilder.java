@@ -23,7 +23,7 @@ public class LocalBuilder {
         
         final PD pd = Main.data.get(p.getName());
         if (pd.current!=null) {
-            pd.resetTrasse();
+            pd.resetTrasse(true);
         }
         PM.getOplayer(pd.name).score.getSideBar().reset();
         if (sm.arena==null || sm.loacalEditMode==null || sm.loacalEditMode == EditMode.Main) {

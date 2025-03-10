@@ -14,12 +14,21 @@ CREATE TABLE `parkData` (
   `hash` int NOT NULL,
   `name` varchar(16) NOT NULL,
   `trasseID` int NOT NULL,
-  `done` int NOT NULL DEFAULT '0',
   `checkPoint` int NOT NULL DEFAULT '0',
   `trasseTime` int NOT NULL DEFAULT '0',
   `trasseJump` int NOT NULL DEFAULT '0',
   `trasseFalls` int NOT NULL DEFAULT '0',
   `cheat` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+CREATE TABLE `completions` (
+  `hash` int NOT NULL,
+  `name` varchar(16) NOT NULL,
+  `trasseID` int NOT NULL,
+  `done` int NOT NULL DEFAULT '0',
+  `time` int NOT NULL DEFAULT '0',
+  `jump` int NOT NULL DEFAULT '0',
+  `falls` int NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 
@@ -32,3 +41,7 @@ ALTER TABLE `parkData`
   ADD KEY `trasseID` (`trasseID`);
 
 
+ALTER TABLE `completions`
+  ADD PRIMARY KEY (`hash`),
+  ADD KEY `name` (`name`),
+  ADD KEY `trasseID` (`trasseID`);

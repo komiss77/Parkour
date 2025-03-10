@@ -43,11 +43,10 @@ import ru.komiss77.utils.TimeUtil;
 
 
 
-public class ListenerPlayer implements Listener {
+public class PlayerLst implements Listener {
 
-    private static final boolean SET_CHEAT = false;
-    
-    private static boolean anticheat = true;
+    private static final boolean SET_CHEAT_MARK = false;
+    private static final boolean USE_ANTICHEAT = true;
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onBuilderMenu(final BuilderMenuEvent e) {
@@ -73,11 +72,9 @@ public class ListenerPlayer implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onLocalData(final LocalDataLoadEvent e) {
         e.setLogoutLocation(null);
-    }
-    
-    
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onBungeeData(final BungeeDataRecieved e) {
+   // }
+   // @EventHandler(priority = EventPriority.NORMAL)
+   // public void onBungeeData(final BungeeDataRecieved e) {
         
         final Player p = e.getPlayer();
         Main.lobbyPlayer(e.getPlayer());
@@ -93,26 +90,40 @@ public class ListenerPlayer implements Listener {
             
             try {  
                 stmt = LocalDB.getConnection().createStatement(); 
-                rs = stmt.executeQuery( "SELECT * FROM `parkData` WHERE `name` = '"+pd.name+"';" );
                 
+                rs = stmt.executeQuery( "SELECT * FROM `parkData` WHERE `name` = '"+pd.name+"';" );
                 while (rs.next()) {
                     if (Main.trasses.containsKey(rs.getInt("trasseID"))) {
                         final Progress go = new Progress(rs.getInt("done"),rs.getInt("checkPoint"),rs.getInt("trasseTime"),rs.getInt("trasseJump"),rs.getInt("trasseFalls"),rs.getBoolean("cheat"));
                         pd.progress.put(rs.getInt("trasseID"), go);
-                        pd.totalCheckPoints+=go.checkPoint;
-                        pd.totalTime+=go.trasseTime;
-                        pd.totalJumps+=go.trasseJump;
-                        pd.totalFalls+=go.trasseFalls;
+                        pd.totalCheckPoints += go.checkPoint;
+                        pd.totalTime += go.trasseTime;
+                        pd.totalJumps += go.trasseJump;
+                        pd.totalFalls += go.trasseFalls;
                         if(go.cheat) {
                             if (!pd.cheat) {
                                 p.sendMessage("§cМы заподозрили, что Вы могли использовать читы. Если опасения подвердятся, ваш результат будет аннулирован.");
                             }
-                            if (SET_CHEAT) pd.cheat = true;
+                            if (SET_CHEAT_MARK) pd.cheat = true;
                         }
                     } else {
                         Ostrov.log_warn("Загрузка прогресса "+pd.name+" : нет паркура с ИД "+rs.getInt("trasseID")+"!");
                     }
                 }
+                rs.close();
+                
+                rs = stmt.executeQuery( "SELECT * FROM `completions` WHERE `name` = '"+pd.name+"';" );
+                while (rs.next()) {
+                    if (Main.trasses.containsKey(rs.getInt("trasseID"))) {
+                        final CompleteInfo ci = new CompleteInfo(rs.getInt("done"),rs.getInt("time"),rs.getInt("jump"),rs.getInt("falls"));
+                        pd.completions.put(rs.getInt("trasseID"), ci);
+                    } else {
+                        Ostrov.log_warn("Загрузка прохождений "+pd.name+" : нет паркура с ИД "+rs.getInt("trasseID")+"!");
+                    }
+                }
+                rs.close();
+                
+                
                 
             } catch (SQLException ex) {
 
@@ -152,23 +163,13 @@ public class ListenerPlayer implements Listener {
         if (cheat) {
             msg = "§c - читак!";
         } else {
-            switch (Ostrov.random.nextInt(4)) {
-                case 0:
-                    msg = "§7 зашел расслабиться!";
-                    break;
-                case 1:
-                    msg = "§7 пришел пошалить!";
-                    break;
-                case 2:
-                    msg = "§7 прибыл в здание!";
-                    break;
-                case 3:
-                    msg = "§7 готов кайфовать!";
-                    break;
-                default:
-                    msg = "";
-                    break;
-            }
+            msg = switch (Ostrov.random.nextInt(4)) {
+                case 0 -> "§7 зашел расслабиться!";
+                case 1 -> "§7 пришел пошалить!";
+                case 2 -> "§7 прибыл в здание!";
+                case 3 -> "§7 готов кайфовать!";
+                default -> "";
+            };
         } 
         
         Bukkit.broadcast(Component.text("§b" + p.getName() + msg));
@@ -176,23 +177,13 @@ public class ListenerPlayer implements Listener {
         if (cheat) {
             msg = "§c Рабочих читов!";
         } else {
-            switch (Ostrov.random.nextInt(4)) {
-                case 0:
-                    msg = "Добро пожаловать!";
-                    break;
-                case 1:
-                    msg = "Приятной игры!";
-                    break;
-                case 2:
-                    msg = "Желаем удачи!";
-                    break;
-                case 3:
-                    msg = "Развлекайтесь!";
-                    break;
-                default:
-                    msg = "";
-                    break;
-            }
+            msg = switch (Ostrov.random.nextInt(4)) {
+                case 0 -> "Добро пожаловать!";
+                case 1 -> "Приятной игры!";
+                case 2 -> "Желаем удачи!";
+                case 3 -> "Развлекайтесь!";
+                default -> "";
+            };
         }
         p.sendPlayerListHeader(Component.text("§7<§bПаркуры§7>\n" + msg));
     }
@@ -237,9 +228,10 @@ public class ListenerPlayer implements Listener {
             final CheckPoint cp = t.getCp(go.checkPoint);
 
             final String log = "reach point:"+go.checkPoint+" ("+pd.nextCpX+","+pd.nextCpY+","+pd.nextCpZ+") by time:"+pd.stageTime+"/"+cp.controlTime+"  jump:"+pd.stageJump+"/"+cp.controlJump + " fall:"+pd.stageFall+"/"+cp.controlFall;
-            if (anticheat && p.getGameMode()==GameMode.SURVIVAL && (pd.stageTime<cp.controlTime || pd.stageJump<cp.controlJump || pd.stageFall<cp.controlFall) ) {
+            if (USE_ANTICHEAT && p.getGameMode()==GameMode.SURVIVAL && (pd.stageTime<cp.controlTime || pd.stageJump<cp.controlJump || pd.stageFall<cp.controlFall) ) {
                 if (!go.cheat) { //до этого не было чита - пометить везде
                     LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `parkData` SET `cheat` = '1' WHERE `name`='"+pd.name+"'");
+                    LocalDB.executePstAsync(Bukkit.getConsoleSender(), "DELETE FROM `completions` WHERE  `name`='"+pd.name+"' AND `trasseID`='"+t.id+"';");
                 }
                 go.cheat = true;
                 LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `cheatLog` (name,parkName,log,stamp) VALUES ('"+p.getName()+"', '"+TCUtil.strip(t.displayName)+"', '"+log+"', '"+Timer.getTime()+"');");
@@ -248,14 +240,25 @@ public class ListenerPlayer implements Listener {
             go.checkPoint++;
             
             if (t.isLastCp(go.checkPoint)) { //прошел
-                go.done++;
                 t.totalDone++;
                 t.totalTime+=go.trasseTime;
                 t.totalJumps+=go.trasseJump;
                 t.totalFalls+=go.trasseFalls;
-                pd.resetTrasse(); //если не ресануть, плита сразу срабатывает снова
-                
+                pd.resetTrasse(false); //если не ресануть, плита сразу срабатывает снова
+                pd.progress.remove(t.id);
+                LocalDB.executePstAsync(Bukkit.getConsoleSender(), "DELETE FROM `parkData` WHERE  `hash`='"+go.hash+"';");
                 ScreenUtil.sendTitle(p, "", "§fВы прошли паркур!");
+                
+                CompleteInfo ci = pd.completions.get(t.id);
+                if (ci == null) {
+                    ci = new CompleteInfo(1, go.trasseTime, go.trasseJump, go.trasseFalls);
+                    pd.completions.put(t.id, ci);
+                } else {
+                    ci.done++;
+                    ci.trasseTime = go.trasseTime;
+                    ci.trasseJump = go.trasseJump;
+                    ci.trasseFalls = go.trasseFalls;
+                }
                 
                 if (pd.cheat) {
                     
@@ -265,6 +268,10 @@ public class ListenerPlayer implements Listener {
                     
                 } else {
                     
+                    LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `completions` (hash,name,trasseID,done,time,jump,falls) VALUES ('"
+                            +go.hash+"','"+p.getName()+"','"+t.id+"','1','"+go.trasseTime+"','"+go.trasseJump+"','"+go.trasseFalls
+                            +"') ON DUPLICATE KEY UPDATE done=done+1,`time`='"+go.trasseTime+"',`jump`='"+go.trasseJump+"',`falls`='"+go.trasseFalls+"';");
+
                     ApiOstrov.moneyChange(p, t.pay, "Паркуры");
                     ApiOstrov.addStat(p, Stat.PA_done);
                     PM.getOplayer(pd.name).score.getSideBar().reset();
@@ -273,6 +280,15 @@ public class ListenerPlayer implements Listener {
                     p.getInventory().setItem(4, new ItemStack(Material.AIR));
                     ParticleUtil.spawnRandomFirework(p.getLocation());
                     p.addPotionEffect(new PotionEffect(PotionEffectType.LEVITATION, 240, 0));
+                    
+                    
+                    if (!go.cheat) {//тихонько сохраним для нечитеров
+                        t.saveStat();
+                        final String msg = "§f"+pd.name+(ApiOstrov.isFemale(pd.name)?" §7прошла трассу ":" §7прошел трассу ")+t.displayName+" §7за §e"+TimeUtil.secondToTime(go.trasseTime)+" §7(⇪: §6"+go.trasseJump+"§7, ☠: §4"+go.trasseFalls+"§7)";
+                        for (Player pl : Bukkit.getOnlinePlayers()) {
+                            pl.sendMessage(msg);
+                        }
+                    }
                     
                     final String name = p.getName();
                     pd.task = new BukkitRunnable() {
@@ -296,14 +312,9 @@ public class ListenerPlayer implements Listener {
                         }
                     }.runTaskTimer(Main.plug, 1, 20);
                     
-                    if (!go.cheat) {//тихонько сохраним для нечитеров
-                        t.saveStat();
-                        final String msg = "§f"+pd.name+(ApiOstrov.isFemale(pd.name)?" §7прошла трассу ":" §7прошел трассу ")+t.displayName+" §7за §e"+TimeUtil.secondToTime(go.trasseTime)+" §7(⇪: §6"+go.trasseJump+"§7, ☠: §4"+go.trasseFalls+"§7)";
-                    } 
-                    
                 }
                 
-                p.playSound(e.getClickedBlock().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 0.5f, 1.5f);
+                p.playSound(loc, Sound.ENTITY_PLAYER_LEVELUP, 0.5f, 1.5f);
                 
                 
                 
@@ -317,7 +328,7 @@ public class ListenerPlayer implements Listener {
             p.setCompassTarget(next.getLocation(p.getWorld().getName()));
             
             ScreenUtil.sendTitle(p, "", "§7Чекпоинт §b#" + (go.checkPoint+1)+" §7пройден.");
-            p.playSound(e.getClickedBlock().getLocation(), Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1 + ((float) go.checkPoint / (float) t.size()));
+            p.playSound(loc, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1 + ((float) go.checkPoint / (float) t.size()));
             
             pd.saveProgress(t.id);
             ApiOstrov.addStat(p, Stat.PA_chpt);

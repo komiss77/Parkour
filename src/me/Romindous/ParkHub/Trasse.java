@@ -147,14 +147,14 @@ public class Trasse {
 
     
     
-    public boolean isCompleted(final PD pd) {
-        final Progress go = pd.getProgress(id);
-        return go.checkPoint>=1 && !points.isEmpty() && go.checkPoint >= points.size()-1;
-    }    
+    //public boolean isCompleted(final PD pd) {
+    //    final Progress go = pd.getProgress(id);
+    //    return go.checkPoint>=1 && !points.isEmpty() && go.checkPoint >= points.size()-1;
+    //}    
     
-    public boolean hasProgress(final PD pd) {
-        return !pd.getProgress(id).isZero();
-    }
+   // public boolean hasProgress(final @Nullable PD pd) {
+   //     return pd != null &&  pd.getProgress(id) != null && pd.getProgress(id).haProgress();
+   // }
 
     public boolean isLastCp(final int cpNumber) {
         return cpNumber >= points.size()-1;
