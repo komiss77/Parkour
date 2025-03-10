@@ -23,7 +23,6 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 import ru.komiss77.LocalDB;
 import ru.komiss77.Ostrov;
-import ru.komiss77.events.BungeeDataRecieved;
 import ru.komiss77.ApiOstrov;
 import ru.komiss77.Timer;
 import ru.komiss77.enums.Stat;
@@ -94,7 +93,7 @@ public class PlayerLst implements Listener {
                 rs = stmt.executeQuery( "SELECT * FROM `parkData` WHERE `name` = '"+pd.name+"';" );
                 while (rs.next()) {
                     if (Main.trasses.containsKey(rs.getInt("trasseID"))) {
-                        final Progress go = new Progress(rs.getInt("done"),rs.getInt("checkPoint"),rs.getInt("trasseTime"),rs.getInt("trasseJump"),rs.getInt("trasseFalls"),rs.getBoolean("cheat"));
+                        final Progress go = new Progress(rs.getInt("hash"),rs.getInt("checkPoint"),rs.getInt("trasseTime"),rs.getInt("trasseJump"),rs.getInt("trasseFalls"),rs.getBoolean("cheat"));
                         pd.progress.put(rs.getInt("trasseID"), go);
                         pd.totalCheckPoints += go.checkPoint;
                         pd.totalTime += go.trasseTime;

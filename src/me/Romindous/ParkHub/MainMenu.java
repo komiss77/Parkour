@@ -128,8 +128,8 @@ public class MainMenu implements InventoryProvider {
                 lore.add( Component.text( "§6----------------------") );
                 if (ci!=null) {
                     lore.add( Component.text( "§7ЛКМ - §bПройти заново") );
-                    lore.add( Component.text( "§e*§6Предыдущий результат") );
-                    lore.add( Component.text( "§e*§6будет перезаписан!") );
+                    lore.add( Component.text( "§e* §6Предыдущий результат") );
+                    lore.add( Component.text( "§e* §6будет перезаписан!") );
                 } else {
                     lore.add( Component.text( "§7ЛКМ - §bНачать прохождение") );
                 }
