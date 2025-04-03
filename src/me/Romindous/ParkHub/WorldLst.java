@@ -243,6 +243,8 @@ public class WorldLst implements Listener {
                 case VOID:
                     e.setDamage(0);
                     p.setFallDistance(0);
+                    if (p.getNoDamageTicks()>0) return;
+                    p.setNoDamageTicks(5);
                     Ostrov.sync( () -> {
                     final PD pd = Main.data.get(p.getName());
                         if (pd.current==null) {

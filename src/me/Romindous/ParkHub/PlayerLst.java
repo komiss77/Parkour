@@ -214,44 +214,44 @@ public class PlayerLst implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlate(final PlayerInteractEvent e) {
         if (e.getAction()!=Action.PHYSICAL) return;
-        final PD pd = Main.data.get(e.getPlayer().getName());
+        final Player p = e.getPlayer();
+        final PD pd = Main.data.get(p.getName());
         if (pd==null || pd.current==null) return;
-        final Location loc = e.getClickedBlock().getLocation();
+        final Location plateLoc = e.getClickedBlock().getLocation();
         
-        if (pd.nextCpX==loc.getBlockX() && pd.nextCpY==loc.getBlockY() && pd.nextCpZ==loc.getBlockZ() ) {
+        if (pd.nextCpX==plateLoc.getBlockX() && pd.nextCpY==plateLoc.getBlockY() && pd.nextCpZ==plateLoc.getBlockZ() ) { //наступил на ожидаемую следующую контр.точку
             
-            final Player p = e.getPlayer();
-            final Trasse t = pd.current;
+            final Trasse trasse = pd.current;
             final Progress go = pd.getProgress(pd.current.id);
             
-            final CheckPoint cp = t.getCp(go.checkPoint);
+            final CheckPoint cp = trasse.getCp(go.checkPoint);
 
             final String log = "reach point:"+go.checkPoint+" ("+pd.nextCpX+","+pd.nextCpY+","+pd.nextCpZ+") by time:"+pd.stageTime+"/"+cp.controlTime+"  jump:"+pd.stageJump+"/"+cp.controlJump + " fall:"+pd.stageFall+"/"+cp.controlFall;
             if (USE_ANTICHEAT && p.getGameMode()==GameMode.SURVIVAL && (pd.stageTime<cp.controlTime || pd.stageJump<cp.controlJump || pd.stageFall<cp.controlFall) ) {
                 if (!go.cheat) { //до этого не было чита - пометить везде
                     LocalDB.executePstAsync(Bukkit.getConsoleSender(), "UPDATE `parkData` SET `cheat` = '1' WHERE `name`='"+pd.name+"'");
-                    LocalDB.executePstAsync(Bukkit.getConsoleSender(), "DELETE FROM `completions` WHERE  `name`='"+pd.name+"' AND `trasseID`='"+t.id+"';");
+                    LocalDB.executePstAsync(Bukkit.getConsoleSender(), "DELETE FROM `completions` WHERE  `name`='"+pd.name+"' AND `trasseID`='"+trasse.id+"';");
                 }
                 go.cheat = true;
-                LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `cheatLog` (name,parkName,log,stamp) VALUES ('"+p.getName()+"', '"+TCUtil.strip(t.displayName)+"', '"+log+"', '"+Timer.getTime()+"');");
+                LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `cheatLog` (name,parkName,log,stamp) VALUES ('"+p.getName()+"', '"+TCUtil.strip(trasse.displayName)+"', '"+log+"', '"+Timer.getTime()+"');");
             }
 //p.sendMessage("§8log: "+(go.cheat?"§cCHEAT!§8 " :"§aOK§8 ")+log);
             go.checkPoint++;
             
-            if (t.isLastCp(go.checkPoint)) { //прошел
-                t.totalDone++;
-                t.totalTime+=go.trasseTime;
-                t.totalJumps+=go.trasseJump;
-                t.totalFalls+=go.trasseFalls;
+            if (trasse.isLastCp(go.checkPoint)) { //прошел
+                trasse.totalDone++;
+                trasse.totalTime+=go.trasseTime;
+                trasse.totalJumps+=go.trasseJump;
+                trasse.totalFalls+=go.trasseFalls;
                 pd.resetTrasse(false); //если не ресануть, плита сразу срабатывает снова
-                pd.progress.remove(t.id);
+                pd.progress.remove(trasse.id);
                 LocalDB.executePstAsync(Bukkit.getConsoleSender(), "DELETE FROM `parkData` WHERE  `hash`='"+go.hash+"';");
                 ScreenUtil.sendTitle(p, "", "§fВы прошли паркур!");
                 
-                CompleteInfo ci = pd.completions.get(t.id);
+                CompleteInfo ci = pd.completions.get(trasse.id);
                 if (ci == null) {
                     ci = new CompleteInfo(1, go.trasseTime, go.trasseJump, go.trasseFalls);
-                    pd.completions.put(t.id, ci);
+                    pd.completions.put(trasse.id, ci);
                 } else {
                     ci.done++;
                     ci.trasseTime = go.trasseTime;
@@ -268,10 +268,10 @@ public class PlayerLst implements Listener {
                 } else {
                     
                     LocalDB.executePstAsync(Bukkit.getConsoleSender(), "INSERT INTO `completions` (hash,name,trasseID,done,time,jump,falls) VALUES ('"
-                            +go.hash+"','"+p.getName()+"','"+t.id+"','1','"+go.trasseTime+"','"+go.trasseJump+"','"+go.trasseFalls
+                            +go.hash+"','"+p.getName()+"','"+trasse.id+"','1','"+go.trasseTime+"','"+go.trasseJump+"','"+go.trasseFalls
                             +"') ON DUPLICATE KEY UPDATE done=done+1,`time`='"+go.trasseTime+"',`jump`='"+go.trasseJump+"',`falls`='"+go.trasseFalls+"';");
 
-                    ApiOstrov.moneyChange(p, t.pay, "Паркуры");
+                    ApiOstrov.moneyChange(p, trasse.pay, "Паркуры");
                     ApiOstrov.addStat(p, Stat.PA_done);
                     PM.getOplayer(pd.name).score.getSideBar().reset();
                     p.getInventory().setItem(0, new ItemStack(Material.AIR));
@@ -282,8 +282,8 @@ public class PlayerLst implements Listener {
                     
                     
                     if (!go.cheat) {//тихонько сохраним для нечитеров
-                        t.saveStat();
-                        final String msg = "§f"+pd.name+(ApiOstrov.isFemale(pd.name)?" §7прошла трассу ":" §7прошел трассу ")+t.displayName+" §7за §e"+TimeUtil.secondToTime(go.trasseTime)+" §7(⇪: §6"+go.trasseJump+"§7, ☠: §4"+go.trasseFalls+"§7)";
+                        trasse.saveStat();
+                        final String msg = "§f"+pd.name+(ApiOstrov.isFemale(pd.name)?" §7прошла трассу ":" §7прошел трассу ")+trasse.displayName+" §7за §e"+TimeUtil.secondToTime(go.trasseTime)+" §7(⇪: §6"+go.trasseJump+"§7, ☠: §4"+go.trasseFalls+"§7)";
                         for (Player pl : Bukkit.getOnlinePlayers()) {
                             pl.sendMessage(msg);
                         }
@@ -305,15 +305,15 @@ public class PlayerLst implements Listener {
                                 Main.lobbyPlayer(p);
                             }
                             count--;
-                            if (count==14 && t.level==Level.Нормально) ParticleUtil.spawnRandomFirework(p.getLocation());
-                            if (count==13 && t.level==Level.Трудно) ParticleUtil.spawnRandomFirework(p.getLocation());
-                            if (count==12 && t.level==Level.Нереально) ParticleUtil.spawnRandomFirework(p.getLocation());
+                            if (count==14 && trasse.level==Level.Нормально) ParticleUtil.spawnRandomFirework(p.getLocation());
+                            if (count==13 && trasse.level==Level.Трудно) ParticleUtil.spawnRandomFirework(p.getLocation());
+                            if (count==12 && trasse.level==Level.Нереально) ParticleUtil.spawnRandomFirework(p.getLocation());
                         }
                     }.runTaskTimer(Main.plug, 1, 20);
                     
                 }
                 
-                p.playSound(loc, Sound.ENTITY_PLAYER_LEVELUP, 0.5f, 1.5f);
+                p.playSound(plateLoc, Sound.ENTITY_PLAYER_LEVELUP, 0.5f, 1.5f);
                 
                 
                 
@@ -327,10 +327,29 @@ public class PlayerLst implements Listener {
             p.setCompassTarget(next.getLocation(p.getWorld().getName()));
             
             ScreenUtil.sendTitle(p, "", "§7Чекпоинт §b#" + (go.checkPoint+1)+" §7пройден.");
-            p.playSound(loc, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1 + ((float) go.checkPoint / (float) t.size()));
+            p.playSound(plateLoc, Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 0.5f, 1 + ((float) go.checkPoint / (float) trasse.size()));
             
-            pd.saveProgress(t.id);
+            pd.saveProgress(trasse.id);
             ApiOstrov.addStat(p, Stat.PA_chpt);
+            
+        } else { //наступил на контр.точку отличную от ожидаемой
+            
+            
+            Trasse find = null; //енаходим паркур, чья это контр.точка
+            for (Trasse t : Main.trasses.values()) {
+                for (CheckPoint cp : t.points) {
+                    if (cp.x==plateLoc.getBlockX() && cp.y==plateLoc.getBlockY() &&cp.z==plateLoc.getBlockZ() ) {
+                        find = t;
+                        break;
+                    }
+                }
+            }
+            if (find != null && pd.current.id != find.id) {
+                p.sendMessage("§6Это чекпоинт трассы "+find.displayName+", начние её прохождение через меню.");
+            }// else {
+            //    p.sendMessage("§6Это чекпоинт другой трассы, начние её прохождение через меню.");
+            //}
+            
         }
     }
     
